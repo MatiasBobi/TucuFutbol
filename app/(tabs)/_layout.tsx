@@ -1,21 +1,18 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Tabs } from 'expo-router';
-import { setBackgroundColorAsync } from 'expo-system-ui';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Pressable, StatusBar } from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
+const queryClient = new QueryClient();
 export default function Layout() {
   const insets = useSafeAreaInsets();
-
-  useEffect(() => {
-    setBackgroundColorAsync('#000000');
-  }, []);
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <StatusBar
           barStyle="light-content"
@@ -79,6 +76,6 @@ export default function Layout() {
           />
         </Tabs>
       </SafeAreaProvider>
-    </>
+    </QueryClientProvider>
   );
 }
