@@ -9,9 +9,11 @@ export default function LeagueTableToday(props: { league: League }) {
       <View style={styles.title}>
         <Text style={styles.titleText}> {league.name}</Text>
       </View>
-      {league.games.map((match, index) => {
-        return <MatchTodayInfo teams={match} key={index} />;
-      })}
+      <View style={styles.matches_container}>
+        {league.games.map((match, index) => {
+          return <MatchTodayInfo teams={match} key={index} />;
+        })}
+      </View>
 
       <View style={styles.view_more_info}>
         <Text style={styles.view_more_info_text}>Ver liga completa</Text>
@@ -22,13 +24,19 @@ export default function LeagueTableToday(props: { league: League }) {
 
 const styles = StyleSheet.create({
   container_today: {
-    backgroundColor: '#306438',
+    backgroundColor: '#041026',
     width: '100%',
-    marginTop: 10,
   },
   title: {
-    backgroundColor: '#1f851f',
+    backgroundColor: '#141c34',
     padding: 10,
+  },
+  matches_container: {
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#1b2a57',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   titleText: {
     textAlign: 'center',
@@ -37,7 +45,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   view_more_info: {
-    backgroundColor: '#1f851f',
+    backgroundColor: '#141c34',
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',

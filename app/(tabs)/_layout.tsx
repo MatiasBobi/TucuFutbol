@@ -22,7 +22,7 @@ export default function Layout() {
         <Tabs
           screenOptions={{
             tabBarStyle: {
-              backgroundColor: '#427130',
+              backgroundColor: '#041026',
               borderTopWidth: 0,
               paddingBottom: insets.bottom,
               height: 60 + insets.bottom,
@@ -33,7 +33,7 @@ export default function Layout() {
             tabBarActiveTintColor: '#d6c277',
             tabBarInactiveTintColor: '#e4e7ef',
             headerStyle: {
-              backgroundColor: '#427130',
+              backgroundColor: '#041026',
             },
             headerTintColor: '#ffffff',
             tabBarItemStyle: {

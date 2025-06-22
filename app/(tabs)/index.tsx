@@ -1,5 +1,7 @@
 import LeagueTableToday from '@/components/today/table_today';
-import useToday from '@/hooks/useTodayData';
+import useToday from '@/hooks/today_data/useTodayData';
+import { TodayMatches } from '@/types/todayMatches';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,8 +12,17 @@ import {
 
 export default function HomeScreen() {
   const { data, isLoading, error } = useToday();
+  const [lastData, setLastData] = useState<TodayMatches | null>(null);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (data?.leagues) {
+      setLastData(data);
+    }
+  }, [data]);
+
+  const oneTimeLoading = isLoading && !lastData;
+
+  if (oneTimeLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#427130" />
@@ -20,21 +31,21 @@ export default function HomeScreen() {
     );
   }
 
-  if (error) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.errorText}>Error: {error.message}</Text>
-      </View>
-    );
-  }
   return (
     <View style={styles.container}>
-      <FlatList
-        data={data?.leagues}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => <LeagueTableToday league={item} />}
-        contentContainerStyle={styles.contentContainer}
-      />
+      {error && !lastData && (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.errorText}>Error: {error.message}</Text>
+        </View>
+      )}
+      {lastData && (
+        <FlatList
+          data={data?.leagues}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => <LeagueTableToday league={item} />}
+          contentContainerStyle={styles.contentContainer}
+        />
+      )}
     </View>
   );
 }
@@ -42,8 +53,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 30,
-    marginBottom: 30,
   },
   contentContainer: {
     paddingBottom: 20,

@@ -1,4 +1,4 @@
-import getToday from '@/services/today';
+import getToday from '@/services/today_data/today';
 import { useQuery } from '@tanstack/react-query';
 
 export default function useToday() {
