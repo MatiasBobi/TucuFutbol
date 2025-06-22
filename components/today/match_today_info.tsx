@@ -163,43 +163,6 @@ export default function MatchTodayInfo(props: { teams: Game }) {
   );
 }
 
-/*
-
-{(team1?.goals || team2?.goals) && (
-              <View style={styles.goals_match_container}>
-                <View style={styles.goals_match_container_team1}>
-                  {team1.goals?.map((goal, index) => (
-                    <Text key={index} style={styles.goal_text}>
-                      <Text style={styles.time_text}>
-                        {goal?.time_to_display}{' '}
-                        {goal?.goal_type &&
-                          '(' + goal?.goal_type?.slice(0, 1) + ')'}
-                      </Text>
-                      <Text style={styles.goal_player_name_text}>
-                        {goal?.player_sname}
-                      </Text>
-                    </Text>
-                  ))}
-                </View>
-                <View style={styles.goals_match_container_team2}>
-                  {team2.goals?.map((goal, index) => (
-                    <Text key={index} style={styles.goal_text}>
-                      <Text style={styles.goal_player_name_text}>
-                        {goal?.player_sname}
-                      </Text>
-                      <Text style={styles.time_text}>
-                        {' '}
-                        {goal?.time_to_display}
-                        {goal?.goal_type &&
-                          '(' + goal?.goal_type?.slice(0, 1) + ')'}
-                      </Text>
-                    </Text>
-                  ))}
-                </View>
-              </View>
-            )}
-*/
-
 const styles = StyleSheet.create({
   info_match_container: {
     alignItems: 'center',
