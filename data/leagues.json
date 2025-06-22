@@ -70,37 +70,37 @@
     "name": "Internacionales",
     "sub_categories": [
       {
-        "id": "fjf",
+        "id": "bac",
         "name": "Copa Libertadores",
         "url_name": "libertadores"
       },
       {
-        "id": "gbd",
+        "id": "dij",
         "name": "Copa Sudamericana",
         "url_name": "conmebol-sudamericana"
       },
       {
-        "id": "fecb",
+        "id": "fhc",
         "name": "Champions League",
         "url_name": "uefa-champions-league"
       },
       {
-        "id": "gdbg",
+        "id": "fhd",
         "name": "Europa League",
         "url_name": "uefa-europa-league"
       },
       {
-        "id": "habg",
+        "id": "hgif",
         "name": "Conference League",
         "url_name": "uefa-conference-league"
       },
       {
-        "id": "gahb",
+        "id": "fajg",
         "name": "Mundial de Clubes",
         "url_name": "fifa-club-world-cup"
       },
       {
-        "id": "gahb",
+        "id": "bhb",
         "name": "Concacaf Champions",
         "url_name": "concacaf-champions-cup"
       }
