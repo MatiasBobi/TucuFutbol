@@ -1,0 +1,10 @@
+export enum Colors {
+  YELLOW_LIGHT = '#FFD700',
+  YELLOW_GOAL = '#aa9526',
+  GRAY_LIGHT = '#EDEDED',
+  RED_CHANGE_PLAYER = '#e31919',
+  LIGHT_BLUE_DARK = '#2c3b70',
+  DARK_BLUE = '#041026',
+  WHITE_GRAY = '#F5F5F5',
+  BLUE_BORDER = '#1b2a57',
+}

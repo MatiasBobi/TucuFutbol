@@ -1,4 +1,5 @@
 import { League } from '@/types/todayMatches';
+import { Link } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import MatchTodayInfo from './match_today_info';
 
@@ -14,10 +15,13 @@ export default function LeagueTableToday(props: { league: League }) {
           return <MatchTodayInfo teams={match} key={index} />;
         })}
       </View>
-
-      <View style={styles.view_more_info}>
+      <Link
+        href={{ pathname: '/league/[league]', params: { league: league.id } }}
+        asChild
+        style={styles.view_more_info}
+      >
         <Text style={styles.view_more_info_text}>Ver liga completa</Text>
-      </View>
+      </Link>
     </View>
   );
 }
@@ -26,6 +30,7 @@ const styles = StyleSheet.create({
   container_today: {
     backgroundColor: '#041026',
     width: '100%',
+    paddingBottom: 20,
   },
   title: {
     backgroundColor: '#141c34',
@@ -40,18 +45,19 @@ const styles = StyleSheet.create({
   },
   titleText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
   },
   view_more_info: {
-    backgroundColor: '#141c34',
+    backgroundColor: '#1c284e',
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    textAlign: 'center',
   },
   view_more_info_text: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
   },

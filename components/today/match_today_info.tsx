@@ -1,14 +1,24 @@
+import { Colors } from '@/constants/colors/colors';
 import useGameInfo from '@/hooks/game_info/useGameInfo';
 import { Game } from '@/types/todayMatches';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import {
+  Animated,
+  Easing,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 export default function MatchTodayInfo(props: { teams: Game }) {
   const { teams } = props;
   const team1 = teams?.teams?.[0];
   const team2 = teams?.teams?.[1];
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const matchStatus =
     teams?.status?.enum === 3
       ? 'finished'
@@ -16,12 +26,29 @@ export default function MatchTodayInfo(props: { teams: Game }) {
       ? 'pre'
       : 'live';
 
-  const { data, isLoading, error, isFetching, refetch } = useGameInfo(
-    teams?.id,
-    isExpanded,
-    matchStatus,
-  );
+  const { data, isFetching } = useGameInfo(teams?.id, isExpanded, matchStatus);
   const events = data?.game?.events || null;
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (isExpanded) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      fadeAnim.setValue(0);
+    }
+  }, [isExpanded, fadeAnim]);
+
+  useEffect(() => {
+    if (!isFetching && isInitialLoad && isExpanded) {
+      setIsInitialLoad(false);
+    }
+  }, [isFetching, isInitialLoad, isExpanded]);
 
   return (
     <View>
@@ -94,8 +121,14 @@ export default function MatchTodayInfo(props: { teams: Game }) {
         )}
 
         {isExpanded ? (
-          <View>
-            {events &&
+          <Animated.View
+            style={[styles.expandedContent, { opacity: fadeAnim }]}
+          >
+            {isFetching && isInitialLoad ? (
+              <View style={styles.loadingContainer}>
+                <Text style={styles.loadingText}>Cargando eventos...</Text>
+              </View>
+            ) : events ? (
               events.map((event, index) => (
                 <View key={index} style={styles.events_container}>
                   {event.rows.map((row, index) => (
@@ -155,8 +188,15 @@ export default function MatchTodayInfo(props: { teams: Game }) {
                   ))}
                   <Text style={styles.events_name}>{event.name}</Text>
                 </View>
-              ))}
-          </View>
+              ))
+            ) : (
+              <View>
+                <Text style={styles.noEventsText}>
+                  No hay eventos disponibles
+                </Text>
+              </View>
+            )}
+          </Animated.View>
         ) : null}
       </Pressable>
     </View>
@@ -171,10 +211,10 @@ const styles = StyleSheet.create({
 
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: '#1b2a57',
+    borderTopColor: Colors.DARK_BLUE,
     marginBottom: 10,
     borderRadius: 10,
-    backgroundColor: '#2c3b70',
+    backgroundColor: Colors.LIGHT_BLUE_DARK,
   },
   team_match: {
     flexDirection: 'row',
@@ -188,7 +228,7 @@ const styles = StyleSheet.create({
   },
   team_match_text: {
     fontSize: 17,
-    color: '#F5F5F5',
+    color: Colors.WHITE_GRAY,
     fontWeight: 'bold',
     width: 140,
     textAlign: 'center',
@@ -201,16 +241,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
+  expandedContent: {
+    width: '100%',
+    overflow: 'hidden',
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    color: Colors.WHITE_GRAY,
+    fontSize: 16,
+  },
+  noEventsText: {
+    color: Colors.WHITE_GRAY,
+    textAlign: 'center',
+    padding: 20,
+    fontSize: 20,
+  },
   team_match_score_text: {
-    fontSize: 28,
-    color: '#EDEDED',
+    fontSize: 24,
+    color: Colors.GRAY_LIGHT,
     fontWeight: 'bold',
     width: 10,
     textAlign: 'center',
   },
   time_match_text: {
     fontSize: 16,
-    color: '#FFD700',
+    color: Colors.YELLOW_LIGHT,
     fontWeight: 'bold',
   },
   goals_match_container: {
@@ -232,28 +291,28 @@ const styles = StyleSheet.create({
   },
   goal_text: {
     fontSize: 16,
-    color: '#F5F5F5',
+    color: Colors.WHITE_GRAY,
     fontWeight: 'bold',
   },
   time_text: {
     fontSize: 16,
-    color: '#FFD700',
+    color: Colors.YELLOW_LIGHT,
     fontWeight: 'bold',
   },
   events_row_container: {
     borderBottomWidth: 1,
-    borderBottomColor: '#1b2a57',
+    borderBottomColor: Colors.BLUE_BORDER,
     paddingVertical: 10,
     position: 'relative',
   },
   events_name: {
     fontSize: 16,
-    color: '#F5F5F5',
+    color: Colors.WHITE_GRAY,
     paddingVertical: 20,
     fontWeight: 'bold',
     textAlign: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#1b2a57',
+    borderBottomColor: Colors.BLUE_BORDER,
   },
   events_time: {
     position: 'absolute',
@@ -262,7 +321,7 @@ const styles = StyleSheet.create({
     top: '50%',
     transform: [{ translateY: -10 }],
     fontSize: 16,
-    color: '#F5F5F5',
+    color: Colors.WHITE_GRAY,
     fontWeight: 'bold',
     textAlign: 'center',
     paddingVertical: 2,
@@ -290,7 +349,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   events_text_goal: {
-    color: '#aa9526',
+    color: Colors.YELLOW_GOAL,
     textAlign: 'center',
   },
   events_container_text: {
@@ -299,11 +358,11 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   events_text: {
-    color: '#FFD700',
+    color: Colors.YELLOW_LIGHT,
     textAlign: 'center',
   },
   events_text_change: {
-    color: '#e31919',
+    color: Colors.RED_CHANGE_PLAYER,
     textAlign: 'center',
   },
   goal_player_name_text: {},
