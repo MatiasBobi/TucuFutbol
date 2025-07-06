@@ -19,7 +19,7 @@
         "url_name": "primera-b-metropolitana"
       },
       {
-        "id": "hcbe",
+        "id": "ffjb",
         "name": "Primera C",
         "url_name": "primera-c"
       },
@@ -244,7 +244,7 @@
     "name": "Paraguay",
     "sub_categories": [
       {
-        "id": "gbh",
+        "id": "gcb",
         "name": "Copa de primera",
         "url_name": "copa-de-primera"
       }
