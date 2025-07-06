@@ -26,6 +26,7 @@ export interface Game {
   status: Status;
   start_time: string;
   scores: number[];
+  penalties: number[];
   game_time: number;
   game_time_to_display: string;
   game_time_status_to_display: string;

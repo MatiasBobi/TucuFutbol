@@ -3,5 +3,17 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
-  }
+  },
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
+    "gitcommit": false,
+    "gitrebase": false
+  },
+  "github.copilot.chat.enable": true,
+  "github.copilot.inline.enable": true,
+  "extensions.ignoreRecommendations": false,
+  "github.pullRequests.enabled": true
 }

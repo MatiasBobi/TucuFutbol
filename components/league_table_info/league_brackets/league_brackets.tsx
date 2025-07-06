@@ -1,0 +1,360 @@
+import { Colors } from '@/constants/colors/colors';
+import {
+  BracketGroup,
+  BracketParticipant,
+  BracketStage,
+} from '@/types/league_full_info';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { FlashList } from '@shopify/flash-list';
+import { useState } from 'react';
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const SLIDER_WIDTH = SCREEN_WIDTH - 100; // Ancho del slider
+
+const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const translateX = useSharedValue(0);
+
+  // Calcula el ancho de cada paso del slider
+  const stepWidth =
+    brackets.length > 1 ? SLIDER_WIDTH / (brackets.length - 1) : 0;
+
+  // Mueve al bracket anterior
+  const moveLeft = () => {
+    if (currentIndex > 0) {
+      const newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      translateX.value = withTiming(newIndex * stepWidth, { duration: 300 });
+    }
+  };
+
+  // Mueve al bracket siguiente
+  const moveRight = () => {
+    if (currentIndex < brackets.length - 1) {
+      const newIndex = currentIndex + 1;
+      setCurrentIndex(newIndex);
+      translateX.value = withTiming(newIndex * stepWidth, { duration: 300 });
+    }
+  };
+
+  const prevGames = () => {
+    const previousStage = brackets[currentIndex - 1];
+    if (!previousStage || !previousStage.groups) return null;
+    const allPreviousGames = previousStage.groups.flatMap(
+      (group) =>
+        group.participants.map((participant) => participant.name) || [],
+    );
+    const groupedParticipants = [];
+    for (let i = 0; i < allPreviousGames.length; i += 4) {
+      const prevParticipants = allPreviousGames.slice(i, i + 4);
+      groupedParticipants.push(prevParticipants);
+    }
+    return groupedParticipants;
+  };
+
+  const renderTeamName = ({
+    teams,
+    teamIndex,
+    parentGameIndex,
+    TeamPrevA,
+    TeamPrevB,
+  }: {
+    teams: BracketParticipant[];
+    teamIndex: 0 | 1;
+    parentGameIndex: number;
+    TeamPrevA: string | undefined;
+    TeamPrevB: string | undefined;
+  }) => {
+    //console.log(teams?.[teamIndex]);
+    return teams?.[teamIndex]?.id === -1
+      ? `Ganador ${TeamPrevA} vs ${TeamPrevB}`
+      : teams?.[teamIndex]?.name;
+  };
+
+  const renderBracketGame = ({
+    game,
+    index,
+    allPreviousGames,
+    isFinal_length,
+  }: {
+    game: BracketGroup;
+    index: number;
+    allPreviousGames: string[][] | null;
+    isFinal_length: number | undefined;
+  }) => {
+    // Calculá a qué partidos padres corresponde cada equipo
+    const PrevGameA = index * 2;
+    const PrevGameB = index * 2 + 1;
+
+    const [date, time] = game.games[0]?.start_time?.split(' ') || [];
+    const [day, month, year] = date?.split('-') || [];
+    const formattedDate = day && month ? `${day}/${month}` : null;
+
+    let gameTitle = `Juego ${index + 1}`;
+
+    if (isFinal_length === 1) gameTitle = 'Final';
+    if (isFinal_length === 2 && game.is_third_place)
+      gameTitle = 'Tercer Puesto';
+    if (isFinal_length === 2 && game.is_final) gameTitle = 'Final';
+
+    return (
+      <View style={styles.container_brackets_game}>
+        <Text style={styles.game_title}>{gameTitle}</Text>
+        <View style={styles.game_info_container}>
+          <View style={styles.game_info_name_team_container}>
+            <View style={styles.game_info_team_items}>
+              <Image
+                source={{
+                  uri: `https://api.promiedos.com.ar/images/team/${game?.participants?.[0]?.id?.toString()}/4`,
+                }}
+                style={{ width: 25, height: 25 }}
+                resizeMode="contain"
+              />
+              <Text
+                style={[
+                  styles.game_teams_text,
+                  {
+                    color:
+                      game.winner === 1
+                        ? Colors.YELLOW_LIGHT
+                        : Colors.WHITE_GRAY,
+                  },
+                ]}
+              >
+                {renderTeamName({
+                  teams: game.participants,
+                  teamIndex: 0,
+                  parentGameIndex: PrevGameA,
+                  TeamPrevA: allPreviousGames?.[index]?.[0],
+                  TeamPrevB: allPreviousGames?.[index]?.[1],
+                })}
+              </Text>
+            </View>
+            <View style={styles.game_info_team_items}>
+              <Image
+                source={{
+                  uri: `https://api.promiedos.com.ar/images/team/${game?.participants?.[1]?.id?.toString()}/4`,
+                }}
+                style={{ width: 25, height: 25 }}
+                resizeMode="contain"
+              />
+              <Text
+                style={[
+                  styles.game_teams_text,
+                  {
+                    color:
+                      game.winner === 2
+                        ? Colors.YELLOW_LIGHT
+                        : Colors.WHITE_GRAY,
+                  },
+                ]}
+              >
+                {renderTeamName({
+                  teams: game.participants,
+                  teamIndex: 1,
+                  TeamPrevA: allPreviousGames?.[index]?.[2],
+                  TeamPrevB: allPreviousGames?.[index]?.[3],
+                  parentGameIndex: PrevGameB,
+                })}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={[
+              styles.game_scores_container,
+              game.games[0]?.scores ? { flex: 0.1 } : { flex: 0.2 },
+            ]}
+          >
+            {game.games[0]?.scores ? (
+              <>
+                <Text
+                  style={[
+                    styles.game_scores_text,
+                    {
+                      color:
+                        game.winner === 1
+                          ? Colors.YELLOW_LIGHT
+                          : Colors.WHITE_GRAY,
+                    },
+                  ]}
+                >
+                  {game.games[0]?.scores?.[0]}
+                </Text>
+                <Text
+                  style={[
+                    styles.game_scores_text,
+                    {
+                      color:
+                        game.winner === 2
+                          ? Colors.YELLOW_LIGHT
+                          : Colors.WHITE_GRAY,
+                    },
+                  ]}
+                >
+                  {game.games[0]?.scores?.[1]}
+                </Text>
+              </>
+            ) : (
+              <Text style={styles.game_scores_text}>
+                {formattedDate} {time}
+              </Text>
+            )}
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const renderCurrentBracket = () => {
+    const currentBracket = brackets[currentIndex];
+    const allPreviousGames = prevGames();
+    if (!currentBracket) return null;
+
+    const isFinal_lenght = currentBracket.groups.length;
+    const allGames = (currentBracket.groups || []).flatMap(
+      (group) => group || [],
+    );
+
+    return (
+      <View style={styles.container_brackets_index}>
+        <FlashList
+          data={allGames}
+          renderItem={({ item, index }) =>
+            renderBracketGame({
+              game: item,
+              index,
+              allPreviousGames,
+              isFinal_length: isFinal_lenght,
+            })
+          }
+          keyExtractor={(item, index) =>
+            `game-${index}-${item.games[0]?.start_time}`
+          }
+          estimatedItemSize={120}
+        />
+      </View>
+    );
+  };
+
+  return (
+    <View style={styles.container_brackets}>
+      {/* Contenedor principal del slider */}
+      <View style={styles.brackets_move_arrows_container}>
+        {/* Flecha izquierda */}
+        <Pressable onPress={moveLeft} style={styles.arrowButton}>
+          <MaterialIcons name="arrow-back" size={24} color="black" />
+        </Pressable>
+        <View>
+          <Text style={styles.title_bracket_text}>
+            {brackets[currentIndex]?.name}
+          </Text>
+        </View>
+        {/* Flecha derecha */}
+        <Pressable onPress={moveRight} style={styles.arrowButton}>
+          <MaterialIcons name="arrow-forward" size={24} color="black" />
+        </Pressable>
+      </View>
+
+      {/* Brackets */}
+      <View>{renderCurrentBracket()}</View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container_brackets: {
+    width: '100%',
+    padding: 10,
+    backgroundColor: Colors.LIGHT_BLUE_DARK,
+  },
+  brackets_move_arrows_container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 20,
+    marginBottom: 10,
+    backgroundColor: Colors.BLUE_BORDER,
+  },
+  arrowButton: {
+    padding: 10,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    backgroundColor: Colors.WHITE_GRAY,
+  },
+  title_bracket_text: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: Colors.WHITE_GRAY,
+  },
+  container_brackets_index: {
+    width: '100%',
+    height: SCREEN_HEIGHT * 0.6,
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: Colors.BLUE_BORDER,
+  },
+  container_brackets_game: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  game_title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: Colors.WHITE_GRAY,
+  },
+  game_info_container: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    minHeight: 100,
+    backgroundColor: Colors.DARK_BLUE_PLAYOFFS,
+    marginBottom: 40,
+  },
+  game_info_name_team_container: {
+    height: '100%',
+    justifyContent: 'space-around',
+    flex: 0.9,
+  },
+  game_scores_container: {
+    height: '100%',
+    justifyContent: 'space-around',
+    flex: 0.1,
+  },
+  game_teams_text: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    textAlign: 'center',
+    flexShrink: 1,
+    flexWrap: 'wrap',
+  },
+  game_scores_text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: Colors.YELLOW_LIGHT,
+  },
+  game_info_team_items: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: 8,
+    textAlign: 'center',
+  },
+});
+export default LeagueBrackets;

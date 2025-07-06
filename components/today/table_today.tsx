@@ -1,9 +1,11 @@
 import { League } from '@/types/todayMatches';
 import { Link } from 'expo-router';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import MatchTodayInfo from './match_today_info';
-
-export default function LeagueTableToday(props: { league: League }) {
+import { MatchTodayInfo } from './match_today_info';
+export const LeagueTableToday = React.memo(function LeagueTableToday(props: {
+  league: League;
+}) {
   const { league } = props;
   return (
     <View style={styles.container_today}>
@@ -12,9 +14,10 @@ export default function LeagueTableToday(props: { league: League }) {
       </View>
       <View style={styles.matches_container}>
         {league.games.map((match, index) => {
-          return <MatchTodayInfo teams={match} key={index} />;
+          return <MatchTodayInfo teams={match} key={match.id} />;
         })}
       </View>
+      {/* Link para ver la liga completa, espera un ID en string. */}
       <Link
         href={{ pathname: '/league/[league]', params: { league: league.id } }}
         asChild
@@ -24,7 +27,7 @@ export default function LeagueTableToday(props: { league: League }) {
       </Link>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container_today: {
