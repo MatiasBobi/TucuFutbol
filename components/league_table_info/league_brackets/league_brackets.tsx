@@ -17,11 +17,11 @@ import {
 } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window'); // Dimensiones del dispositivo.
 const SLIDER_WIDTH = SCREEN_WIDTH - 100; // Ancho del slider
 
 const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0); // Estado actual para mostrar que stage mostrar.
   const translateX = useSharedValue(0);
 
   // Calcula el ancho de cada paso del slider
@@ -46,40 +46,51 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
     }
   };
 
+  // Funcion para obtener el stage anterior al cual se esta mostrando, el proposito de esto es para poder obtener que equipos que estaban en el stage anterior.
+  // Con esto se consigue mostrar cual puede ser el proximo enfrentamiento en la stage que se esta mostrando actualmente
+  // Por ejemplo:
+  // (32 avos)
+  // Juego 1 : San Lorenzo vs Deportivo Riestra
+  // Juego 2 : River Plate vs Union
+  // Avanzamos a 16vos
+  // El juego numero 1 corresponde a los ganadores del juego 1 vs juego 2 de la etapa anterior
+  // Si usamos esta funcion obtendriamos
+  // (16 avos)
+  // Juego 1: Ganador (San Lorenzo vs Deportivo riestra) vs (River Plate vs Union).
   const prevGames = () => {
-    const previousStage = brackets[currentIndex - 1];
+    const previousStage = brackets[currentIndex - 1]; // Del currentindex retrocedemos una posicion en el arreglo para obtener lo anterior.
     if (!previousStage || !previousStage.groups) return null;
     const allPreviousGames = previousStage.groups.flatMap(
       (group) =>
         group.participants.map((participant) => participant.name) || [],
-    );
+    ); // Usamos flatmap para dejar todo en un mismo array.
     const groupedParticipants = [];
     for (let i = 0; i < allPreviousGames.length; i += 4) {
       const prevParticipants = allPreviousGames.slice(i, i + 4);
       groupedParticipants.push(prevParticipants);
-    }
+    } // Se utiliza para poder agrupoar en un arreglo de arreglos, donde los arreglos de adentro tienen 4 elementos.
+    // Ejemplo: [[San lorenzo, Deportivo Riestra, River Plate, Union], [Atlético Tucumán, Boca Juniors, Argentinos Juniors, Instituto.] ... etc]
     return groupedParticipants;
   };
 
+  // Render del texto que se utilizara o bien para poder mostrar el nombre del equipo o el ganador de la etapa anterior.
   const renderTeamName = ({
     teams,
     teamIndex,
-    parentGameIndex,
     TeamPrevA,
     TeamPrevB,
   }: {
     teams: BracketParticipant[];
     teamIndex: 0 | 1;
-    parentGameIndex: number;
     TeamPrevA: string | undefined;
     TeamPrevB: string | undefined;
   }) => {
-    //console.log(teams?.[teamIndex]);
     return teams?.[teamIndex]?.id === -1
       ? `Ganador ${TeamPrevA} vs ${TeamPrevB}`
       : teams?.[teamIndex]?.name;
   };
 
+  // Render individuales de cada juego.
   const renderBracketGame = ({
     game,
     index,
@@ -89,20 +100,22 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
     game: BracketGroup;
     index: number;
     allPreviousGames: string[][] | null;
-    isFinal_length: number | undefined;
+    isFinal_length: number; // Obtenemos para saber si nos encontramos en la ultima parte del bracket.
   }) => {
-    // Calculá a qué partidos padres corresponde cada equipo
-    const PrevGameA = index * 2;
-    const PrevGameB = index * 2 + 1;
+    const [date, time] = game.games[0]?.start_time?.split(' ') || []; // Obtener fecha de juego y hora de comienzo.
+    const [day, month, year] = date?.split('-') || []; // Separar la fecha en tres partes.
+    const formattedDate = day && month ? `${day}/${month}` : null; // Formato a mostrar.
 
-    const [date, time] = game.games[0]?.start_time?.split(' ') || [];
-    const [day, month, year] = date?.split('-') || [];
-    const formattedDate = day && month ? `${day}/${month}` : null;
+    // Titulo de cada juego a mostrar
+    let gameTitle = `Juego ${index + 1}`; // Titulo normalmente
 
-    let gameTitle = `Juego ${index + 1}`;
+    if (isFinal_length === 1) gameTitle = 'Final'; // Si el bracket stage actual solo tiene un elemento del arreglo, quiere decir que es Final
+    // Esto es asi ya que la API al devolver informacion sobre una final que no cuenta con equipos
+    // Utiliza el third_place pero muestra el mensaje de final igual.
 
-    if (isFinal_length === 1) gameTitle = 'Final';
     if (isFinal_length === 2 && game.is_third_place)
+      // Aca chequeamos si tiene 2 elementos, entonces quiere decir que tiene Final y Tercer Puesto.
+      // Ahora si cada partido tiene bien su is_third_place y is_final, entonces solo chequeamos para ponerle el nombre correspondiente.
       gameTitle = 'Tercer Puesto';
     if (isFinal_length === 2 && game.is_final) gameTitle = 'Final';
 
@@ -133,7 +146,6 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
                 {renderTeamName({
                   teams: game.participants,
                   teamIndex: 0,
-                  parentGameIndex: PrevGameA,
                   TeamPrevA: allPreviousGames?.[index]?.[0],
                   TeamPrevB: allPreviousGames?.[index]?.[1],
                 })}
@@ -163,7 +175,6 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
                   teamIndex: 1,
                   TeamPrevA: allPreviousGames?.[index]?.[2],
                   TeamPrevB: allPreviousGames?.[index]?.[3],
-                  parentGameIndex: PrevGameB,
                 })}
               </Text>
             </View>
@@ -214,12 +225,13 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
     );
   };
 
+  // Renderiza el stage actual
   const renderCurrentBracket = () => {
     const currentBracket = brackets[currentIndex];
-    const allPreviousGames = prevGames();
+    const allPreviousGames = prevGames(); // Obtenemos el stage anterior
     if (!currentBracket) return null;
 
-    const isFinal_lenght = currentBracket.groups.length;
+    const isFinal_lenght = currentBracket.groups.length; // Aca obtenemos el tamaño del currentBracket para saber si es la final o no.
     const allGames = (currentBracket.groups || []).flatMap(
       (group) => group || [],
     );
@@ -237,7 +249,7 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
             })
           }
           keyExtractor={(item, index) =>
-            `game-${index}-${item.games[0]?.start_time}`
+            `game-${index}-${item.games[0]?.start_time}-${item.games[0].start_time}`
           }
           estimatedItemSize={120}
         />
