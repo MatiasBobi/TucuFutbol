@@ -25,6 +25,7 @@ export default function LeaguePlayerStats({
     );
   };
 
+  // Si respuesta no contiene informacion
   if (league_stats === undefined) {
     return (
       <View style={styles.error_container}>

@@ -19,7 +19,6 @@ export default function League() {
     tables_groups: data?.tables_groups,
     brackets: data?.brackets?.stages,
   });*/
-  // Equipos y estadisticas
 
   // Si hay tablas, mostrar tabla, si no, brackets
   const [activeSection, setActiveSection] = useState<

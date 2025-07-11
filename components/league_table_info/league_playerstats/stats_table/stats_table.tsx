@@ -8,7 +8,7 @@ export default function StatsTable({
   rows_table,
   table_name,
 }: {
-  rows_table: PlayerStatistic[];
+  rows_table: PlayerStatistic[]; // Tabla ligas
   table_name: string;
 }) {
   const { getMappingKey } = useMappingHelper();

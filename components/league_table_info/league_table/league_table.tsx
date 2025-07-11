@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   table_info_stats_container: {
     flexDirection: 'row',
-    backgroundColor: 'lightblue',
+    backgroundColor: 'lightgreen',
     flex: 1,
   },
 });
