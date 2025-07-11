@@ -102,7 +102,16 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
     allPreviousGames: string[][] | null;
     isFinal_length: number; // Obtenemos para saber si nos encontramos en la ultima parte del bracket.
   }) => {
-    const [date, time] = game.games[0]?.start_time?.split(' ') || []; // Obtener fecha de juego y hora de comienzo.
+    let isGlobal = ''; // Variable para determinar el texto si es global o no.
+    if (game?.games?.length === 2) {
+      isGlobal = 'Global'; // Si hay 2 juegos, queire decir que hay ida y vuelta, entonces se muestra el global.
+    }
+    let date = '';
+    let time = '';
+    if (game?.games?.[0].status?.enum === 3) {
+      [date, time] = game?.games?.[1]?.start_time?.split(' ') || []; // Si el primer partido ya esta finalizado, entonces muestra la fecha del segundo partido.
+    }
+    [date, time] = game?.games?.[0]?.start_time?.split(' ') || []; // Obtener fecha de juego y hora de comienzo (primer partido).
     const [day, month, year] = date?.split('-') || []; // Separar la fecha en tres partes.
     const formattedDate = day && month ? `${day}/${month}` : null; // Formato a mostrar.
 
@@ -182,42 +191,61 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
           <View
             style={[
               styles.game_scores_container,
-              game.games[0]?.scores ? { flex: 0.1 } : { flex: 0.2 },
+              game.score
+                ? isGlobal === ''
+                  ? { flex: 0.1 }
+                  : { flex: 0.4 }
+                : { flex: 0.2 },
             ]}
           >
-            {game.games[0]?.scores ? (
-              <>
-                <Text
-                  style={[
-                    styles.game_scores_text,
-                    {
-                      color:
-                        game.winner === 1
-                          ? Colors.YELLOW_LIGHT
-                          : Colors.WHITE_GRAY,
-                    },
-                  ]}
-                >
-                  {game.games[0]?.scores?.[0]}
-                </Text>
-                <Text
-                  style={[
-                    styles.game_scores_text,
-                    {
-                      color:
-                        game.winner === 2
-                          ? Colors.YELLOW_LIGHT
-                          : Colors.WHITE_GRAY,
-                    },
-                  ]}
-                >
-                  {game.games[0]?.scores?.[1]}
-                </Text>
-              </>
+            {game.score ? (
+              <View
+                style={
+                  isGlobal === ''
+                    ? styles.notglobal_container
+                    : styles.global_container
+                }
+              >
+                {isGlobal === '' ? null : (
+                  <View style={styles.isGlobal_container}>
+                    <Text style={styles.isGlobal_text}>{isGlobal}</Text>
+                  </View>
+                )}
+                <View style={styles.game_scores}>
+                  <Text
+                    style={[
+                      styles.game_scores_text,
+                      {
+                        color:
+                          game.winner === 1
+                            ? Colors.YELLOW_LIGHT
+                            : Colors.WHITE_GRAY,
+                      },
+                    ]}
+                  >
+                    {game.score?.[0]}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.game_scores_text,
+                      {
+                        color:
+                          game.winner === 2
+                            ? Colors.YELLOW_LIGHT
+                            : Colors.WHITE_GRAY,
+                      },
+                    ]}
+                  >
+                    {game.score?.[1]}
+                  </Text>
+                </View>
+              </View>
             ) : (
-              <Text style={styles.game_scores_text}>
-                {formattedDate} {time}
-              </Text>
+              <View style={styles.formatedText_container}>
+                <Text style={styles.game_scores_text}>
+                  {formattedDate} {time}
+                </Text>
+              </View>
             )}
           </View>
         </View>
@@ -311,6 +339,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: Colors.WHITE_GRAY,
   },
+  global_container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  isGlobal_container: {
+    justifyContent: 'center',
+  },
+  isGlobal_text: {
+    fontSize: 16,
+    color: Colors.WHITE_GRAY,
+  },
+  formatedText_container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   container_brackets_index: {
     width: '100%',
     height: SCREEN_HEIGHT * 0.6,
@@ -337,6 +381,15 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.DARK_BLUE_PLAYOFFS,
     marginBottom: 40,
   },
+  game_scores: {
+    height: '100%',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '100%',
+  },
+  notglobal_container: {
+    flex: 1,
+  },
   game_info_name_team_container: {
     height: '100%',
     justifyContent: 'space-around',
@@ -344,8 +397,6 @@ const styles = StyleSheet.create({
   },
   game_scores_container: {
     height: '100%',
-    justifyContent: 'space-around',
-    flex: 0.1,
   },
   game_teams_text: {
     fontSize: 16,

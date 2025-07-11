@@ -1,5 +1,4 @@
 import { Colors } from '@/constants/colors/colors';
-import { TeamWithImage } from '@/hooks/getImagesTeam/useTeamsWithImages';
 import { TableGroup } from '@/types/league_full_info';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -7,10 +6,8 @@ import { LeagueTableData } from './league_table/league_table';
 
 export const LeagueTableInfo = React.memo(function LeagueTableInfo({
   table,
-  teamImages,
 }: {
   table: TableGroup;
-  teamImages: Map<string, TeamWithImage> | undefined;
 }) {
   //console.log(table);
   return (
@@ -19,7 +16,7 @@ export const LeagueTableInfo = React.memo(function LeagueTableInfo({
       {table.tables.map((table, index) => (
         <View key={`${table.name?.trim() || 'no-name'}_${index}`}>
           <Text style={styles.subleague_name}>{table.name}</Text>
-          <LeagueTableData table={table.table} teamImages={teamImages} />
+          <LeagueTableData table={table.table} />
         </View>
       ))}
     </View>

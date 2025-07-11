@@ -1,14 +1,12 @@
 import LeagueBrackets from '@/components/league_table_info/league_brackets/league_brackets';
-import { LeagueTeams } from '@/components/league_table_info/league_teams/league_teams';
-import { LeagueTableInfo } from '@/components/league_table_info/leaguefull';
+import LeagueTableData from '@/components/league_table_info/league_table/league_table';
 import { Colors } from '@/constants/colors/colors';
-import { useTeamsWithImages } from '@/hooks/getImagesTeam/useTeamsWithImages';
 import useLeagueFullInfo from '@/hooks/league_full_info/league_full';
+import { TableGroup } from '@/types/league_full_info';
 import { FlashList } from '@shopify/flash-list';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
-
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
@@ -17,12 +15,11 @@ export default function League() {
   const league_id = league as string; // Asegurarse de que league es una cadena (TS)
 
   const { data, isLoading, error } = useLeagueFullInfo(league_id); // Query para obtener la info dela liga.
-  const teamImages = useTeamsWithImages({
+  /*const teamImages = useTeamsWithImages({
     tables_groups: data?.tables_groups,
     brackets: data?.brackets?.stages,
-  });
+  });*/
   // Equipos y estadisticas
-  const players_stats = data?.players_statistics; // Estadísticas de jugadores
 
   // Si hay tablas, mostrar tabla, si no, brackets
   const [activeSection, setActiveSection] = useState<
@@ -30,27 +27,24 @@ export default function League() {
   >('tabla');
 
   // Funcion para renderizar cada item de la tabla
-  const renderItemTable = ({ item, index }: { item: any; index: number }) => (
-    <LeagueTableInfo key={index} table={item} teamImages={teamImages} />
-  );
+  const renderItemTable = ({ item }: { item: TableGroup }) => {
+    // Si el grupo no tiene nombre o está vacío, no lo mostramos
+    if (item.tables.length === 0) return null;
 
+    return <LeagueTableData table={item.tables[0].table} />;
+  };
+
+  // Render de estadisticas de los jugadores
   // Render de las estadisticas
-
-  const renderStatsSection = useMemo(
-    () => <LeagueTeams teamImages={teamImages} />,
-    [teamImages],
-  );
 
   // Flashlist para la info de las tablas de posiciones.
   const renderTablaSection = useMemo(
     () => (
       <FlashList
-        estimatedItemSize={2}
+        estimatedItemSize={200} // Ajusta este valor según el tamaño aproximado de cada item
         data={data?.tables_groups || []}
         renderItem={renderItemTable}
-        keyExtractor={(item, index) =>
-          `${item.name?.trim() || 'no-name'}_${index}`
-        }
+        keyExtractor={(item, index) => `${item.name}_${index}`}
         showsVerticalScrollIndicator={false}
       />
     ),
@@ -63,23 +57,9 @@ export default function League() {
         return renderTablaSection;
 
       case 'equipos':
-        // Si no hay equipos, muestra un mensaje de carga.
-        if (!teamImages || teamImages.size === 0) {
-          return (
-            <Text style={styles.container_league_section_text}>
-              Cargando equipos...
-            </Text>
-          );
-        }
-        return renderStatsSection;
+        return null;
       case 'estadisticas':
-        return (
-          <View>
-            <Text style={styles.container_league_section_text}>
-              Estadisticas de la Liga
-            </Text>
-          </View>
-        );
+        return null;
       case 'fixture':
         return (
           <View>

@@ -135,7 +135,7 @@ export interface PlayerStatistic {
   values: TableRowValue[];
 }
 
-interface StatisticsTable {
+export interface StatisticsTable {
   name: string;
   name_color?: string;
   columns: TableColumn[];
