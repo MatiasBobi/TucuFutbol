@@ -1,25 +1,21 @@
-import { Colors } from '@/constants/colors/colors';
+// app/_layout.tsx
+import AppLayout from '@/components/appLayout/AppLayout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
+        <AppLayout>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          </Stack>
+        </AppLayout>
       </QueryClientProvider>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.DARK_BLUE,
-  },
-});

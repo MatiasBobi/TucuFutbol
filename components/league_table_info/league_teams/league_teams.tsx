@@ -1,32 +1,46 @@
-import { TeamWithImage } from '@/hooks/getImagesTeam/useTeamsWithImages';
-import { FlashList } from '@shopify/flash-list';
+import { useGetTeams } from '@/hooks/getImagesTeam/useGetTeams';
+import { BracketStage, TableGroup } from '@/types/league_full_info';
 import React from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import { TeamLink } from './team/team_link';
 
-const { width, height } = Dimensions.get('window'); // Dimensiones del dispositivo.
+const { height } = Dimensions.get('window'); // Dimensiones del dispositivo.
 
 export const LeagueTeams = ({
-  teamImages,
+  teams,
+  typeInfo,
 }: {
-  teamImages: Map<string, TeamWithImage>; // Se utiliza un mapeo que contiene [string, teamWithImage], esto viene del Hook que trae los equipos mapeados.
+  teams: TableGroup[] | BracketStage[];
+  typeInfo: 'table' | 'brackets';
 }) => {
-  const equipos: TeamWithImage[] = Array.from(teamImages.values());
+  /* Interfaz para el array que recibimos de los equipos, */
+  interface teams_types {
+    id: string;
+    name: string;
+    short_name: string;
+    url_name: string | undefined;
+  }
 
-  // Render de cada equipo.
-  const renderItem = ({ item }: { item: TeamWithImage }) => (
+  /* Extraer los equipos y separarlos si es por grupos o por brackets, brackets es en caso de que la liga no contenga grupos por ejemplo Copa Argentina. */
+  let allTeams: teams_types[] = useGetTeams(
+    teams as TableGroup[],
+    teams as BracketStage[],
+    typeInfo,
+  );
+
+  /* Render de los equipos */
+  const renderItem = ({ item }: { item: teams_types }) => (
     <View style={styles.team_info}>
-      <TeamLink id={item.id} team_name={item.name} image_url={item.imageUrl} />
+      <TeamLink id={item.id} team_name={item.name} />
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <FlashList
-        data={equipos}
+      <FlatList
+        data={allTeams}
         keyExtractor={(equipo) => equipo.id}
         numColumns={2}
-        estimatedItemSize={height * 0.15}
         renderItem={renderItem}
       />
     </View>
@@ -37,9 +51,10 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
     flex: 1,
+    paddingHorizontal: 8,
   },
   team_info: {
-    width: width * 0.5,
+    width: '50%',
     height: height * 0.15,
     marginBottom: 10,
     justifyContent: 'center',

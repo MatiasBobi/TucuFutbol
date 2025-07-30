@@ -1,6 +1,8 @@
 import League_table from '@/components/leagues/league_container';
 import { Colors } from '@/constants/colors/colors';
 import { useLeagueList } from '@/hooks/league_list/useLeagueList';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,7 +12,15 @@ import {
 } from 'react-native';
 
 export default function Leagues() {
-  const { data, isLoading, error } = useLeagueList();
+  const { data, isLoading, error, refetch } = useLeagueList();
+
+  useFocusEffect(
+    useCallback(() => {
+      if (error) {
+        refetch(); // Vuelve a intentar la petición si hay error
+      }
+    }, [error, refetch]),
+  );
 
   const renderLeagueItem = ({ item, index }: { item: any; index: number }) => (
     <League_table key={index} league={item} />

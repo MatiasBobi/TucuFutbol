@@ -8,18 +8,12 @@ export default function LeaguePlayerStats({
 }: {
   league_stats: StatisticsTable[] | undefined;
 }) {
-  const renderSubTable = ({
-    item,
-    index,
-  }: {
-    item: StatisticsTable;
-    index: number;
-  }) => {
+  const renderSubTable = ({ item }: { item: StatisticsTable }) => {
     return (
       <View style={{ alignItems: 'center' }}>
         <StatsTable
-          rows_table={item.rows.slice(0, 20)}
-          table_name={item.name}
+          rows_table={item?.rows.slice(0, 20)}
+          table_name={item?.name}
         />
       </View>
     );
@@ -42,7 +36,7 @@ export default function LeaguePlayerStats({
         data={league_stats}
         renderItem={renderSubTable}
         keyExtractor={(item, index) =>
-          `${item.name}_${index} || 'no-name'LP_${index} `
+          `${item?.name}_${index} || 'no-name'LP_${index} `
         }
       />
     </View>

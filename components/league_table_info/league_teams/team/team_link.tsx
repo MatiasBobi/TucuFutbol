@@ -1,30 +1,30 @@
 import { Colors } from '@/constants/colors/colors';
+import { Image } from 'expo-image';
 import { Link } from 'expo-router';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 const { width } = Dimensions.get('window');
 
 export const TeamLink = ({
   id,
   team_name,
-  image_url,
 }: {
   id: string;
   team_name: string;
-  image_url?: string; // Opcional, en caso de que el equipo no tenga imagen (VALIDACION SOLO PARA TS).
 }) => {
   return (
     <Link
       href={{
         pathname: '/team/[team]',
-        params: { team: id },
+        params: { team: id }, // Mandamos la id del equipo para consultar a la API.
       }}
       style={styles.teamLink_container}
     >
       <View style={styles.teamView_link_container}>
         <Image
-          source={{ uri: image_url }}
+          source={`https://api.promiedos.com.ar/images/team/${id}/4`}
           style={styles.teamImage}
-          resizeMode="center"
+          contentFit="contain"
         />
         <Text style={styles.teamLink}>{team_name}</Text>
       </View>

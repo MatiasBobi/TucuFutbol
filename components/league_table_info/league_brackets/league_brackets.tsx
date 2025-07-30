@@ -59,15 +59,15 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
   // Juego 1: Ganador (San Lorenzo vs Deportivo riestra) vs (River Plate vs Union).
   const prevGames = () => {
     const previousStage = brackets[currentIndex - 1]; // Del currentindex retrocedemos una posicion en el arreglo para obtener lo anterior.
-    if (!previousStage || !previousStage.groups) return null;
-    const allPreviousGames = previousStage.groups.flatMap(
+    if (!previousStage || !previousStage?.groups) return null;
+    const allPreviousGames = previousStage?.groups.flatMap(
       (group) =>
-        group.participants.map((participant) => participant.name) || [],
+        group?.participants?.map((participant) => participant?.name) || [],
     ); // Usamos flatmap para dejar todo en un mismo array.
     const groupedParticipants = [];
-    for (let i = 0; i < allPreviousGames.length; i += 4) {
-      const prevParticipants = allPreviousGames.slice(i, i + 4);
-      groupedParticipants.push(prevParticipants);
+    for (let i = 0; i < allPreviousGames?.length; i += 4) {
+      const prevParticipants = allPreviousGames?.slice(i, i + 4);
+      groupedParticipants?.push(prevParticipants);
     } // Se utiliza para poder agrupoar en un arreglo de arreglos, donde los arreglos de adentro tienen 4 elementos.
     // Ejemplo: [[San lorenzo, Deportivo Riestra, River Plate, Union], [Atlético Tucumán, Boca Juniors, Argentinos Juniors, Instituto.] ... etc]
     return groupedParticipants;
@@ -86,7 +86,9 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
     TeamPrevB: string | undefined;
   }) => {
     return teams?.[teamIndex]?.id === -1
-      ? `Ganador ${TeamPrevA} vs ${TeamPrevB}`
+      ? `Ganador ${TeamPrevA === undefined ? 'Sin equipo' : TeamPrevA} vs ${
+          TeamPrevB === undefined ? 'Sin equipo' : TeamPrevB
+        }`
       : teams?.[teamIndex]?.name;
   };
 
@@ -108,8 +110,12 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
     }
     let date = '';
     let time = '';
+    let noDate = 0;
     if (game?.games?.[0].status?.enum === 3) {
       [date, time] = game?.games?.[1]?.start_time?.split(' ') || []; // Si el primer partido ya esta finalizado, entonces muestra la fecha del segundo partido.
+    }
+    if (!game?.games?.[0]) {
+      noDate = 1;
     }
     [date, time] = game?.games?.[0]?.start_time?.split(' ') || []; // Obtener fecha de juego y hora de comienzo (primer partido).
     const [day, month, year] = date?.split('-') || []; // Separar la fecha en tres partes.
@@ -126,7 +132,7 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
       // Aca chequeamos si tiene 2 elementos, entonces quiere decir que tiene Final y Tercer Puesto.
       // Ahora si cada partido tiene bien su is_third_place y is_final, entonces solo chequeamos para ponerle el nombre correspondiente.
       gameTitle = 'Tercer Puesto';
-    if (isFinal_length === 2 && game.is_final) gameTitle = 'Final';
+    if (isFinal_length === 2 && game?.is_final) gameTitle = 'Final';
 
     return (
       <View style={styles.container_brackets_game}>
@@ -153,7 +159,7 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
                 ]}
               >
                 {renderTeamName({
-                  teams: game.participants,
+                  teams: game?.participants,
                   teamIndex: 0,
                   TeamPrevA: allPreviousGames?.[index]?.[0],
                   TeamPrevB: allPreviousGames?.[index]?.[1],
@@ -180,7 +186,7 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
                 ]}
               >
                 {renderTeamName({
-                  teams: game.participants,
+                  teams: game?.participants,
                   teamIndex: 1,
                   TeamPrevA: allPreviousGames?.[index]?.[2],
                   TeamPrevB: allPreviousGames?.[index]?.[3],
@@ -223,7 +229,7 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
                       },
                     ]}
                   >
-                    {game.score?.[0]}
+                    {game?.score?.[0]}
                   </Text>
                   <Text
                     style={[
@@ -236,14 +242,14 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
                       },
                     ]}
                   >
-                    {game.score?.[1]}
+                    {game?.score?.[1]}
                   </Text>
                 </View>
               </View>
             ) : (
               <View style={styles.formatedText_container}>
                 <Text style={styles.game_scores_text}>
-                  {formattedDate} {time}
+                  {noDate === 0 ? `${formattedDate} ${time}` : `Sin fecha`}
                 </Text>
               </View>
             )}
@@ -259,8 +265,8 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
     const allPreviousGames = prevGames(); // Obtenemos el stage anterior
     if (!currentBracket) return null;
 
-    const isFinal_lenght = currentBracket.groups.length; // Aca obtenemos el tamaño del currentBracket para saber si es la final o no.
-    const allGames = (currentBracket.groups || []).flatMap(
+    const isFinal_lenght = currentBracket?.groups?.length; // Aca obtenemos el tamaño del currentBracket para saber si es la final o no.
+    const allGames = (currentBracket?.groups || []).flatMap(
       (group) => group || [],
     );
 
@@ -277,9 +283,10 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
             })
           }
           keyExtractor={(item, index) =>
-            `game-${index}-${item.games[0]?.start_time}-${item.games[0].start_time}`
+            `game-${index}-${item?.games?.[0]?.start_time}-${item?.games?.[0].start_time}`
           }
           estimatedItemSize={120}
+          style={styles.container_brackets_game_fix}
         />
       </View>
     );
@@ -360,6 +367,7 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.6,
     borderRadius: 10,
     padding: 10,
+
     backgroundColor: Colors.BLUE_BORDER,
   },
   container_brackets_game: {
@@ -418,6 +426,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     textAlign: 'center',
+  },
+  container_brackets_game_fix: {
+    paddingBottom: 30,
   },
 });
 export default LeagueBrackets;

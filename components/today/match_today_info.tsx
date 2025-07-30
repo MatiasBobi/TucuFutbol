@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   team_match_score_text: {
-    fontSize: 24,
+    fontSize: 20,
     color: Colors.GRAY_LIGHT,
     fontWeight: 'bold',
     width: 10,

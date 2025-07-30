@@ -35,7 +35,7 @@ interface TableColumn {
 
 interface TableRowValue {
   key: string;
-  value: string;
+  value: string | number[];
 }
 
 interface TableDestination {
@@ -87,9 +87,15 @@ export interface Game {
   teams: GameTeam[];
   url_name: string;
   scores: number[];
+  penalties: [number, number];
   status: GameStatus;
   start_time: string;
   game_time_status_to_display: string;
+}
+
+export interface GameData {
+  TTL: number;
+  games: Game[];
 }
 
 interface GameFilter {

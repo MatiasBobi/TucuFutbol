@@ -1,44 +1,298 @@
 import { Colors } from '@/constants/colors/colors';
-import { LeagueTable } from '@/types/league_full_info';
+import { LeagueTable, TableRow } from '@/types/league_full_info';
 import { useMappingHelper } from '@shopify/flash-list';
-import React from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
+import React, { useCallback, useState } from 'react';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 
-const { width, height } = Dimensions.get('window').width;
+const { width, height } = Dimensions.get('window');
 
-export default function LeagueTableData({ table }: { table: LeagueTable }) {
+export default function LeagueTableData({
+  table,
+  table_name,
+}: {
+  table: LeagueTable;
+  table_name: string;
+}) {
+  // Estado para manejar el expansible
+
   const { getMappingKey } = useMappingHelper();
-  // Colores de las columnas
-  const valueColors = [
-    '#FFD700',
-    '#FFFFFF',
-    '#00CED1',
-    '#87CEFA',
-    '#32CD32',
-    '#FFA500',
-    '#FF4C4C',
-    '#FFA500',
-    '#FF4C4C',
-    '#FFA500',
-    '#FF4C4C',
-  ];
 
-  // Render del componente
+  ///////////////////////// RENDER INDIVIDUAL X CADA EQUIPO /////////////////////////////
+  const RenderItemTable = React.memo(function RenderItemTable({
+    item,
+    columns,
+  }: {
+    item: TableRow;
+    columns: typeof table.columns;
+  }) {
+    const [expand, setExpand] = useState(false);
+    const expandHandler = useCallback(() => setExpand(!expand), [expand]);
+    const visibleRows = item.values.slice(0, 4);
+    const hiddenRows = item.values.slice(4);
+
+    return (
+      <Pressable onPress={expandHandler}>
+        <View
+          style={[
+            styles.table_item_container,
+            item.num % 2 === 0
+              ? { backgroundColor: Colors.LIGHT_BLUE_DARK }
+              : { backgroundColor: Colors.DARK_BLUE_PLAYOFFS },
+          ]}
+        >
+          <View style={styles.table_item_left_container}>
+            <View style={styles.position_row_team_container}>
+              <Text style={styles.position_text}>{item.num}</Text>
+            </View>
+            <View style={styles.image_container}>
+              <Image
+                source={`https://api.promiedos.com.ar/images/team/${item?.entity?.object?.id}/4`}
+                contentFit="contain"
+                style={{ width: 20, height: 20 }}
+                transition={1000}
+              />
+              <View style={styles.name_team_container_row}>
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={styles.name_team_text}
+                >
+                  {item.entity.object.short_name}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.table_item_right_container}>
+            {columns.slice(0, 4).map((column) => {
+              const team = visibleRows.find((v) => v.key === column.key);
+              const value = team?.value ?? '-';
+              if (column.key === 'GamesWon' && column.title !== 'G')
+                return null;
+
+              return (
+                <View
+                  key={column.key}
+                  style={[
+                    styles.right_item,
+                    column.key === 'Pct' ? { flex: 1.25 } : { flex: 1 },
+                  ]}
+                >
+                  {column.key === 'Goals' && value !== '-' ? (
+                    <View style={styles.goalsContainer}>
+                      <Text
+                        style={[
+                          styles.right_text_stats,
+                          styles.goalsText,
+                          { color: 'green' },
+                        ]}
+                      >
+                        {typeof value === 'string' ? value.split(':')[0] : '-'}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.right_text_stats,
+                          styles.goalsText,
+                          { color: 'red' },
+                        ]}
+                      >
+                        {typeof value === 'string' ? value.split(':')[1] : '-'}
+                      </Text>
+                    </View>
+                  ) : (
+                    <Text style={styles.right_text_stats}>{value}</Text>
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        </View>
+        {expand && (
+          <View style={styles.hidden_container}>
+            <View style={styles.hidden_columns_container}>
+              {columns.slice(4, columns.length).map((column, index) => {
+                if (column.key === '{trend}') {
+                  return (
+                    <View
+                      key={getMappingKey(column.key, index)}
+                      style={styles.hidden_info_text_trend_container}
+                    >
+                      <Text
+                        style={[
+                          styles.itemValueText,
+                          { color: Colors.YELLOW_LIGHT },
+                        ]}
+                      >
+                        {column.title}
+                      </Text>
+                    </View>
+                  );
+                }
+                return (
+                  <View
+                    key={getMappingKey(column.key, index)}
+                    style={styles.hidden_info_text_container}
+                  >
+                    <Text
+                      style={[
+                        styles.itemValueText,
+                        { color: Colors.YELLOW_LIGHT },
+                      ]}
+                    >
+                      {column.title}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+            <View style={styles.hidden_rows_container}>
+              {hiddenRows.map((itemRow, index) => {
+                if (
+                  itemRow?.key === '{trend}' &&
+                  Array.isArray(itemRow.value)
+                ) {
+                  const gameValues = itemRow?.value?.map((value, index) => {
+                    return value === 0
+                      ? 'P;#831616'
+                      : value === 1
+                      ? 'V;#16831b'
+                      : 'E;#373847';
+                  });
+
+                  return (
+                    <View
+                      key={getMappingKey(itemRow?.key, index)}
+                      style={styles.hidden_trend_container}
+                    >
+                      <View
+                        style={[
+                          styles.lastGameInfo_container,
+                          {
+                            backgroundColor: `${
+                              gameValues?.[0]?.split(';')?.[1]
+                            }`,
+                          },
+                        ]}
+                      >
+                        <Text style={styles.itemValueText}>
+                          {gameValues?.[0]?.split(';')?.[0]}
+                        </Text>
+                      </View>
+                      <View
+                        style={[
+                          styles.lastGameInfo_container,
+                          {
+                            backgroundColor: `${
+                              gameValues?.[1]?.split(';')?.[1]
+                            }`,
+                          },
+                        ]}
+                      >
+                        <Text style={styles.itemValueText}>
+                          {gameValues?.[1]?.split(';')?.[0]}
+                        </Text>
+                      </View>
+                      <View
+                        style={[
+                          styles.lastGameInfo_container,
+                          {
+                            backgroundColor: `${
+                              gameValues?.[2]?.split(';')?.[1]
+                            }`,
+                          },
+                        ]}
+                      >
+                        <Text style={styles.itemValueText}>
+                          {gameValues?.[2]?.split(';')?.[0]}
+                        </Text>
+                      </View>
+                      <View
+                        style={[
+                          styles.lastGameInfo_container,
+                          {
+                            backgroundColor: `${
+                              gameValues?.[3]?.split(';')?.[1]
+                            }`,
+                          },
+                        ]}
+                      >
+                        <Text style={styles.itemValueText}>
+                          {gameValues?.[3]?.split(';')?.[0]}
+                        </Text>
+                      </View>
+                      <View
+                        style={[
+                          styles.lastGameInfo_container,
+                          {
+                            backgroundColor: `${
+                              gameValues?.[4]?.split(';')?.[1]
+                            }`,
+                          },
+                        ]}
+                      >
+                        <Text style={styles.itemValueText}>
+                          {gameValues?.[4]?.split(';')?.[0]}
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                }
+                return (
+                  <View
+                    key={getMappingKey(itemRow?.key, index)}
+                    style={styles.hidden_info_text_container}
+                  >
+                    <Text style={styles.itemValueText}>{itemRow?.value}</Text>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+        )}
+      </Pressable>
+    );
+  });
+
+  ///////////////////////// FIN RENDER ITEM DE LA TABLA /////////////////////////////
+
+  // Render del componente principal
   return (
     <View style={styles.container}>
-      <View style={styles.header_container}>
-        <View style={styles.table_info_pos_container}>
-          <Text>#</Text>
-          <Text>Club</Text>
+      <View style={styles.title_table_container}>
+        <Text style={styles.title_table_text}>{table_name}</Text>
+      </View>
+      <View>
+        <View style={styles.header_container}>
+          <View style={styles.table_info_pos_container}>
+            <View style={styles.position_team_container}>
+              <Text style={styles.text_pos}>#</Text>
+            </View>
+            <View style={styles.name_team_container}>
+              <Text style={styles.text_pos}>Club</Text>
+            </View>
+          </View>
+          <View style={styles.table_info_stats_container}>
+            {table.columns.slice(0, 4).map((column, index) => {
+              if (column.key === 'GamesWon' && column.title !== 'G')
+                return null;
+              return (
+                <Text
+                  key={getMappingKey(column.key, index)}
+                  style={styles.text_header_stats}
+                >
+                  {column.title}
+                </Text>
+              );
+            })}
+          </View>
         </View>
-        <View style={styles.table_info_stats_container}>
-          <Text>PTS</Text>
-          <Text>J</Text>
-          <Text>G</Text>
-          <Text>+/-</Text>
-          <Text>Gol</Text>
-          <Text>E</Text>
-          <Text>P</Text>
+        <View>
+          {table.rows.map((item, index) => (
+            <View key={getMappingKey(item.entity.object.id, index)}>
+              <RenderItemTable item={item} columns={table.columns} />
+            </View>
+          ))}
         </View>
       </View>
     </View>
@@ -53,19 +307,141 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.YELLOW_LIGHT,
     borderRadius: 10,
+    marginBottom: 20,
+  },
+  title_table_container: {
+    height: height * 0.05,
+    alignItems: 'center',
+  },
+  title_table_text: {
+    textAlign: 'center',
+    fontSize: 24,
+    color: Colors.YELLOW_GOAL,
   },
   header_container: {
     flexDirection: 'row',
-    backgroundColor: 'red',
+    height: height * 0.05,
+    alignItems: 'center',
+    backgroundColor: Colors.LIGHT_BLACK,
+  },
+  position_team_container: {
+    width: width * 0.08,
+  },
+  name_team_container: {
+    flex: 1,
   },
   table_info_pos_container: {
     flexDirection: 'row',
-    backgroundColor: 'lightgreen',
-    flex: 1,
+    width: '55%',
   },
   table_info_stats_container: {
     flexDirection: 'row',
-    backgroundColor: 'lightgreen',
+    width: '45%',
+  },
+  text_header_stats: {
     flex: 1,
+    fontSize: 13,
+    textAlign: 'center',
+    color: Colors.YELLOW_LIGHT,
+  },
+  text_pos: {
+    fontSize: 18,
+    color: Colors.YELLOW_LIGHT,
+    textAlign: 'center',
+  },
+  table_item_container: {
+    flexDirection: 'row',
+  },
+  table_item_left_container: {
+    flexDirection: 'row',
+    width: '55%',
+  },
+  table_item_right_container: {
+    flexDirection: 'row',
+    width: '45%',
+  },
+  right_item: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  right_text_stats: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: Colors.YELLOW_LIGHT,
+  },
+  goalsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  goalsText: {
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  image_container: {
+    flex: 1,
+    minHeight: height * 0.08,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+    gap: 8,
+  },
+  position_row_team_container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: width * 0.08,
+  },
+  position_text: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.WHITE_GRAY,
+  },
+  name_team_text: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: Colors.WHITE_GRAY,
+  },
+  name_team_container_row: {
+    width: '100%',
+  },
+
+  hidden_container: {
+    flexDirection: 'column',
+    backgroundColor: Colors.DARK_BLUE_HIDDEN_ROWS,
+  },
+  hidden_rows_container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: height * 0.05,
+  },
+  hidden_columns_container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+
+    alignItems: 'center',
+
+    height: height * 0.05,
+    flex: 1,
+  },
+  hidden_trend_container: {
+    flexDirection: 'row',
+    flex: 1.5,
+  },
+  hidden_info_text_trend_container: {
+    flex: 1.5,
+  },
+  hidden_info_text_container: {
+    flex: 1,
+  },
+  lastGameInfo_container: {
+    width: width * 0.05,
+    justifyContent: 'center',
+    marginRight: 1,
+    alignItems: 'center',
+  },
+  itemValueText: {
+    textAlign: 'center',
+    color: '#fff',
   },
 });

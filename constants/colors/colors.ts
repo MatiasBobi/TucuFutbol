@@ -9,4 +9,6 @@ export enum Colors {
   WHITE_GRAY = '#F5F5F5',
   BLUE_BORDER = '#1b2a57',
   LIGHT_BLACK = '#181f31',
+  DARK_BLUE_HIDDEN_ROWS = '#0a0c29',
+  SLAT_BLUE = '#445375',
 }
