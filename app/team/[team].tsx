@@ -1,3 +1,4 @@
+import SquadTeam from '@/components/team/squad/squad';
 import { Colors } from '@/constants/colors/colors';
 import useTeamInfo from '@/hooks/team_info/team_info';
 import { Image } from 'expo-image';
@@ -15,7 +16,27 @@ const Team = () => {
   const { data, isLoading, error } = useTeamInfo(teamId);
   const [ActiveSection, setActiveSection] = useState<
     'plantel' | 'partidos' | 'info'
-  >();
+  >('plantel');
+
+  const renderSection = () => {
+    switch (ActiveSection) {
+      case 'plantel':
+        if (!data?.squad) {
+          return (
+            <Text style={{ color: Colors.WHITE_GRAY }}>
+              No hay datos de plantel disponibles.
+            </Text>
+          );
+        }
+        return <SquadTeam squad={data.squad} />;
+      case 'partidos':
+        return <></>; // Aquí iría el componente de Partidos
+      case 'info':
+        return <></>; // Aquí iría el componente de Info
+      default:
+        break;
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -57,6 +78,15 @@ const Team = () => {
         />
         <Text style={styles.text_name_team}>{data?.competitor?.name}</Text>
       </View>
+      {isLoading ? (
+        <Text style={{ color: Colors.WHITE_GRAY }}>Cargando...</Text>
+      ) : error ? (
+        <Text style={{ color: Colors.RED_CHANGE_PLAYER }}>
+          Error al cargar el equipo
+        </Text>
+      ) : (
+        renderSection()
+      )}
     </View>
   );
 };

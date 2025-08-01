@@ -54,12 +54,12 @@ interface SquadRow {
   };
 }
 
-interface SquadGroup {
+export interface SquadGroup {
   name: string;
   rows: SquadRow[];
 }
 
-interface SquadData {
+export interface SquadData {
   columns: SquadColumn[];
   groups: SquadGroup[];
 }
