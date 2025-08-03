@@ -1,6 +1,8 @@
+import FixtureTeam from '@/components/team/fixture/fixture';
 import SquadTeam from '@/components/team/squad/squad';
 import { Colors } from '@/constants/colors/colors';
 import useTeamInfo from '@/hooks/team_info/team_info';
+import { useFavoritesStore } from '@/store/favorites';
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
@@ -18,6 +20,22 @@ const Team = () => {
     'plantel' | 'partidos' | 'info'
   >('plantel');
 
+  const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
+
+  const IsFavoriteTeam = isFavorite(teamId);
+
+  const handleTeamFavorites = (): void => {
+    if (IsFavoriteTeam) {
+      removeFavorite(teamId);
+      return;
+    }
+    if (data?.competitor) {
+      addFavorite(data?.competitor);
+      return;
+    }
+  };
+
+  console.log(IsFavoriteTeam);
   const renderSection = () => {
     switch (ActiveSection) {
       case 'plantel':
@@ -30,9 +48,16 @@ const Team = () => {
         }
         return <SquadTeam squad={data.squad} />;
       case 'partidos':
-        return <></>; // Aquí iría el componente de Partidos
+        if (!data?.games) {
+          return (
+            <Text style={{ color: Colors.WHITE_GRAY }}>
+              No hay datos de partidos disponibles.
+            </Text>
+          );
+        }
+        return <FixtureTeam fixture={data.games} />;
       case 'info':
-        return <></>; // Aquí iría el componente de Info
+        return <></>;
       default:
         break;
     }
@@ -65,9 +90,13 @@ const Team = () => {
         </Pressable>
         <Pressable
           style={styles.button_pressable}
-          onPress={() => setActiveSection('info')}
+          onPress={() => handleTeamFavorites()}
         >
-          <Text style={styles.text_buttons}>Info</Text>
+          <Text style={styles.text_buttons}>
+            {IsFavoriteTeam === true
+              ? 'Borrar de Favoritos'
+              : 'Agregar a favoritos'}
+          </Text>
         </Pressable>
       </View>
       <View style={styles.container_team_image}>
@@ -100,13 +129,11 @@ const styles = StyleSheet.create({
   },
   container_buttons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     flexWrap: 'wrap',
     alignItems: 'center',
     width: width * 0.9,
-
-    marginBottom: 40,
-    gap: 10,
+    marginBottom: 20,
   },
   text_buttons: {
     fontSize: 16,
@@ -126,14 +153,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.LIGHT_BLUE_DARK,
   },
   teamImage: {
-    width: 100,
-    height: 100,
+    width: 40,
+    height: 40,
   },
   text_name_team: {
     fontSize: 24,
     color: Colors.WHITE_GRAY,
     textAlign: 'center',
-    paddingVertical: 10,
   },
   container_team_image: {
     width: width * 0.95,

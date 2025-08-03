@@ -3,7 +3,7 @@ interface TeamColors {
   text_color: string;
 }
 
-interface Competitor {
+export interface Competitor {
   name: string;
   short_name: string;
   url_name: string;
@@ -52,6 +52,82 @@ interface SquadRow {
     type: number;
     object: EntityObject;
   };
+}
+
+interface GameTeam {
+  name: string;
+  short_name: string;
+  url_name: string;
+  id: string;
+  country_id: string;
+  allow_open: boolean;
+  colors: TeamColors;
+  red_cards: number;
+}
+
+interface GameStatus {
+  enum: number;
+  name: string;
+  short_name: string;
+  symbol_name: string;
+}
+
+interface GameData {
+  id: string;
+  stage_round_name: string;
+  winner: number;
+  teams: GameTeam[];
+  url_name: string;
+  status: GameStatus;
+  start_time: string;
+  game_time: number;
+  game_time_to_display: string;
+  game_time_status_to_display: string;
+  scores?: number[]; // solo en games.last
+}
+
+interface GameEntityObject {
+  name: string;
+  short_name: string;
+  url_name: string;
+  id: string;
+  country_id: string;
+  allow_open: boolean;
+  colors: TeamColors;
+  red_cards: number;
+}
+
+interface GameEntity {
+  type: number;
+  object: GameEntityObject;
+}
+
+ export interface GameRow {
+  num: number;
+  values: {
+    key: string;
+    value: string;
+  }[];
+  entity: GameEntity;
+  game: GameData;
+  result_status?: number; // solo en games.last
+}
+
+interface GameColumn {
+  name: string;
+  key: string;
+}
+
+export 	interface GameTable {
+  name: string;
+  columns: GameColumn[];
+  rows: GameRow[];
+}
+
+export interface GamesData {
+  preview_rows_num: number;
+  next: GameTable;
+  last: GameTable;
 }
 
 export interface SquadGroup {
@@ -124,11 +200,7 @@ export interface TeamData {
   competitor: Competitor;
   main_league: MainLeague;
   squad: SquadData;
-  games: {
-    preview_rows_num: number;
-    next: Record<string, unknown>;
-    last: Record<string, unknown>;
-  };
+  games: GamesData;
   stats: {
     preview_rows_num: number;
     filters: StatsFilter[];

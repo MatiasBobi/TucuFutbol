@@ -13,11 +13,10 @@ import {
 
 export default function Leagues() {
   const { data, isLoading, error, refetch } = useLeagueList();
-
   useFocusEffect(
     useCallback(() => {
       if (error) {
-        refetch(); // Vuelve a intentar la petición si hay error
+        refetch();
       }
     }, [error, refetch]),
   );
