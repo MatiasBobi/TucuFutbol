@@ -2,8 +2,16 @@ import { Colors } from '@/constants/colors/colors';
 import useLeagueFixture from '@/hooks/league_fixture/league_fixture';
 import { Picker } from '@react-native-picker/picker';
 import { Image } from 'expo-image';
+import { Link } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Game, GameFilter } from '../../../types/league_full_info';
 const { height } = Dimensions.get('window');
@@ -30,73 +38,82 @@ export default function LeagueFixture({
 
   /* Renderizado unico de cada enfretamiento,  */
   const renderItem = useCallback(({ item }: { item: Game }) => {
+    const matchid = item.id;
     return (
-      <View key={item.id} style={styles.item_container}>
-        <View style={styles.result_container}>
-          <Text style={styles.time_match_text}>
-            {item?.status?.enum === 3
-              ? item?.status?.short_name === 'Final'
-                ? 'Final'
-                : item?.status?.symbol_name + ' (Final)'
-              : item?.status?.short_name === 'ET'
-              ? 'ET'
-              : item?.status?.enum === 1
-              ? `${item?.start_time?.split(' ')[0].split('-')[0]}/${
-                  item?.start_time?.split(' ')[0].split('-')[1]
-                } ${item?.start_time?.split(' ')[1]}`
-              : item?.game_time_status_to_display === '-1'
-              ? 'ERROR'
-              : item?.game_time_status_to_display}
-          </Text>
-        </View>
-        <View style={styles.infoGame_container}>
-          <View style={styles.team_container}>
-            <Image
-              source={`https://api.promiedos.com.ar/images/team/${item?.teams?.[0]?.id}/4`}
-              style={[styles.teamImage, { marginLeft: 8 }]}
-              contentFit="contain"
-            />
-            <Text
-              style={styles.teamText}
-              numberOfLines={1}
-              ellipsizeMode="clip"
-            >
-              {item?.teams?.[0]?.short_name}
+      <Link
+        href={{
+          pathname: '/match_info/[match]',
+          params: { match: matchid },
+        }}
+        asChild
+      >
+        <Pressable style={styles.item_container}>
+          <View style={styles.result_container}>
+            <Text style={styles.time_match_text}>
+              {item?.status?.enum === 3
+                ? item?.status?.short_name === 'Final'
+                  ? 'Final'
+                  : item?.status?.symbol_name + ' (Final)'
+                : item?.status?.short_name === 'ET'
+                ? 'ET'
+                : item?.status?.enum === 1
+                ? `${item?.start_time?.split(' ')[0].split('-')[0]}/${
+                    item?.start_time?.split(' ')[0].split('-')[1]
+                  } ${item?.start_time?.split(' ')[1]}`
+                : item?.game_time_status_to_display === '-1'
+                ? 'ERROR'
+                : item?.game_time_status_to_display}
             </Text>
           </View>
-          <View style={styles.score_container}>
-            {item?.penalties ? (
-              <Text style={styles.scoreText}>
-                {'('}
-                {item?.penalties?.[0]}
-                {') '}
-                {item?.scores?.[0]} - {item?.scores?.[1]}
-                {' ('}
-                {item?.penalties?.[1]}
-                {')'}
+          <View style={styles.infoGame_container}>
+            <View style={styles.team_container}>
+              <Image
+                source={`https://api.promiedos.com.ar/images/team/${item?.teams?.[0]?.id}/4`}
+                style={[styles.teamImage, { marginLeft: 8 }]}
+                contentFit="contain"
+              />
+              <Text
+                style={styles.teamText}
+                numberOfLines={1}
+                ellipsizeMode="clip"
+              >
+                {item?.teams?.[0]?.short_name}
               </Text>
-            ) : (
-              <Text style={styles.scoreText}>
-                {item?.scores?.[0]} - {item?.scores?.[1]}
+            </View>
+            <View style={styles.score_container}>
+              {item?.penalties ? (
+                <Text style={styles.scoreText}>
+                  {'('}
+                  {item?.penalties?.[0]}
+                  {') '}
+                  {item?.scores?.[0]} - {item?.scores?.[1]}
+                  {' ('}
+                  {item?.penalties?.[1]}
+                  {')'}
+                </Text>
+              ) : (
+                <Text style={styles.scoreText}>
+                  {item?.scores?.[0]} - {item?.scores?.[1]}
+                </Text>
+              )}
+            </View>
+            <View style={styles.team_container}>
+              <Image
+                source={`https://api.promiedos.com.ar/images/team/${item?.teams?.[1]?.id}/4`}
+                style={[styles.teamImage, { marginRight: 8 }]}
+                contentFit="contain"
+              />
+              <Text
+                style={styles.teamText}
+                numberOfLines={1}
+                ellipsizeMode="clip"
+              >
+                {item?.teams?.[1]?.short_name}
               </Text>
-            )}
+            </View>
           </View>
-          <View style={styles.team_container}>
-            <Image
-              source={`https://api.promiedos.com.ar/images/team/${item?.teams?.[1]?.id}/4`}
-              style={[styles.teamImage, { marginRight: 8 }]}
-              contentFit="contain"
-            />
-            <Text
-              style={styles.teamText}
-              numberOfLines={1}
-              ellipsizeMode="clip"
-            >
-              {item?.teams?.[1]?.short_name}
-            </Text>
-          </View>
-        </View>
-      </View>
+        </Pressable>
+      </Link>
     );
   }, []);
 

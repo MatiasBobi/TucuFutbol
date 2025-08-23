@@ -1,10 +1,15 @@
 import { LeagueTableToday } from '@/components/today/table_today';
 import { Colors } from '@/constants/colors/colors';
 import useToday from '@/hooks/today_data/useTodayData';
-import { TodayMatches } from '@/types/todayMatches';
-import { FlashList } from '@shopify/flash-list';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { League, TodayMatches } from '@/types/todayMatches';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 export default function HomeScreen() {
   const { data, isLoading, error } = useToday();
   const [lastData, setLastData] = useState<TodayMatches | null>(null);
@@ -15,6 +20,11 @@ export default function HomeScreen() {
       setLastData(data);
     }
   }, [data]);
+
+  const renderMatches = useCallback(
+    ({ item }: { item: League }) => <LeagueTableToday league={item} />,
+    [],
+  );
 
   const oneTimeLoading = isLoading && !lastData;
 
@@ -36,11 +46,10 @@ export default function HomeScreen() {
         </View>
       )}
       {lastData && (
-        <FlashList
+        <FlatList
           data={data?.leagues}
           keyExtractor={(item) => item.id.toString()}
-          estimatedItemSize={100}
-          renderItem={({ item }) => <LeagueTableToday league={item} />}
+          renderItem={renderMatches}
           contentContainerStyle={styles.contentContainer}
         />
       )}

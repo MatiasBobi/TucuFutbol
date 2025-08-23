@@ -1,13 +1,18 @@
 import { Colors } from '@/constants/colors/colors';
+import Fontisto from '@expo/vector-icons/Fontisto';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { setBackgroundColorAsync } from 'expo-system-ui';
+import React, { useEffect } from 'react';
 import { Pressable, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Layout() {
   const insets = useSafeAreaInsets();
 
+  useEffect(() => {
+    setBackgroundColorAsync('#041026');
+  }, []);
   return (
     <>
       <StatusBar
@@ -20,12 +25,10 @@ export default function Layout() {
           headerShown: false,
           tabBarStyle: {
             backgroundColor: Colors.DARK_BLUE,
-            borderTopWidth: 0,
             paddingBottom: insets.bottom,
             height: 60 + insets.bottom,
-            elevation: 0,
-            shadowOpacity: 0,
           },
+          sceneStyle: { paddingTop: insets.top },
           animation: 'fade',
           tabBarActiveTintColor: Colors.YELLOW_GOAL,
           tabBarInactiveTintColor: Colors.GRAY_LIGHT,
@@ -65,6 +68,19 @@ export default function Layout() {
             title: 'Ligas',
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="soccer" size={24} color={color} />
+            ),
+            tabBarLabelStyle: {
+              fontSize: 16,
+              fontWeight: 'bold',
+            },
+          }}
+        />
+        <Tabs.Screen
+          name="settings"
+          options={{
+            title: 'Ajustes',
+            tabBarIcon: ({ color }) => (
+              <Fontisto name="player-settings" size={24} color="white" />
             ),
             tabBarLabelStyle: {
               fontSize: 16,

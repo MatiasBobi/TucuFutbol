@@ -55,7 +55,7 @@ type PlayerWithEvents = PlayerBasicInfo & {
   events?: PlayerEvents;
 };
 
-type MissingPlayer = PlayerBasicInfo & {
+export type MissingPlayer = PlayerBasicInfo & {
   missing_details: {
     type: number;
     reason: string;
@@ -64,7 +64,7 @@ type MissingPlayer = PlayerBasicInfo & {
   };
 };
 
-type TeamLineup = {
+export type TeamLineup = {
   status: string;
   formation: string;
   team_num: number;
@@ -86,7 +86,7 @@ type GameEventRow = {
   events: GameEvent[];
 };
 
-type GameStage = {
+export type GameStage = {
   name: string;
   show_stage_title: boolean;
   is_penalties_stage: boolean;
@@ -94,7 +94,26 @@ type GameStage = {
   rows: GameEventRow[];
 };
 
-type Statistic = {
+export type head_to_head = {
+  home_wins: number;
+  away_wins: number;
+  draws: number;
+  games: {
+    id: string;
+    league: League;
+    winner: number;
+    teams: Team[];
+    url_name: string;
+    scores: number[];
+    status: GameStatus;
+    start_time: string;
+    game_time_status_to_display: string;
+    main_odds: {
+      options: PredictionOdd[];
+    };
+  }[];
+};
+export type Statistic = {
   name: string;
   values: [string, string];
   percentages: [number, number];
@@ -224,11 +243,13 @@ export type GameInfo = {
       lineups: {
         support_visual_lineups: boolean;
         teams: TeamLineup[];
+        missing_players?: MissingPlayer[][];
       };
     };
-    missing_players: MissingPlayer[][];
+    penalties: number[];
     prediction: Prediction;
     game_info: GameInfoItem[];
+    head_to_head: head_to_head,
     events: GameStage[];
     statistics: Statistic[];
     recent_form: RecentForm;

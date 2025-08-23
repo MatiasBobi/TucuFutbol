@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "fut_apk",
-    "slug": "fut_apk",
-    "version": "1.0.0",
+    "name": "TucuLive",
+    "slug": "TucuLive",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "futapk",
@@ -13,7 +13,8 @@
       "bundleIdentifier": "tucubol",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "buildNumber": "1"
     },
     "androidNavigationBar": {
       "backgroundColor": "#041026"
@@ -23,6 +24,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "versionCode": 1,
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.fut_apk"
     },
@@ -50,8 +52,15 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "f2b7c03c-476b-46c5-90b1-633e38bfa63d"
+        "projectId": "e42b3944-9702-4f07-a489-f75323773273"
       }
+    },
+    "owner": "stnkz",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/e42b3944-9702-4f07-a489-f75323773273"
     }
   }
 }

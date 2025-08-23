@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 
 export default function useGameInfo(
   id: string,
-  isExpanded: boolean,
-  matchStatus: 'pre' | 'live' | 'finished',
+  isExpanded?: boolean,
+  matchStatus?: 'pre' | 'live' | 'finished',
 ) {
   /* 
   Hook para obtener la informacion de un partido.
