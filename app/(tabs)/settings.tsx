@@ -1,6 +1,5 @@
 import { Colors } from '@/constants/colors/colors';
 import Entypo from '@expo/vector-icons/Entypo';
-import Fontisto from '@expo/vector-icons/Fontisto';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Link } from 'expo-router';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -10,17 +9,6 @@ const Screen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.menu_container}>
-        <Link
-          asChild
-          href={{
-            pathname: '/settings/favorites_team',
-          }}
-        >
-          <Pressable style={styles.item_menu_container}>
-            <Fontisto name="favorite" size={24} color={Colors.WHITE_GRAY} />
-            <Text style={styles.menu_text_item}>Equipos favoritos</Text>
-          </Pressable>
-        </Link>
         <Link
           asChild
           href={{

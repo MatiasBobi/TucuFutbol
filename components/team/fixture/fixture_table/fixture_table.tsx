@@ -1,7 +1,9 @@
+import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { Colors } from '@/constants/colors/colors';
 import { GameTable } from '@/types/team_info';
 import { Image } from 'expo-image';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Link } from 'expo-router';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -13,78 +15,97 @@ const FixtureTable = ({
   table_type: 'next' | 'last';
 }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.header_teams}>
-          <Text style={styles.header_text}>Equipo</Text>
+    <ScreenContainer>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.header_teams}>
+            <Text style={styles.header_text}>Equipo</Text>
+          </View>
+          {/*  Header de las tablas*/}
+          <View style={styles.header_info}>
+            <Text style={styles.header_text}>Dia</Text>
+            <Text style={styles.header_text}>L/V</Text>
+            <Text style={styles.header_text}>
+              {table_type === 'next' ? 'Hora' : 'Fin'}
+            </Text>
+          </View>
         </View>
-        <View style={styles.header_info}>
-          <Text style={styles.header_text}>Dia</Text>
-          <Text style={styles.header_text}>L/V</Text>
-          <Text style={styles.header_text}>
-            {table_type === 'next' ? 'Hora' : 'Fin'}
-          </Text>
-        </View>
-      </View>
-      <View>
-        {(table_type === 'last'
-          ? fixture_data?.rows?.slice().reverse()
-          : fixture_data?.rows
-        )?.map((team, index) => {
-          const colorVariant = index % 2;
-          return (
-            <View
-              style={[
-                styles.team_container,
-                colorVariant === 0
-                  ? { backgroundColor: Colors.LIGHT_BLUE_DARK }
-                  : { backgroundColor: Colors.DARK_BLUE_PLAYOFFS },
-              ]}
-              key={`${team.entity.object.id}_${index}`}
-            >
-              <View style={styles.team_name_container}>
-                <Image
-                  source={`https://api.promiedos.com.ar/images/team/${team?.entity?.object?.id}/4`}
-                  style={styles.teamImage}
-                  contentFit="contain"
-                />
-                <Text style={styles.team_item_text}>
-                  {team?.entity?.object?.short_name}
-                </Text>
-              </View>
-              <View style={styles.team_values_container}>
-                <Text
-                  style={[styles.team_item_text, { color: Colors.GRAY_LIGHT }]}
-                >
-                  {team?.values?.[0].value}
-                </Text>
-                <Text
-                  style={[styles.team_item_text, { color: Colors.GRAY_LIGHT }]}
-                >
-                  {team?.values?.[1].value}
-                </Text>
-                <Text
+        <View>
+          {(table_type === 'last'
+            ? fixture_data?.rows?.slice().reverse()
+            : fixture_data?.rows
+          )?.map((team, index) => {
+            const colorVariant = index % 2;
+            const matchId = team?.game?.id;
+            return (
+              <Link
+                asChild
+                href={{
+                  pathname: '/match_info/[match]',
+                  params: { match: matchId },
+                }}
+                style={styles.team_container}
+                key={`${team.entity.object.id}_${index}`}
+              >
+                <Pressable
                   style={[
-                    styles.team_item_text,
-                    table_type === 'last'
-                      ? team?.result_status === 1
-                        ? { color: Colors.GREEN_WIN }
-                        : team?.result_status === 2
-                        ? { color: Colors.RED_CHANGE_PLAYER }
-                        : team?.result_status === 3
-                        ? { color: Colors.YELLOW_GOAL }
-                        : { color: Colors.GRAY_LIGHT }
-                      : { color: Colors.GRAY_LIGHT },
+                    styles.team_container,
+                    colorVariant === 0
+                      ? { backgroundColor: Colors.LIGHT_BLUE_DARK }
+                      : { backgroundColor: Colors.DARK_BLUE_PLAYOFFS },
                   ]}
                 >
-                  {team?.values?.[2].value}
-                </Text>
-              </View>
-            </View>
-          );
-        })}
+                  <View style={styles.team_name_container}>
+                    <Image
+                      source={`https://api.promiedos.com.ar/images/team/${team?.entity?.object?.id}/4`}
+                      style={styles.teamImage}
+                      contentFit="contain"
+                    />
+                    <Text style={styles.team_item_text}>
+                      {team?.entity?.object?.short_name}
+                    </Text>
+                  </View>
+                  <View style={styles.team_values_container}>
+                    <Text
+                      style={[
+                        styles.team_item_text,
+                        { color: Colors.GRAY_LIGHT },
+                      ]}
+                    >
+                      {team?.values?.[0].value}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.team_item_text,
+                        { color: Colors.GRAY_LIGHT },
+                      ]}
+                    >
+                      {team?.values?.[1].value}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.team_item_text,
+                        table_type === 'last'
+                          ? team?.result_status === 1
+                            ? { color: Colors.GREEN_WIN }
+                            : team?.result_status === 2
+                            ? { color: Colors.RED_CHANGE_PLAYER }
+                            : team?.result_status === 3
+                            ? { color: Colors.YELLOW_GOAL }
+                            : { color: Colors.GRAY_LIGHT }
+                          : { color: Colors.GRAY_LIGHT },
+                      ]}
+                    >
+                      {team?.values?.[2].value}
+                    </Text>
+                  </View>
+                </Pressable>
+              </Link>
+            );
+          })}
+        </View>
       </View>
-    </View>
+    </ScreenContainer>
   );
 };
 

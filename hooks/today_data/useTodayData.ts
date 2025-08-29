@@ -3,11 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 
 export default function useToday() {
   // Hook para obtener los datos de hoy.
-  // RefetchInterval es para actualizar los datos cada 30 segundos.
-  const { data, isLoading, error } = useQuery({
+  // RefetchInterval es para actualizar los datos cada 15 segundos.
+  const { data, isLoading, error, isFetching } = useQuery({
     queryKey: ['today'],
     queryFn: () => getToday(),
-    refetchInterval: 30000,
+    refetchInterval: 15000,
+    refetchIntervalInBackground: true,
   });
-  return { data, isLoading, error };
+  return { data, isLoading, error, isFetching };
 }

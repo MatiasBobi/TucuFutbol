@@ -1,3 +1,4 @@
+import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { Colors } from '@/constants/colors/colors';
 import { LeagueTable, TableRow } from '@/types/league_full_info';
 import { useMappingHelper } from '@shopify/flash-list';
@@ -12,7 +13,7 @@ export default function LeagueTableData({
   table_name,
 }: {
   table: LeagueTable;
-  table_name: string;
+  table_name?: string;
 }) {
   // Estado para manejar el expansible
 
@@ -27,9 +28,9 @@ export default function LeagueTableData({
     columns: typeof table.columns;
   }) {
     const [expand, setExpand] = useState(false);
-    const expandHandler = useCallback(() => setExpand(!expand), [expand]);
-    const visibleRows = item.values.slice(0, 4);
-    const hiddenRows = item.values.slice(4);
+    const expandHandler = useCallback(() => setExpand(!expand), [expand]); // Controlar el expandible de las estadisticas restantes.
+    const visibleRows = item?.values?.slice(0, 4); // Las 4 principales estadisticas.
+    const hiddenRows = item?.values?.slice(4); // Las estadisticas ocultas.
 
     return (
       <Pressable onPress={expandHandler}>
@@ -42,7 +43,14 @@ export default function LeagueTableData({
           ]}
         >
           <View style={styles.table_item_left_container}>
-            <View style={styles.position_row_team_container}>
+            <View
+              style={[
+                styles.position_row_team_container,
+                item.destination_color
+                  ? { backgroundColor: item?.destination_color }
+                  : null,
+              ]}
+            >
               <Text style={styles.position_text}>{item.num}</Text>
             </View>
             <View style={styles.image_container}>
@@ -63,23 +71,25 @@ export default function LeagueTableData({
               </View>
             </View>
           </View>
-
+          {/* Se renderiza las primeras 4 estadisticas del equipo, el resto estan en el expandible. */}
           <View style={styles.table_item_right_container}>
-            {columns.slice(0, 4).map((column) => {
-              const team = visibleRows.find((v) => v.key === column.key);
+            {columns?.slice(0, 4).map((column) => {
+              const team = visibleRows.find(
+                (value) => value.key === column.key,
+              ); // Acomodamos para que la key de visiblerows coincida con las de las columnas que vienen desordenadas.
               const value = team?.value ?? '-';
-              if (column.key === 'GamesWon' && column.title !== 'G')
+              if (column?.key === 'GamesWon' && column?.title !== 'G')
                 return null;
 
               return (
                 <View
-                  key={column.key}
+                  key={column?.key}
                   style={[
                     styles.right_item,
-                    column.key === 'Pct' ? { flex: 1.25 } : { flex: 1 },
+                    column?.key === 'Pct' ? { flex: 1.25 } : { flex: 1 },
                   ]}
                 >
-                  {column.key === 'Goals' && value !== '-' ? (
+                  {column?.key === 'Goals' && value !== '-' ? (
                     <View style={styles.goalsContainer}>
                       <Text
                         style={[
@@ -88,6 +98,7 @@ export default function LeagueTableData({
                           { color: 'green' },
                         ]}
                       >
+                        {/* Goles a favor */}
                         {typeof value === 'string' ? value.split(':')[0] : '-'}
                       </Text>
                       <Text
@@ -97,6 +108,7 @@ export default function LeagueTableData({
                           { color: 'red' },
                         ]}
                       >
+                        {/* Goles en contra */}
                         {typeof value === 'string' ? value.split(':')[1] : '-'}
                       </Text>
                     </View>
@@ -112,6 +124,7 @@ export default function LeagueTableData({
           <View style={styles.hidden_container}>
             <View style={styles.hidden_columns_container}>
               {columns.slice(4, columns.length).map((column, index) => {
+                // {trend} representa los ultimos 5 partidos jugados.
                 if (column.key === '{trend}') {
                   return (
                     <View
@@ -148,6 +161,7 @@ export default function LeagueTableData({
             </View>
             <View style={styles.hidden_rows_container}>
               {hiddenRows.map((itemRow, index) => {
+                // Nos fijamos si existe {trend} en la columnas y rows que recibimos. Mapeamos los values para poner 'CONDICION;COLOR_CONDICION'
                 if (
                   itemRow?.key === '{trend}' &&
                   Array.isArray(itemRow.value)
@@ -258,7 +272,7 @@ export default function LeagueTableData({
 
   // Render del componente principal
   return (
-    <View style={styles.container}>
+    <ScreenContainer style={styles.container}>
       <View style={styles.title_table_container}>
         <Text style={styles.title_table_text}>{table_name}</Text>
       </View>
@@ -273,29 +287,53 @@ export default function LeagueTableData({
             </View>
           </View>
           <View style={styles.table_info_stats_container}>
-            {table.columns.slice(0, 4).map((column, index) => {
-              if (column.key === 'GamesWon' && column.title !== 'G')
+            {table?.columns?.slice(0, 4)?.map((column, index) => {
+              if (column?.key === 'GamesWon' && column?.title !== 'G')
                 return null;
               return (
                 <Text
-                  key={getMappingKey(column.key, index)}
+                  key={getMappingKey(column?.key, index)}
                   style={styles.text_header_stats}
                 >
-                  {column.title}
+                  {column?.title}
                 </Text>
               );
             })}
           </View>
         </View>
         <View>
-          {table.rows.map((item, index) => (
+          {table?.rows?.map((item, index) => (
             <View key={getMappingKey(item.entity.object.id, index)}>
               <RenderItemTable item={item} columns={table.columns} />
             </View>
           ))}
+          <View>
+            {table?.destinations && (
+              <>
+                {table.destinations?.map((destination) => {
+                  return (
+                    <View
+                      key={destination?.name}
+                      style={styles.destination_container}
+                    >
+                      <View
+                        style={[
+                          styles.destination_circle,
+                          { backgroundColor: destination?.color },
+                        ]}
+                      ></View>
+                      <Text style={styles.destination_text}>
+                        {destination?.name}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </>
+            )}
+          </View>
         </View>
       </View>
-    </View>
+    </ScreenContainer>
   );
 }
 
@@ -308,6 +346,21 @@ const styles = StyleSheet.create({
     borderColor: Colors.YELLOW_LIGHT,
     borderRadius: 10,
     marginBottom: 20,
+  },
+  destination_container: {
+    flexDirection: 'row',
+    gap: 15,
+    paddingVertical: 10,
+  },
+  destination_circle: {
+    width: 16,
+    height: 16,
+    borderRadius: 50,
+  },
+  destination_text: {
+    fontSize: 16,
+    color: Colors.WHITE_GRAY,
+    fontWeight: 'bold',
   },
   title_table_container: {
     height: height * 0.05,

@@ -1,10 +1,11 @@
+import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import {
   GameInfoItem,
   RecentForm,
   Standings,
   head_to_head,
 } from '@/types/game_info';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import MatchGameInfo from './match_game_info/matchGameInfo';
 import MatchResults from './match_results/matchResults';
 import MatchStandings from './match_standings/matchStandings';
@@ -30,7 +31,7 @@ const MatchInfoAndHistory = ({
   team2Info: teamInfo;
 }) => {
   return (
-    <View>
+    <ScreenContainer>
       {standings && <MatchStandings standings={standings} />}
       {recent && (
         <MatchResults
@@ -47,7 +48,7 @@ const MatchInfoAndHistory = ({
         />
       )}
       {game_info && <MatchGameInfo game_info={game_info} />}
-    </View>
+    </ScreenContainer>
   );
 };
 

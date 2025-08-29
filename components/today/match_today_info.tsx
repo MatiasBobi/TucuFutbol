@@ -1,6 +1,6 @@
 import { Colors } from '@/constants/colors/colors';
 import useGameInfo from '@/hooks/game_info/useGameInfo';
-import { useMatchView } from '@/store/matchview';
+
 import { Game } from '@/types/todayMatches';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Image } from 'expo-image';
@@ -15,6 +15,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import MatchStats from '../match_info/match_stats/match_stats';
 
 const { width, height } = Dimensions.get('window');
 
@@ -75,8 +76,6 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
         setIsInitialLoad(false);
       }
     }, [isFetching, isInitialLoad, isExpanded]);
-
-    const setMatch = useMatchView((state) => state.setCurrentMatch);
 
     return (
       <View>
@@ -203,135 +202,12 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                   <Text style={styles.loadingText}>Cargando eventos...</Text>
                 </View>
               ) : events ? (
-                <View style={styles.all_stats_container}>
-                  <Link
-                    asChild
-                    href={{
-                      pathname: '/match_info/[match]',
-                      params: { match: matchid },
-                    }}
-                    onPress={() => {
-                      if (data) setMatch(data);
-                    }}
-                  >
-                    {/* Aquí el stopPropagation para que no se cierre */}
-                    <Pressable
-                      onPress={(e) => {
-                        e.stopPropagation();
-                      }}
-                      style={styles.moreInfo_container}
-                    >
-                      <Text style={styles.moreInfo_text}>
-                        Ver información completa
-                      </Text>
-                    </Pressable>
-                  </Link>
-                  <View style={styles.stats_match_container}>
-                    {statistics?.map((stats) => {
-                      return (
-                        <View key={stats.name}>
-                          <View style={styles.progress_bar_name}>
-                            <Text style={styles.progress_bar_name_text}>
-                              {stats.name}
-                            </Text>
-                          </View>
-                          <View style={styles.progress_bar_container}>
-                            <View
-                              style={[
-                                styles.bar_one,
-                                {
-                                  width: `${stats?.percentages?.[0] * 100}%`,
-                                  backgroundColor: Colors.GREEN_TEAM_STATS_ONE,
-                                },
-                              ]}
-                            >
-                              <Text style={styles.value_stat_text}>
-                                {stats?.values?.[0]}
-                              </Text>
-                            </View>
-                            <View
-                              style={[
-                                styles.bar_two,
-                                {
-                                  width: `${stats?.percentages?.[1] * 100}%`,
-                                  backgroundColor: Colors.GREEN_TEAM_STATS_TWO,
-                                },
-                              ]}
-                            >
-                              <Text style={styles.value_stat_text}>
-                                {stats?.values?.[1]}
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                      );
-                    })}
-                  </View>
-                  <Text style={styles.events_name}>Comienzo del partido</Text>
-                  {events.map((event, index) => (
-                    <View
-                      key={`${event.name}_${index}`}
-                      style={styles.events_container}
-                    >
-                      {event.rows.map((row, index) => (
-                        <View key={index} style={styles.events_row_container}>
-                          <Text style={styles.events_time}>{row?.time}</Text>
-                          {row?.events?.map((event, index) => (
-                            <View key={index} style={styles.events_row}>
-                              <View
-                                style={
-                                  event.team === 1
-                                    ? styles.events_team1
-                                    : styles.events_team2
-                                }
-                              >
-                                {event.team === 1 && (
-                                  <View>
-                                    <Image
-                                      source={{
-                                        uri: `https://api.promiedos.com.ar/images/games/event/${event.type}`,
-                                      }}
-                                      style={{ width: 20, height: 20 }}
-                                      contentFit="contain"
-                                    />
-                                  </View>
-                                )}
-                                <View style={styles.events_container_text}>
-                                  <Text style={styles.events_text}>
-                                    {event.texts?.[0].split(' ').slice(-1)}
-                                  </Text>
-                                  {event.texts?.[1] && (
-                                    <Text
-                                      style={
-                                        event.type === 1
-                                          ? styles.events_text_goal
-                                          : styles.events_text_change
-                                      }
-                                    >
-                                      {event.texts?.[1].split(' ').slice(-1)}
-                                    </Text>
-                                  )}
-                                </View>
-                                {event.team === 2 && (
-                                  <View>
-                                    <Image
-                                      source={{
-                                        uri: `https://api.promiedos.com.ar/images/games/event/${event.type}`,
-                                      }}
-                                      style={{ width: 20, height: 20 }}
-                                      contentFit="contain"
-                                    />
-                                  </View>
-                                )}
-                              </View>
-                            </View>
-                          ))}
-                        </View>
-                      ))}
-                      <Text style={styles.events_name}>{event.name}</Text>
-                    </View>
-                  ))}
-                </View>
+                <>
+                  <MatchStats
+                    events={events}
+                    statistics={statistics || undefined}
+                  />
+                </>
               ) : (
                 // en esta etapa, ya se realizo un fetch y en caso de no encontrar nada, mostrara el mensaje 'No hay eventos disponibles'
                 // Si el partido esta en vivo, seguira haciendo fetching hasta encontrar eventos.
@@ -341,9 +217,6 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                     href={{
                       pathname: '/match_info/[match]',
                       params: { match: matchid },
-                    }}
-                    onPress={() => {
-                      if (data) setMatch(data);
                     }}
                   >
                     {/* Aquí el stopPropagation para que no se cierre */}
@@ -502,7 +375,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   events_container: {
-    width: 360,
+    width: '100%',
   },
   events_team1: {
     flexDirection: 'row',

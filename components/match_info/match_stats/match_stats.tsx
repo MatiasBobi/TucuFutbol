@@ -1,3 +1,4 @@
+import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { Colors } from '@/constants/colors/colors';
 import { GameStage, Statistic } from '@/types/game_info';
 import { Image } from 'expo-image';
@@ -12,7 +13,7 @@ const MatchStats = ({
   statistics?: Statistic[];
 }) => {
   return (
-    <View style={styles.container}>
+    <ScreenContainer style={styles.container}>
       <ScrollView>
         <View style={styles.teamcolors_container}>
           <Text style={styles.local_text}>{'(Local)'} Rojo</Text>
@@ -23,7 +24,7 @@ const MatchStats = ({
           <View style={styles.stats_match_container}>
             {statistics === undefined ? (
               <View>
-                <Text>No hay estadisticas numericas del partido.</Text>
+                <Text>No hay estadísticas numéricas del partido.</Text>
               </View>
             ) : (
               statistics?.map((stats) => {
@@ -139,7 +140,7 @@ const MatchStats = ({
           )}
         </View>
       </ScrollView>
-    </View>
+    </ScreenContainer>
   );
 };
 
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   events_container: {
-    width: 360,
+    width: '100%',
   },
   events_team1: {
     flexDirection: 'row',

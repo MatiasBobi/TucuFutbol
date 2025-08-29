@@ -1,3 +1,4 @@
+import Logo from '@/components/Logo/Logo';
 import { Colors } from '@/constants/colors/colors';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -22,19 +23,20 @@ export default function Layout() {
       />
       <Tabs
         screenOptions={{
-          headerShown: false,
+          headerShown: true,
           tabBarStyle: {
             backgroundColor: Colors.DARK_BLUE,
             paddingBottom: insets.bottom,
             height: 60 + insets.bottom,
           },
-          sceneStyle: { paddingTop: insets.top },
+
           animation: 'fade',
           tabBarActiveTintColor: Colors.YELLOW_GOAL,
           tabBarInactiveTintColor: Colors.GRAY_LIGHT,
           headerStyle: {
             backgroundColor: Colors.DARK_BLUE,
           },
+          headerTitle: () => <Logo />,
           headerTintColor: Colors.WHITE_GRAY,
           tabBarItemStyle: {
             backgroundColor: 'transparent',
@@ -68,6 +70,19 @@ export default function Layout() {
             title: 'Ligas',
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="soccer" size={24} color={color} />
+            ),
+            tabBarLabelStyle: {
+              fontSize: 16,
+              fontWeight: 'bold',
+            },
+          }}
+        />
+        <Tabs.Screen
+          name="favoritesteam"
+          options={{
+            title: 'Mis Equipos',
+            tabBarIcon: ({ color }) => (
+              <Fontisto name="favorite" size={24} color={Colors.WHITE_GRAY} />
             ),
             tabBarLabelStyle: {
               fontSize: 16,

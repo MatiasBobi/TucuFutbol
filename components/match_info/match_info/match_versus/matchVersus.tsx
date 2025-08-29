@@ -21,7 +21,7 @@ const MatchVersus = ({
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.historial_text}>Historial</Text>
+        <Text style={styles.historial_text}>Ultimos enfrentamientos</Text>
       </View>
       <View>
         <View style={styles.teams_historial_container}>

@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 export default function HomeScreen() {
-  const { data, isLoading, error } = useToday();
+  const { data, isLoading, error, isFetching } = useToday();
   const [lastData, setLastData] = useState<TodayMatches | null>(null);
 
   // Actualiza el estado con la data vieja.

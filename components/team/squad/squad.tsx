@@ -1,3 +1,4 @@
+import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { Colors } from '@/constants/colors/colors';
 import { SquadData, SquadGroup } from '@/types/team_info';
 import { useCallback } from 'react';
@@ -15,30 +16,32 @@ export default function SquadTeam({ squad }: { squad: SquadData }) {
     return <SquadTable squad={item} />;
   }, []);
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.header_item_name}>
-          <View>
-            <Text style={styles.header_item_text}>Jugadores</Text>
+    <ScreenContainer>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.header_item_name}>
+            <View>
+              <Text style={styles.header_item_text}>Jugadores</Text>
+            </View>
+          </View>
+          <View style={styles.header_items}>
+            <View style={styles.header_item}>
+              <Text style={styles.header_item_text}>Edad</Text>
+            </View>
+            <View style={styles.header_item}>
+              <Text style={styles.header_item_text}>Altura</Text>
+            </View>
           </View>
         </View>
-        <View style={styles.header_items}>
-          <View style={styles.header_item}>
-            <Text style={styles.header_item_text}>Edad</Text>
-          </View>
-          <View style={styles.header_item}>
-            <Text style={styles.header_item_text}>Altura</Text>
-          </View>
+        <View style={styles.table_container}>
+          <FlatList
+            data={squad?.groups}
+            keyExtractor={keyStractorFn}
+            renderItem={renderItem}
+          />
         </View>
       </View>
-      <View style={styles.table_container}>
-        <FlatList
-          data={squad?.groups}
-          keyExtractor={keyStractorFn}
-          renderItem={renderItem}
-        />
-      </View>
-    </View>
+    </ScreenContainer>
   );
 }
 

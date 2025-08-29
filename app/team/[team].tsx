@@ -1,6 +1,5 @@
 import FixtureTeam from '@/components/team/fixture/fixture';
 import SquadTeam from '@/components/team/squad/squad';
-import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { Colors } from '@/constants/colors/colors';
 import useTeamInfo from '@/hooks/team_info/team_info';
 import { useFavoritesStore } from '@/store/favorites';
@@ -24,8 +23,9 @@ const Team = () => {
   const { addFavorite, removeFavorite, isFavorite, getAllTeams } =
     useFavoritesStore();
 
-  const IsFavoriteTeam = isFavorite(teamId);
+  const IsFavoriteTeam = isFavorite(teamId); // Chequeamos si el equipo ya esta agregado a equipos favoritos.
 
+  // Funcion para agregar o sacar de favoritos
   const handleTeamFavorites = (): void => {
     if (IsFavoriteTeam) {
       removeFavorite(teamId);
@@ -65,61 +65,59 @@ const Team = () => {
   };
 
   return (
-    <ScreenContainer>
-      <View style={styles.container}>
-        <Stack.Screen
-          options={{
-            headerShown: true,
-            headerTitle: data?.competitor?.name || ' ',
-            headerStyle: {
-              backgroundColor: Colors.DARK_BLUE,
-            },
-            headerTintColor: Colors.WHITE_GRAY,
-          }}
-        />
-        <View style={styles.container_buttons}>
-          <Pressable
-            style={styles.button_pressable}
-            onPress={() => setActiveSection('plantel')}
-          >
-            <Text style={styles.text_buttons}>Plantel</Text>
-          </Pressable>
-          <Pressable
-            style={styles.button_pressable}
-            onPress={() => setActiveSection('partidos')}
-          >
-            <Text style={styles.text_buttons}>Partidos</Text>
-          </Pressable>
-          <Pressable
-            style={styles.button_pressable}
-            onPress={() => handleTeamFavorites()}
-          >
-            <Text style={styles.text_buttons}>
-              {IsFavoriteTeam === true
-                ? 'Borrar de Favoritos'
-                : 'Agregar a favoritos'}
-            </Text>
-          </Pressable>
-        </View>
-        <View style={styles.container_team_image}>
-          <Image
-            source={`https://api.promiedos.com.ar/images/team/${team}/4`}
-            style={styles.teamImage}
-            contentFit="contain"
-          />
-          <Text style={styles.text_name_team}>{data?.competitor?.name}</Text>
-        </View>
-        {isLoading ? (
-          <Text style={{ color: Colors.WHITE_GRAY }}>Cargando...</Text>
-        ) : error ? (
-          <Text style={{ color: Colors.RED_CHANGE_PLAYER }}>
-            Error al cargar el equipo
+    <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerTitle: data?.competitor?.name || ' ',
+          headerStyle: {
+            backgroundColor: Colors.DARK_BLUE,
+          },
+          headerTintColor: Colors.WHITE_GRAY,
+        }}
+      />
+      <View style={styles.container_buttons}>
+        <Pressable
+          style={styles.button_pressable}
+          onPress={() => setActiveSection('plantel')}
+        >
+          <Text style={styles.text_buttons}>Plantel</Text>
+        </Pressable>
+        <Pressable
+          style={styles.button_pressable}
+          onPress={() => setActiveSection('partidos')}
+        >
+          <Text style={styles.text_buttons}>Partidos</Text>
+        </Pressable>
+        <Pressable
+          style={styles.button_pressable}
+          onPress={() => handleTeamFavorites()}
+        >
+          <Text style={styles.text_buttons}>
+            {IsFavoriteTeam === true
+              ? 'Borrar de Favoritos'
+              : 'Agregar a favoritos'}
           </Text>
-        ) : (
-          renderSection()
-        )}
+        </Pressable>
       </View>
-    </ScreenContainer>
+      <View style={styles.container_team_image}>
+        <Image
+          source={`https://api.promiedos.com.ar/images/team/${team}/4`}
+          style={styles.teamImage}
+          contentFit="contain"
+        />
+        <Text style={styles.text_name_team}>{data?.competitor?.name}</Text>
+      </View>
+      {isLoading ? (
+        <Text style={{ color: Colors.WHITE_GRAY }}>Cargando...</Text>
+      ) : error ? (
+        <Text style={{ color: Colors.RED_CHANGE_PLAYER }}>
+          Error al cargar el equipo
+        </Text>
+      ) : (
+        renderSection()
+      )}
+    </View>
   );
 };
 

@@ -106,49 +106,65 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 10,
     marginBottom: 10,
-    height: height * 0.15,
+    padding: 15,
+
+    borderRadius: 10,
+    width: width * 0.95,
   },
   name_team_container: {
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 5,
+    maxWidth: '100%',
   },
   title_text: {
-    fontSize: 22,
+    fontSize: 18,
     color: Colors.WHITE_GRAY,
     textAlign: 'center',
     fontWeight: 'bold',
+    marginBottom: 15,
   },
   last_results_container: {
     flexDirection: 'row',
-    gap: 10,
+    justifyContent: 'center',
+    gap: 5,
+    marginTop: 10,
   },
   text_recent_container: {
-    marginTop: 10,
-    height: height * 0.03,
-    width: width * 0.05,
+    height: 25,
+    width: 25,
+    borderRadius: 12.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   teams_container: {
+    width: '100%',
     flexDirection: 'row',
-    height: '100%',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   team_container: {
-    width: '50%',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   image_container: {
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
   },
   text_recent: {
     color: Colors.WHITE_GRAY,
+    fontWeight: 'bold',
+    fontSize: 12,
   },
   team_name_text: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: Colors.WHITE_GRAY,
+    textAlign: 'center',
+    maxWidth: 100,
   },
 });
 export default MatchResults;

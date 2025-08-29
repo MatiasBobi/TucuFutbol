@@ -19,16 +19,25 @@ const SquadTable = ({ squad }: { squad: SquadGroup }) => {
               >
                 <View style={styles.player_row}>
                   <View style={styles.player_row_name}>
-                    <View>
-                      <Text style={styles.player_row_name_text}>{player?.entity?.object?.name}</Text>
+                    <View style={styles.name_container}>
+                      <Text style={styles.num_player_text}>
+                        {player?.entity?.object?.num}
+                      </Text>
+                      <Text style={styles.player_row_name_text}>
+                        {player?.entity?.object?.name}
+                      </Text>
                     </View>
                   </View>
                   <View style={styles.player_row_info}>
                     <View style={styles.player_row_info_item}>
-                      <Text style={styles.player_row_info_text}>{player?.entity?.object?.age}</Text>
+                      <Text style={styles.player_row_info_text}>
+                        {player?.entity?.object?.age}
+                      </Text>
                     </View>
                     <View style={styles.player_row_info_item}>
-                      <Text style={styles.player_row_info_text}>{player?.entity?.object?.height}</Text>
+                      <Text style={styles.player_row_info_text}>
+                        {player?.entity?.object?.height}
+                      </Text>
                     </View>
                   </View>
                 </View>
@@ -48,6 +57,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.DARK_BLUE_PLAYOFFS,
   },
+  name_container: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  num_player_text: {
+    width: '20%',
+    fontSize: 16,
+    color: Colors.WHITE_GRAY,
+    textAlign: 'center',
+  },
   player_row_name: {
     width: '60%',
     paddingRight: 8,
@@ -64,6 +84,7 @@ const styles = StyleSheet.create({
   },
   player_row_name_text: {
     fontSize: 16,
+    width: '80%',
     fontWeight: 'bold',
     color: Colors.YELLOW_LIGHT,
     textAlign: 'center',
@@ -79,7 +100,6 @@ const styles = StyleSheet.create({
     height: height * 0.05,
     alignItems: 'center',
     justifyContent: 'center',
-
   },
   squad_table_body: {
     flex: 1,

@@ -6,8 +6,7 @@ import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 const { width, height } = Dimensions.get('window');
 const UpdateApp = () => {
   const { status, error, check, download, apply } = useCheckUpdates();
-  console.log('status: ' + status);
-  console.log('Error msg: ' + error);
+
   return (
     <View style={styles.container}>
       <Stack.Screen

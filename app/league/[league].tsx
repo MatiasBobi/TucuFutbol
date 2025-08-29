@@ -1,4 +1,5 @@
 import LeagueBrackets from '@/components/league_table_info/league_brackets/league_brackets';
+import LeagueChampions from '@/components/league_table_info/league_champions/league_champions';
 import LeagueFixture from '@/components/league_table_info/league_fixture/league_fixture';
 import LeaguePlayerStats from '@/components/league_table_info/league_playerstats/league_playerStats';
 import LeagueTableData from '@/components/league_table_info/league_table/league_table';
@@ -38,7 +39,7 @@ export default function League() {
 
   // Si hay tablas, mostrar tabla, si no, brackets
   const [activeSection, setActiveSection] = useState<
-    'tabla' | 'equipos' | 'estadisticas' | 'fixture' | 'brackets'
+    'tabla' | 'equipos' | 'estadisticas' | 'fixture' | 'brackets' | 'champions'
   >('tabla');
 
   //
@@ -77,7 +78,6 @@ export default function League() {
   );
 
   // Render de estadisticas de los jugadores
-  // Render de las estadisticas
 
   const keyExtractorTable = useCallback(
     (item: TableGroup, index: number) => `${item.name}_${index}`,
@@ -142,6 +142,8 @@ export default function League() {
         );
       case 'brackets':
         return <LeagueBrackets brackets={data?.brackets?.stages || []} />;
+      case 'champions':
+        return <LeagueChampions league_id={data?.league?.id ?? ''} />;
       default:
         return null;
     }
@@ -207,6 +209,12 @@ export default function League() {
               onPress={() => setActiveSection('estadisticas')}
             >
               <Text style={styles.text_buttons}>Estadisticas</Text>
+            </Pressable>
+            <Pressable
+              style={styles.button_pressable}
+              onPress={() => setActiveSection('champions')}
+            >
+              <Text style={styles.text_buttons}>Campeones</Text>
             </Pressable>
           </View>
 

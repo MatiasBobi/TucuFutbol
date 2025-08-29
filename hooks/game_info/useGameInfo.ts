@@ -22,7 +22,7 @@ export default function useGameInfo(
     queryFn: () => getGameInfo(id),
     staleTime: matchStatus === 'finished' ? Infinity : 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    refetchInterval: isExpanded && matchStatus === 'live' ? 60000 : undefined,
+    refetchInterval: isExpanded && matchStatus === 'live' ? 20000 : undefined,
     enabled: isExpanded && matchStatus !== 'pre',
     refetchOnWindowFocus: isExpanded && matchStatus === 'live',
   });
