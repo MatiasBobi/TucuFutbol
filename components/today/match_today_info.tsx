@@ -1,11 +1,11 @@
-import { Colors } from '@/constants/colors/colors';
-import useGameInfo from '@/hooks/game_info/useGameInfo';
+import { Colors } from "@/constants/colors/colors";
+import useGameInfo from "@/hooks/game_info/useGameInfo";
 
-import { Game } from '@/types/todayMatches';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Image } from 'expo-image';
-import { Link } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
+import { Game } from "@/types/todayMatches";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Image } from "expo-image";
+import { Link } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -14,10 +14,10 @@ import {
   StyleSheet,
   Text,
   View,
-} from 'react-native';
-import MatchStats from '../match_info/match_stats/match_stats';
+} from "react-native";
+import MatchStats from "../match_info/match_stats/match_stats";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
   teams: Game;
@@ -38,15 +38,15 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
   */
     const matchStatus =
       teams?.status?.enum === 3
-        ? 'finished'
+        ? "finished"
         : teams?.status?.enum === 1
-        ? 'pre'
-        : 'live';
+        ? "pre"
+        : "live";
 
     const { data, isFetching } = useGameInfo(
       teams?.id,
       isExpanded,
-      matchStatus,
+      matchStatus
     ); // Hook para obtener los eventos del partido (Tanstack Query)
     const events = data?.game?.events || null; // Eventos del partido
     const statistics = data?.game?.statistics || null; // Estadisticas del partido
@@ -109,14 +109,14 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
               <View style={styles.goals_match_container_team1_results}>
                 <Text style={styles.team_match_score_text}>
                   {teams?.status?.enum === 1
-                    ? ' '
+                    ? " "
                     : teams?.scores?.[0].toString()}
                 </Text>
                 {teams?.penalties && (
                   <Text style={styles.events_text_penalty}>
-                    {'('}
+                    {"("}
                     {teams?.penalties?.[0].toString()}
-                    {')'}
+                    {")"}
                   </Text>
                 )}
               </View>
@@ -128,29 +128,29 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
               */}
                 <Text style={styles.time_match_text}>
                   {teams?.status?.enum === 3
-                    ? teams?.status?.short_name === 'Final'
-                      ? 'Final'
-                      : teams?.status?.symbol_name + ' (Final)'
-                    : teams?.status?.short_name === 'ET'
-                    ? 'ET'
+                    ? teams?.status?.short_name === "Final"
+                      ? "Final"
+                      : teams?.status?.symbol_name + " (Final)"
+                    : teams?.status?.short_name === "ET"
+                    ? "ET"
                     : teams?.status?.enum === 1
-                    ? teams?.start_time?.split(' ')[1]
-                    : teams?.game_time_to_display === '-1'
-                    ? 'ERROR'
+                    ? teams?.start_time?.split(" ")[1]
+                    : teams?.game_time_to_display === "-1"
+                    ? "ERROR"
                     : teams?.game_time_to_display}
                 </Text>
               </View>
               <View style={styles.goals_match_container_team2_results}>
                 <Text style={styles.team_match_score_text}>
                   {teams?.status?.enum === 1
-                    ? ' '
+                    ? " "
                     : teams?.scores?.[1].toString()}
                 </Text>
                 {teams?.penalties && (
                   <Text style={styles.events_text_penalty}>
-                    {'('}
+                    {"("}
                     {teams?.penalties?.[1].toString()}
-                    {')'}
+                    {")"}
                   </Text>
                 )}
               </View>
@@ -207,7 +207,7 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                     <Link
                       asChild
                       href={{
-                        pathname: '/match_info/[match]',
+                        pathname: "/match_info/[match]",
                         params: { match: matchid },
                       }}
                     >
@@ -223,9 +223,6 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                         </Text>
                       </Pressable>
                     </Link>
-                    <Text style={styles.noEventsText}>
-                      No hay eventos disponibles
-                    </Text>
                   </View>
                   <MatchStats
                     events={events}
@@ -239,7 +236,7 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                   <Link
                     asChild
                     href={{
-                      pathname: '/match_info/[match]',
+                      pathname: "/match_info/[match]",
                       params: { match: matchid },
                     }}
                   >
@@ -270,9 +267,9 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
 
 const styles = StyleSheet.create({
   info_match_container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
 
     paddingTop: 10,
     borderTopWidth: 1,
@@ -282,38 +279,38 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.LIGHT_BLUE_DARK,
   },
   team_match: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    width: '100%',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    width: "100%",
+    alignItems: "center",
   },
   team_match_info: {
     width: 140,
-    alignItems: 'center',
+    alignItems: "center",
   },
   team_match_text: {
     fontSize: 17,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     width: 140,
-    textAlign: 'center',
+    textAlign: "center",
   },
   team_match_score: {
     width: 80,
 
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 10,
   },
   expandedContent: {
-    width: '100%',
-    overflow: 'hidden',
+    width: "100%",
+    overflow: "hidden",
   },
   loadingContainer: {
     padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   loadingText: {
     color: Colors.WHITE_GRAY,
@@ -321,177 +318,177 @@ const styles = StyleSheet.create({
   },
   noEventsText: {
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
+    textAlign: "center",
     padding: 20,
     fontSize: 20,
   },
   team_match_score_text: {
     fontSize: 20,
     color: Colors.GRAY_LIGHT,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     width: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   time_match_text: {
     fontSize: 16,
     color: Colors.YELLOW_LIGHT,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   goals_match_container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    width: "100%",
     paddingHorizontal: 10,
   },
   goals_match_container_team1: {
     width: 150,
     gap: 10,
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   goals_match_container_team2: {
     width: 150,
     gap: 10,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   goal_text: {
     fontSize: 16,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   time_text: {
     fontSize: 16,
     color: Colors.YELLOW_LIGHT,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   events_row_container: {
     borderBottomWidth: 1,
     borderBottomColor: Colors.BLUE_BORDER,
     paddingVertical: 10,
-    position: 'relative',
+    position: "relative",
   },
   events_name: {
     fontSize: 16,
     color: Colors.WHITE_GRAY,
     paddingVertical: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     borderBottomWidth: 1,
     borderBottomColor: Colors.BLUE_BORDER,
   },
   events_time: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
-    top: '50%',
+    top: "50%",
     transform: [{ translateY: -10 }],
     fontSize: 16,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     paddingVertical: 2,
     zIndex: 1,
   },
   events_row: {
     paddingTop: 10,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     gap: 10,
     height: 60,
   },
   events_container: {
-    width: '100%',
+    width: "100%",
     padding: 8,
   },
   events_team1: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
     gap: 10,
   },
   events_team2: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
     gap: 10,
   },
   events_text_goal: {
     color: Colors.YELLOW_GOAL,
-    textAlign: 'center',
+    textAlign: "center",
   },
   events_container_text: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     gap: 10,
   },
   events_text: {
     color: Colors.YELLOW_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
   events_text_change: {
     color: Colors.RED_CHANGE_PLAYER,
-    textAlign: 'center',
+    textAlign: "center",
   },
   goal_player_name_text: {},
   goals_match_container_team1_results: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
   },
   goals_match_container_team2_results: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   events_text_penalty: {
     color: Colors.RED_CHANGE_PLAYER,
 
     fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginLeft: 5,
   },
   all_stats_container: {
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   stats_match_container: {
-    flexDirection: 'column',
+    flexDirection: "column",
     borderBottomWidth: 10,
     borderBottomColor: Colors.BLUE_BORDER,
     marginBottom: 16,
   },
   progress_bar_container: {
-    flexDirection: 'row',
-    width: '100%',
+    flexDirection: "row",
+    width: "100%",
     flex: 1,
   },
   bar_one: {
-    height: '100%',
+    height: "100%",
   },
   bar_two: {
-    height: '100%',
+    height: "100%",
   },
   value_stat_text: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.GRAY_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
   progress_bar_name: {
     marginVertical: 14,
   },
   progress_bar_name_text: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 18,
     color: Colors.YELLOW_LIGHT,
   },
   moreInfo_container: {
-    width: '100%',
+    width: "100%",
     height: height * 0.1,
     backgroundColor: Colors.DARK_BLUE_PLAYOFFS,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   moreInfo_text: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
   },
 });

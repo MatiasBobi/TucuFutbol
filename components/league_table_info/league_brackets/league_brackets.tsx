@@ -1,3 +1,4 @@
+import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Colors } from "@/constants/colors/colors";
 import {
   BracketGroup,
@@ -5,7 +6,7 @@ import {
   BracketStage,
 } from "@/types/league_full_info";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -259,6 +260,14 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
     );
   };
 
+  const keyStractorLeagueTable = useCallback(
+    (item: any, index: number) =>
+      `game-${index}-${item?.games?.[0]?.start_time ?? ""}-${
+        item?.games?.[0]?.start_time ?? ""
+      }`,
+    []
+  );
+
   // Renderiza el stage actual
   const renderCurrentBracket = () => {
     const currentBracket = brackets[currentIndex];
@@ -282,9 +291,8 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
               isFinal_length: isFinal_lenght,
             })
           }
-          keyExtractor={(item, index) =>
-            `game-${index}-${item?.games?.[0]?.start_time}-${item?.games?.[0].start_time}`
-          }
+          showsVerticalScrollIndicator={false}
+          keyExtractor={keyStractorLeagueTable}
           style={styles.container_brackets_game_fix}
         />
       </View>
@@ -292,27 +300,29 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
   };
 
   return (
-    <View style={styles.container_brackets}>
-      {/* Contenedor principal del slider */}
-      <View style={styles.brackets_move_arrows_container}>
-        {/* Flecha izquierda */}
-        <Pressable onPress={moveLeft} style={styles.arrowButton}>
-          <MaterialIcons name="arrow-back" size={24} color="black" />
-        </Pressable>
-        <View>
-          <Text style={styles.title_bracket_text}>
-            {brackets[currentIndex]?.name}
-          </Text>
+    <ScreenContainer>
+      <View style={styles.container_brackets}>
+        {/* Contenedor principal del slider */}
+        <View style={styles.brackets_move_arrows_container}>
+          {/* Flecha izquierda */}
+          <Pressable onPress={moveLeft} style={styles.arrowButton}>
+            <MaterialIcons name="arrow-back" size={24} color="black" />
+          </Pressable>
+          <View>
+            <Text style={styles.title_bracket_text}>
+              {brackets[currentIndex]?.name}
+            </Text>
+          </View>
+          {/* Flecha derecha */}
+          <Pressable onPress={moveRight} style={styles.arrowButton}>
+            <MaterialIcons name="arrow-forward" size={24} color="black" />
+          </Pressable>
         </View>
-        {/* Flecha derecha */}
-        <Pressable onPress={moveRight} style={styles.arrowButton}>
-          <MaterialIcons name="arrow-forward" size={24} color="black" />
-        </Pressable>
-      </View>
 
-      {/* Brackets */}
-      <View>{renderCurrentBracket()}</View>
-    </View>
+        {/* Brackets */}
+        <View>{renderCurrentBracket()}</View>
+      </View>
+    </ScreenContainer>
   );
 };
 
@@ -398,7 +408,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   game_info_name_team_container: {
-    height: "100%",
     justifyContent: "space-around",
     flex: 0.9,
   },

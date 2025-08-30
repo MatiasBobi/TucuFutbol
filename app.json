@@ -2,6 +2,7 @@
   "expo": {
     "name": "TucuLive",
     "slug": "TucuLive",
+    "runtimeVersion": "1.0.0",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -34,7 +35,9 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-secure-store",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
@@ -44,9 +47,6 @@
       "eas": {
         "projectId": "e6bcaa70-463c-4c94-9653-a1c7a5a964c5"
       }
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/e6bcaa70-463c-4c94-9653-a1c7a5a964c5"

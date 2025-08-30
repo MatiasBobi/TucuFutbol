@@ -1,5 +1,6 @@
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Colors } from "@/constants/colors/colors";
+import * as Application from "expo-application";
 import { Stack } from "expo-router";
 import {
   ScrollView,
@@ -11,13 +12,7 @@ import {
 
 const InfoApp = () => {
   const { width } = useWindowDimensions();
-  /* 
 
-            <Text style={styles.currentVersion_text}>
-              Versión actual: {Application.nativeApplicationVersion}
-            </Text>
-
-*/
   return (
     <ScreenContainer style={styles.container}>
       <Stack.Screen
@@ -38,7 +33,11 @@ const InfoApp = () => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.changes_container}>
-          <View style={styles.versionHeader}></View>
+          <View style={styles.versionHeader}>
+            <Text style={styles.currentVersion_text}>
+              Versión actual: {Application.nativeApplicationVersion}
+            </Text>
+          </View>
           {/* Version 1.0.0 */}
           <View style={styles.versions_changes}>
             <View style={styles.versionSection}>
@@ -48,44 +47,6 @@ const InfoApp = () => {
                 <Text style={styles.text_info_change}>
                   Lanzamiento de la aplicación.
                 </Text>
-              </View>
-            </View>
-            {/* Version 1.0.1 */}
-            <View style={styles.versionSection}>
-              <Text style={styles.versionTitle}>Version 1.0.1</Text>
-              <View>
-                <View style={styles.texts_changes_container}>
-                  <Text style={styles.check_text}>✓ </Text>
-                  <Text style={styles.text_info_change}>
-                    Se arreglaron los anchos en las estadísticas del partido.
-                  </Text>
-                </View>
-                <View style={styles.texts_changes_container}>
-                  <Text style={styles.check_text}>✓ </Text>
-                  <Text style={styles.text_info_change}>
-                    Se agregaron las estadísticas de los campeones del torneo
-                    seleccionado.
-                  </Text>
-                </View>
-              </View>
-            </View>
-
-            {/* Version 1.0.2 */}
-            <View style={styles.versionSection}>
-              <Text style={styles.versionTitle}>Version 1.0.2</Text>
-              <View>
-                <View style={styles.texts_changes_container}>
-                  <Text style={styles.check_text}>✓ </Text>
-                  <Text style={styles.text_info_change}>
-                    Se arreglaron los textos en las tablas de la liga/copa.
-                  </Text>
-                </View>
-                <View style={styles.texts_changes_container}>
-                  <Text style={styles.check_text}>✓ </Text>
-                  <Text style={styles.text_info_change}>
-                    Se agregó la opción de mi equipo favorito.
-                  </Text>
-                </View>
               </View>
             </View>
           </View>

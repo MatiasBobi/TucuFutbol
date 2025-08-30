@@ -1,11 +1,11 @@
-import MatchLineUp from '@/components/match_info/match_formations/matchLineUp';
-import MatchInfoAndHistory from '@/components/match_info/match_info/matchInfoAndHistory';
-import MatchStats from '@/components/match_info/match_stats/match_stats';
-import { Colors } from '@/constants/colors/colors';
-import useGameInfo from '@/hooks/game_info/useGameInfo';
-import { Image } from 'expo-image';
-import { Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import MatchLineUp from "@/components/match_info/match_formations/matchLineUp";
+import MatchInfoAndHistory from "@/components/match_info/match_info/matchInfoAndHistory";
+import MatchStats from "@/components/match_info/match_stats/match_stats";
+import { Colors } from "@/constants/colors/colors";
+import useGameInfo from "@/hooks/game_info/useGameInfo";
+import { Image } from "expo-image";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   Dimensions,
   Pressable,
@@ -13,9 +13,9 @@ import {
   StyleSheet,
   Text,
   View,
-} from 'react-native';
+} from "react-native";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 const MatchInfo = () => {
   const { match } = useLocalSearchParams();
 
@@ -35,8 +35,8 @@ const MatchInfo = () => {
   const standings = matchData?.game?.standings;
 
   const [activeSection, setActiveSection] = useState<
-    'estadisticas' | 'lineup' | 'informacion'
-  >('estadisticas');
+    "estadisticas" | "lineup" | "informacion"
+  >("estadisticas");
 
   const [firstLoading, setFirstloading] = useState(true);
 
@@ -47,7 +47,7 @@ const MatchInfo = () => {
   }, [isFetching, firstLoading]);
   const renderSection = () => {
     switch (activeSection) {
-      case 'estadisticas':
+      case "estadisticas":
         if (!matchData?.game?.events && !matchData?.game?.statistics) {
           return (
             <View style={styles.notfound_container}>
@@ -64,7 +64,7 @@ const MatchInfo = () => {
           />
         );
 
-      case 'lineup':
+      case "lineup":
         if (!matchData?.game?.players) {
           return (
             <View style={styles.notfound_container}>
@@ -91,7 +91,7 @@ const MatchInfo = () => {
           />
         );
 
-      case 'informacion':
+      case "informacion":
         if (!game_info && !recent && !headtohead && !standings) {
           return (
             <View style={styles.notfound_container}>
@@ -108,8 +108,8 @@ const MatchInfo = () => {
               headtohead={headtohead}
               recent={recent}
               standings={standings}
-              team1Info={{ name: team1?.name || 'Equipo 1', id: team1?.id }}
-              team2Info={{ name: team2?.name || 'Equipo 2', id: team2?.id }}
+              team1Info={{ name: team1?.name || "Equipo 1", id: team1?.id }}
+              team2Info={{ name: team2?.name || "Equipo 2", id: team2?.id }}
             />
           </View>
         );
@@ -126,7 +126,7 @@ const MatchInfo = () => {
             headerShown: true,
             headerTitle:
               `${matchData?.game?.teams?.[0]?.name} vs ${matchData?.game?.teams?.[1]?.name}` ||
-              'Cargando...',
+              "Cargando...",
             headerStyle: {
               backgroundColor: Colors.DARK_BLUE,
             },
@@ -138,19 +138,19 @@ const MatchInfo = () => {
           {/* Botones para cambiar la sección */}
           <Pressable
             style={styles.button_pressable}
-            onPress={() => setActiveSection('estadisticas')}
+            onPress={() => setActiveSection("estadisticas")}
           >
             <Text style={styles.text_buttons}>Estadisticas</Text>
           </Pressable>
           <Pressable
             style={styles.button_pressable}
-            onPress={() => setActiveSection('lineup')}
+            onPress={() => setActiveSection("lineup")}
           >
             <Text style={styles.text_buttons}>Formación</Text>
           </Pressable>
           <Pressable
             style={styles.button_pressable}
-            onPress={() => setActiveSection('informacion')}
+            onPress={() => setActiveSection("informacion")}
           >
             <Text style={styles.text_buttons}>Información</Text>
           </Pressable>
@@ -176,7 +176,7 @@ const MatchInfo = () => {
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {team1?.short_name || 'Sin equipo'}
+                {team1?.short_name || "Sin equipo"}
               </Text>
             </View>
             <View style={styles.team_match_score}>
@@ -188,15 +188,15 @@ const MatchInfo = () => {
               */}
                 <Text style={styles.time_match_text}>
                   {status?.enum === 3
-                    ? status?.short_name === 'Final'
-                      ? 'Final'
-                      : status?.symbol_name + ' (Final)'
-                    : status?.short_name === 'ET'
-                    ? 'ET'
+                    ? status?.short_name === "Final"
+                      ? "Final"
+                      : status?.symbol_name + " (Final)"
+                    : status?.short_name === "ET"
+                    ? "ET"
                     : status?.enum === 1
-                    ? start_time?.split(' ')[1]
-                    : game_time_to_display === '-1'
-                    ? 'ERROR'
+                    ? start_time?.split(" ")[1]
+                    : game_time_to_display === "-1"
+                    ? "ERROR"
                     : game_time_to_display}
                 </Text>
               </View>
@@ -204,25 +204,25 @@ const MatchInfo = () => {
                 <View style={styles.goals_match_container_team1_results}>
                   {penalties && (
                     <Text style={styles.events_text_penalty}>
-                      {'('}
+                      {"("}
                       {penalties?.[0].toString()}
-                      {')'}
+                      {")"}
                     </Text>
                   )}
                   <Text style={styles.team_match_score_text}>
-                    {status?.enum === 1 ? ' ' : scores?.[0].toString()}
+                    {status?.enum === 1 ? " " : scores?.[0].toString()}
                   </Text>
                 </View>
                 <Text style={styles.separator_text}>-</Text>
                 <View style={styles.goals_match_container_team2_results}>
                   <Text style={styles.team_match_score_text}>
-                    {status?.enum === 1 ? ' ' : scores?.[1].toString()}
+                    {status?.enum === 1 ? " " : scores?.[1].toString()}
                   </Text>
                   {penalties && (
                     <Text style={styles.events_text_penalty}>
-                      {'('}
+                      {"("}
                       {penalties?.[1].toString()}
-                      {')'}
+                      {")"}
                     </Text>
                   )}
                 </View>
@@ -243,7 +243,7 @@ const MatchInfo = () => {
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {team2?.short_name || 'Sin equipo'}
+                {team2?.short_name || "Sin equipo"}
               </Text>
             </View>
           </View>
@@ -259,13 +259,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.DARK_BLUE,
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   container_buttons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    alignItems: "center",
     width: width * 0.9,
 
     marginBottom: 40,
@@ -273,20 +273,20 @@ const styles = StyleSheet.create({
   },
   container_league_all_tables: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   text_buttons: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
   button_pressable: {
     width: width * 0.25,
     height: height * 0.08,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 10,
     borderWidth: 1,
     padding: 10,
@@ -296,13 +296,13 @@ const styles = StyleSheet.create({
   table_name_text: {
     fontSize: 24,
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
+    textAlign: "center",
     paddingVertical: 10,
   },
   team_match: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
     height: height * 0.12,
     width: width * 0.9,
     borderRadius: 10,
@@ -311,42 +311,42 @@ const styles = StyleSheet.create({
   team_match_text: {
     fontSize: 16,
     color: Colors.YELLOW_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
   team_match_score: {
     flex: 1,
 
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   team_match_info: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
   },
   goals_match_container_team1_results: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   goals_match_container_team2_results: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   team_match_score_text: {
     fontSize: 24,
     color: Colors.YELLOW_LIGHT,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   results_container: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   events_text_penalty: {
     fontSize: 24,
     color: Colors.RED_CHANGE_PLAYER,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   separator_text: {
     fontSize: 24,
     marginHorizontal: 10,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   time_match_text: {
     fontSize: 24,
@@ -355,13 +355,13 @@ const styles = StyleSheet.create({
   notfound_container: {
     flex: 1,
     width: width * 0.9,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   notfound_text: {
     fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     color: Colors.RED_CHANGE_PLAYER,
   },
   loading_images_text: {

@@ -1,14 +1,14 @@
-import FixtureTeam from '@/components/team/fixture/fixture';
-import SquadTeam from '@/components/team/squad/squad';
-import { Colors } from '@/constants/colors/colors';
-import useTeamInfo from '@/hooks/team_info/team_info';
-import { useFavoritesStore } from '@/store/favorites';
-import { Image } from 'expo-image';
-import { Stack, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import FixtureTeam from "@/components/team/fixture/fixture";
+import SquadTeam from "@/components/team/squad/squad";
+import { Colors } from "@/constants/colors/colors";
+import useTeamInfo from "@/hooks/team_info/team_info";
+import { useFavoritesStore } from "@/store/favorites";
+import { Image } from "expo-image";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 const Team = () => {
   const { team } = useLocalSearchParams(); // Team proveniente de la ID
 
@@ -17,8 +17,8 @@ const Team = () => {
 
   const { data, isLoading, error } = useTeamInfo(teamId);
   const [ActiveSection, setActiveSection] = useState<
-    'plantel' | 'partidos' | 'info'
-  >('plantel');
+    "plantel" | "partidos" | "info"
+  >("plantel");
 
   const { addFavorite, removeFavorite, isFavorite, getAllTeams } =
     useFavoritesStore();
@@ -39,7 +39,7 @@ const Team = () => {
 
   const renderSection = () => {
     switch (ActiveSection) {
-      case 'plantel':
+      case "plantel":
         if (!data?.squad) {
           return (
             <Text style={{ color: Colors.WHITE_GRAY }}>
@@ -48,7 +48,7 @@ const Team = () => {
           );
         }
         return <SquadTeam squad={data.squad} />;
-      case 'partidos':
+      case "partidos":
         if (!data?.games) {
           return (
             <Text style={{ color: Colors.WHITE_GRAY }}>
@@ -57,7 +57,7 @@ const Team = () => {
           );
         }
         return <FixtureTeam fixture={data.games} />;
-      case 'info':
+      case "info":
         return <></>;
       default:
         break;
@@ -69,7 +69,7 @@ const Team = () => {
       <Stack.Screen
         options={{
           headerShown: true,
-          headerTitle: data?.competitor?.name || ' ',
+          headerTitle: data?.competitor?.name || " ",
           headerStyle: {
             backgroundColor: Colors.DARK_BLUE,
           },
@@ -79,13 +79,13 @@ const Team = () => {
       <View style={styles.container_buttons}>
         <Pressable
           style={styles.button_pressable}
-          onPress={() => setActiveSection('plantel')}
+          onPress={() => setActiveSection("plantel")}
         >
           <Text style={styles.text_buttons}>Plantel</Text>
         </Pressable>
         <Pressable
           style={styles.button_pressable}
-          onPress={() => setActiveSection('partidos')}
+          onPress={() => setActiveSection("partidos")}
         >
           <Text style={styles.text_buttons}>Partidos</Text>
         </Pressable>
@@ -95,8 +95,8 @@ const Team = () => {
         >
           <Text style={styles.text_buttons}>
             {IsFavoriteTeam === true
-              ? 'Borrar de Favoritos'
-              : 'Agregar a favoritos'}
+              ? "Borrar de Favoritos"
+              : "Agregar a favoritos"}
           </Text>
         </Pressable>
       </View>
@@ -126,28 +126,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.DARK_BLUE,
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   container_buttons: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    flexWrap: 'wrap',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    flexWrap: "wrap",
+    alignItems: "center",
     width: width * 0.9,
     marginBottom: 20,
   },
   text_buttons: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
   button_pressable: {
     width: width * 0.25,
     height: height * 0.08,
     padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: Colors.YELLOW_LIGHT,
@@ -160,12 +160,12 @@ const styles = StyleSheet.create({
   text_name_team: {
     fontSize: 24,
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
+    textAlign: "center",
   },
   container_team_image: {
     width: width * 0.95,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 20,
   },
 });
