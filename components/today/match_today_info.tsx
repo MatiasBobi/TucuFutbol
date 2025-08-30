@@ -203,6 +203,30 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                 </View>
               ) : events ? (
                 <>
+                  <View>
+                    <Link
+                      asChild
+                      href={{
+                        pathname: '/match_info/[match]',
+                        params: { match: matchid },
+                      }}
+                    >
+                      {/* Aquí el stopPropagation para que no se cierre */}
+                      <Pressable
+                        onPress={(e) => {
+                          e.stopPropagation();
+                        }}
+                        style={styles.moreInfo_container}
+                      >
+                        <Text style={styles.moreInfo_text}>
+                          Ver información completa
+                        </Text>
+                      </Pressable>
+                    </Link>
+                    <Text style={styles.noEventsText}>
+                      No hay eventos disponibles
+                    </Text>
+                  </View>
                   <MatchStats
                     events={events}
                     statistics={statistics || undefined}
@@ -376,6 +400,7 @@ const styles = StyleSheet.create({
   },
   events_container: {
     width: '100%',
+    padding: 8,
   },
   events_team1: {
     flexDirection: 'row',

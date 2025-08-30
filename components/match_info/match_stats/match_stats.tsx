@@ -147,6 +147,7 @@ const MatchStats = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 12,
   },
   teamcolors_container: {
     justifyContent: 'space-around',
