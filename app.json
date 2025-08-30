@@ -2,31 +2,22 @@
   "expo": {
     "name": "TucuLive",
     "slug": "TucuLive",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "futapk",
+    "scheme": "tuculive",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "tucubol",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      },
-      "buildNumber": "1"
-    },
-    "androidNavigationBar": {
-      "backgroundColor": "#041026"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 1,
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.fut_apk"
+      "package": "com.futapk_TucuLive"
     },
     "web": {
       "bundler": "metro",
@@ -43,8 +34,7 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ],
-      "expo-secure-store"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -52,15 +42,14 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "e42b3944-9702-4f07-a489-f75323773273"
+        "projectId": "e6bcaa70-463c-4c94-9653-a1c7a5a964c5"
       }
     },
-    "owner": "stnkz",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/e42b3944-9702-4f07-a489-f75323773273"
+      "url": "https://u.expo.dev/e6bcaa70-463c-4c94-9653-a1c7a5a964c5"
     }
   }
 }

@@ -1,12 +1,11 @@
-import { ScreenContainer } from '@/components/ui/ScreenContainer';
-import { Colors } from '@/constants/colors/colors';
-import { LeagueTable, TableRow } from '@/types/league_full_info';
-import { useMappingHelper } from '@shopify/flash-list';
-import { Image } from 'expo-image';
-import React, { useCallback, useState } from 'react';
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ScreenContainer } from "@/components/ui/ScreenContainer";
+import { Colors } from "@/constants/colors/colors";
+import { LeagueTable, TableRow } from "@/types/league_full_info";
+import { Image } from "expo-image";
+import React, { useCallback, useState } from "react";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 export default function LeagueTableData({
   table,
@@ -15,10 +14,6 @@ export default function LeagueTableData({
   table: LeagueTable;
   table_name?: string;
 }) {
-  // Estado para manejar el expansible
-
-  const { getMappingKey } = useMappingHelper();
-
   ///////////////////////// RENDER INDIVIDUAL X CADA EQUIPO /////////////////////////////
   const RenderItemTable = React.memo(function RenderItemTable({
     item,
@@ -75,10 +70,10 @@ export default function LeagueTableData({
           <View style={styles.table_item_right_container}>
             {columns?.slice(0, 4).map((column) => {
               const team = visibleRows.find(
-                (value) => value.key === column.key,
+                (value) => value.key === column.key
               ); // Acomodamos para que la key de visiblerows coincida con las de las columnas que vienen desordenadas.
-              const value = team?.value ?? '-';
-              if (column?.key === 'GamesWon' && column?.title !== 'G')
+              const value = team?.value ?? "-";
+              if (column?.key === "GamesWon" && column?.title !== "G")
                 return null;
 
               return (
@@ -86,30 +81,30 @@ export default function LeagueTableData({
                   key={column?.key}
                   style={[
                     styles.right_item,
-                    column?.key === 'Pct' ? { flex: 1.25 } : { flex: 1 },
+                    column?.key === "Pct" ? { flex: 1.25 } : { flex: 1 },
                   ]}
                 >
-                  {column?.key === 'Goals' && value !== '-' ? (
+                  {column?.key === "Goals" && value !== "-" ? (
                     <View style={styles.goalsContainer}>
                       <Text
                         style={[
                           styles.right_text_stats,
                           styles.goalsText,
-                          { color: 'green' },
+                          { color: "green" },
                         ]}
                       >
                         {/* Goles a favor */}
-                        {typeof value === 'string' ? value.split(':')[0] : '-'}
+                        {typeof value === "string" ? value.split(":")[0] : "-"}
                       </Text>
                       <Text
                         style={[
                           styles.right_text_stats,
                           styles.goalsText,
-                          { color: 'red' },
+                          { color: "red" },
                         ]}
                       >
                         {/* Goles en contra */}
-                        {typeof value === 'string' ? value.split(':')[1] : '-'}
+                        {typeof value === "string" ? value.split(":")[1] : "-"}
                       </Text>
                     </View>
                   ) : (
@@ -125,10 +120,10 @@ export default function LeagueTableData({
             <View style={styles.hidden_columns_container}>
               {columns.slice(4, columns.length).map((column, index) => {
                 // {trend} representa los ultimos 5 partidos jugados.
-                if (column.key === '{trend}') {
+                if (column.key === "{trend}") {
                   return (
                     <View
-                      key={getMappingKey(column.key, index)}
+                      key={`${column.key}_${index}`}
                       style={styles.hidden_info_text_trend_container}
                     >
                       <Text
@@ -144,7 +139,7 @@ export default function LeagueTableData({
                 }
                 return (
                   <View
-                    key={getMappingKey(column.key, index)}
+                    key={`${column.key}_${index}`}
                     style={styles.hidden_info_text_container}
                   >
                     <Text
@@ -163,20 +158,20 @@ export default function LeagueTableData({
               {hiddenRows.map((itemRow, index) => {
                 // Nos fijamos si existe {trend} en la columnas y rows que recibimos. Mapeamos los values para poner 'CONDICION;COLOR_CONDICION'
                 if (
-                  itemRow?.key === '{trend}' &&
+                  itemRow?.key === "{trend}" &&
                   Array.isArray(itemRow.value)
                 ) {
                   const gameValues = itemRow?.value?.map((value, index) => {
                     return value === 0
-                      ? 'P;#831616'
+                      ? "P;#831616"
                       : value === 1
-                      ? 'V;#16831b'
-                      : 'E;#373847';
+                      ? "V;#16831b"
+                      : "E;#373847";
                   });
 
                   return (
                     <View
-                      key={getMappingKey(itemRow?.key, index)}
+                      key={`${itemRow.key}_${index}`}
                       style={styles.hidden_trend_container}
                     >
                       <View
@@ -184,13 +179,13 @@ export default function LeagueTableData({
                           styles.lastGameInfo_container,
                           {
                             backgroundColor: `${
-                              gameValues?.[0]?.split(';')?.[1]
+                              gameValues?.[0]?.split(";")?.[1]
                             }`,
                           },
                         ]}
                       >
                         <Text style={styles.itemValueText}>
-                          {gameValues?.[0]?.split(';')?.[0]}
+                          {gameValues?.[0]?.split(";")?.[0]}
                         </Text>
                       </View>
                       <View
@@ -198,13 +193,13 @@ export default function LeagueTableData({
                           styles.lastGameInfo_container,
                           {
                             backgroundColor: `${
-                              gameValues?.[1]?.split(';')?.[1]
+                              gameValues?.[1]?.split(";")?.[1]
                             }`,
                           },
                         ]}
                       >
                         <Text style={styles.itemValueText}>
-                          {gameValues?.[1]?.split(';')?.[0]}
+                          {gameValues?.[1]?.split(";")?.[0]}
                         </Text>
                       </View>
                       <View
@@ -212,13 +207,13 @@ export default function LeagueTableData({
                           styles.lastGameInfo_container,
                           {
                             backgroundColor: `${
-                              gameValues?.[2]?.split(';')?.[1]
+                              gameValues?.[2]?.split(";")?.[1]
                             }`,
                           },
                         ]}
                       >
                         <Text style={styles.itemValueText}>
-                          {gameValues?.[2]?.split(';')?.[0]}
+                          {gameValues?.[2]?.split(";")?.[0]}
                         </Text>
                       </View>
                       <View
@@ -226,13 +221,13 @@ export default function LeagueTableData({
                           styles.lastGameInfo_container,
                           {
                             backgroundColor: `${
-                              gameValues?.[3]?.split(';')?.[1]
+                              gameValues?.[3]?.split(";")?.[1]
                             }`,
                           },
                         ]}
                       >
                         <Text style={styles.itemValueText}>
-                          {gameValues?.[3]?.split(';')?.[0]}
+                          {gameValues?.[3]?.split(";")?.[0]}
                         </Text>
                       </View>
                       <View
@@ -240,13 +235,13 @@ export default function LeagueTableData({
                           styles.lastGameInfo_container,
                           {
                             backgroundColor: `${
-                              gameValues?.[4]?.split(';')?.[1]
+                              gameValues?.[4]?.split(";")?.[1]
                             }`,
                           },
                         ]}
                       >
                         <Text style={styles.itemValueText}>
-                          {gameValues?.[4]?.split(';')?.[0]}
+                          {gameValues?.[4]?.split(";")?.[0]}
                         </Text>
                       </View>
                     </View>
@@ -254,7 +249,7 @@ export default function LeagueTableData({
                 }
                 return (
                   <View
-                    key={getMappingKey(itemRow?.key, index)}
+                    key={`${itemRow.key}_${index}`}
                     style={styles.hidden_info_text_container}
                   >
                     <Text style={styles.itemValueText}>{itemRow?.value}</Text>
@@ -288,11 +283,11 @@ export default function LeagueTableData({
           </View>
           <View style={styles.table_info_stats_container}>
             {table?.columns?.slice(0, 4)?.map((column, index) => {
-              if (column?.key === 'GamesWon' && column?.title !== 'G')
+              if (column?.key === "GamesWon" && column?.title !== "G")
                 return null;
               return (
                 <Text
-                  key={getMappingKey(column?.key, index)}
+                  key={`${column.key}_${index}`}
                   style={styles.text_header_stats}
                 >
                   {column?.title}
@@ -303,7 +298,7 @@ export default function LeagueTableData({
         </View>
         <View>
           {table?.rows?.map((item, index) => (
-            <View key={getMappingKey(item.entity.object.id, index)}>
+            <View key={`${item.entity.object.id}_${index}`}>
               <RenderItemTable item={item} columns={table.columns} />
             </View>
           ))}
@@ -348,7 +343,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   destination_container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 15,
     paddingVertical: 10,
   },
@@ -360,21 +355,21 @@ const styles = StyleSheet.create({
   destination_text: {
     fontSize: 16,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   title_table_container: {
     height: height * 0.05,
-    alignItems: 'center',
+    alignItems: "center",
   },
   title_table_text: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 24,
     color: Colors.YELLOW_GOAL,
   },
   header_container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     height: height * 0.05,
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: Colors.LIGHT_BLACK,
   },
   position_team_container: {
@@ -384,48 +379,48 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   table_info_pos_container: {
-    flexDirection: 'row',
-    width: '55%',
+    flexDirection: "row",
+    width: "55%",
   },
   table_info_stats_container: {
-    flexDirection: 'row',
-    width: '45%',
+    flexDirection: "row",
+    width: "45%",
   },
   text_header_stats: {
     flex: 1,
     fontSize: 13,
-    textAlign: 'center',
+    textAlign: "center",
     color: Colors.YELLOW_LIGHT,
   },
   text_pos: {
     fontSize: 18,
     color: Colors.YELLOW_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
   table_item_container: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   table_item_left_container: {
-    flexDirection: 'row',
-    width: '55%',
+    flexDirection: "row",
+    width: "55%",
   },
   table_item_right_container: {
-    flexDirection: 'row',
-    width: '45%',
+    flexDirection: "row",
+    width: "45%",
   },
   right_item: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   right_text_stats: {
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
     color: Colors.YELLOW_LIGHT,
   },
   goalsContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   goalsText: {
     fontSize: 14,
@@ -434,51 +429,51 @@ const styles = StyleSheet.create({
   image_container: {
     flex: 1,
     minHeight: height * 0.08,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginLeft: 10,
     gap: 8,
   },
   position_row_team_container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     width: width * 0.08,
   },
   position_text: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.WHITE_GRAY,
   },
   name_team_text: {
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
     color: Colors.WHITE_GRAY,
   },
   name_team_container_row: {
-    width: '100%',
+    width: "100%",
   },
 
   hidden_container: {
-    flexDirection: 'column',
+    flexDirection: "column",
     backgroundColor: Colors.DARK_BLUE_HIDDEN_ROWS,
   },
   hidden_rows_container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     height: height * 0.05,
   },
   hidden_columns_container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
 
-    alignItems: 'center',
+    alignItems: "center",
 
     height: height * 0.05,
     flex: 1,
   },
   hidden_trend_container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     flex: 1.5,
   },
   hidden_info_text_trend_container: {
@@ -489,12 +484,12 @@ const styles = StyleSheet.create({
   },
   lastGameInfo_container: {
     width: width * 0.05,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginRight: 1,
-    alignItems: 'center',
+    alignItems: "center",
   },
   itemValueText: {
-    textAlign: 'center',
-    color: '#fff',
+    textAlign: "center",
+    color: "#fff",
   },
 });

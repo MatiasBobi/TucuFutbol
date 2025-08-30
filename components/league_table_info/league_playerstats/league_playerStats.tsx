@@ -1,8 +1,7 @@
-import { Colors } from '@/constants/colors/colors';
-import { FlashList } from '@shopify/flash-list';
-import { StyleSheet, Text, View } from 'react-native';
-import { StatisticsTable } from '../../../types/league_full_info';
-import StatsTable from './stats_table/stats_table';
+import { Colors } from "@/constants/colors/colors";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { StatisticsTable } from "../../../types/league_full_info";
+import StatsTable from "./stats_table/stats_table";
 export default function LeaguePlayerStats({
   league_stats,
 }: {
@@ -10,7 +9,7 @@ export default function LeaguePlayerStats({
 }) {
   const renderSubTable = ({ item }: { item: StatisticsTable }) => {
     return (
-      <View style={{ alignItems: 'center' }}>
+      <View style={{ alignItems: "center" }}>
         <StatsTable
           rows_table={item?.rows.slice(0, 20)}
           table_name={item?.name}
@@ -31,8 +30,7 @@ export default function LeaguePlayerStats({
   }
   return (
     <View style={styles.container}>
-      <FlashList
-        estimatedItemSize={100}
+      <FlatList
         data={league_stats}
         renderItem={renderSubTable}
         keyExtractor={(item, index) =>
@@ -51,13 +49,13 @@ const styles = StyleSheet.create({
   error_container: {
     flex: 1,
     marginTop: 20,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    alignItems: "center",
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
   error_text: {
     fontSize: 28,
-    textAlign: 'center',
+    textAlign: "center",
     color: Colors.WHITE_GRAY,
   },
 });

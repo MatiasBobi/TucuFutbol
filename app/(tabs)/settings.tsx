@@ -24,10 +24,21 @@ const Screen = () => {
             <Text style={styles.menu_text_item}>Actualizaciones</Text>
           </Pressable>
         </Link>
-        <Pressable style={styles.item_menu_container}>
-          <Entypo name="info-with-circle" size={24} color={Colors.WHITE_GRAY} />
-          <Text style={styles.menu_text_item}>Informacion de la APP</Text>
-        </Pressable>
+        <Link
+          asChild
+          href={{
+            pathname: '/settings/infoApp',
+          }}
+        >
+          <Pressable style={styles.item_menu_container}>
+            <Entypo
+              name="info-with-circle"
+              size={24}
+              color={Colors.WHITE_GRAY}
+            />
+            <Text style={styles.menu_text_item}>Informacion de la APP</Text>
+          </Pressable>
+        </Link>
       </View>
     </View>
   );
