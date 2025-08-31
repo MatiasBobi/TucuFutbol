@@ -33,6 +33,7 @@ const MatchInfo = () => {
   const headtohead = matchData?.game?.head_to_head;
   const recent = matchData?.game?.recent_form;
   const standings = matchData?.game?.standings;
+  const videoId = matchData?.game?.videos?.[0].video_id || "";
 
   const [activeSection, setActiveSection] = useState<
     "estadisticas" | "lineup" | "informacion"
@@ -61,6 +62,7 @@ const MatchInfo = () => {
           <MatchStats
             events={matchData?.game?.events}
             statistics={matchData?.game?.statistics}
+            video_id={videoId}
           />
         );
 

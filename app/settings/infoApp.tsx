@@ -49,6 +49,38 @@ const InfoApp = () => {
                 </Text>
               </View>
             </View>
+            {/* Version 1.0.1 */}
+            <View style={styles.versionSection}>
+              <Text style={styles.versionTitle}>Version 1.0.1</Text>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Se arreglaron los anchos en las estadísticas del partido.
+                  </Text>
+                </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Fixeado el height de los playoffs.
+                  </Text>
+                </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Se reducen los tamaños de la fuente en los botones en ligas,
+                    partidos y equipos.
+                  </Text>
+                </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Ahora se puede ver el resumen del partido en las
+                    estadísticas del partido seleccionado.
+                  </Text>
+                </View>
+              </View>
+            </View>
           </View>
         </View>
       </ScrollView>

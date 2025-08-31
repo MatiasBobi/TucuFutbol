@@ -2,16 +2,31 @@ import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Colors } from "@/constants/colors/colors";
 import { GameStage, Statistic } from "@/types/game_info";
 import { Image } from "expo-image";
+import { useCallback, useState } from "react";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import YoutubePlayer from "react-native-youtube-iframe";
 
 const { width, height } = Dimensions.get("window");
 const MatchStats = ({
   events,
   statistics,
+  video_id,
 }: {
   events?: GameStage[];
   statistics?: Statistic[];
+  video_id: string;
 }) => {
+  const [playing, setPlaying] = useState(false);
+
+  const onStateChange = useCallback((state: any) => {
+    if (state === "ended") {
+      setPlaying(false);
+    }
+  }, []);
+
+  const togglePlaying = useCallback(() => {
+    setPlaying((prev) => !prev);
+  }, []);
   return (
     <ScreenContainer style={styles.container}>
       <ScrollView>
@@ -138,6 +153,17 @@ const MatchStats = ({
               </View>
             ))
           )}
+        </View>
+        <View>
+          <Text style={styles.video_title_text}>Resumen del partido</Text>
+          <View>
+            <YoutubePlayer
+              height={300}
+              play={playing}
+              videoId={video_id}
+              onChangeState={onStateChange}
+            />
+          </View>
         </View>
       </ScrollView>
     </ScreenContainer>
@@ -298,6 +324,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
+  },
+  video_title_text: {
+    textAlign: "center",
+    marginTop: 15,
+    fontSize: 20,
+    color: Colors.WHITE_GRAY,
+    fontWeight: "bold",
   },
 });
 
