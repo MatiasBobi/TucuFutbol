@@ -1,15 +1,15 @@
-import { LeagueTableToday } from '@/components/today/table_today';
-import { Colors } from '@/constants/colors/colors';
-import useToday from '@/hooks/today_data/useTodayData';
-import { League, TodayMatches } from '@/types/todayMatches';
-import { useCallback, useEffect, useState } from 'react';
+import { LeagueTableToday } from "@/components/today/table_today";
+import { Colors } from "@/constants/colors/colors";
+import useToday from "@/hooks/today_data/useTodayData";
+import { League, TodayMatches } from "@/types/todayMatches";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
   View,
-} from 'react-native';
+} from "react-native";
 export default function HomeScreen() {
   const { data, isLoading, error, isFetching } = useToday();
   const [lastData, setLastData] = useState<TodayMatches | null>(null);
@@ -23,7 +23,7 @@ export default function HomeScreen() {
 
   const renderMatches = useCallback(
     ({ item }: { item: League }) => <LeagueTableToday league={item} />,
-    [],
+    []
   );
 
   const oneTimeLoading = isLoading && !lastData;
@@ -67,18 +67,18 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: Colors.DARK_BLUE,
   },
   loadingText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
   },
   errorText: {
     fontSize: 36,
-    fontWeight: 'bold',
-    color: 'red',
+    fontWeight: "bold",
+    color: "red",
   },
 });

@@ -3,7 +3,14 @@ import { Colors } from "@/constants/colors/colors";
 import { GameStage, Statistic } from "@/types/game_info";
 import { Image } from "expo-image";
 import { useCallback, useState } from "react";
-import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import YoutubePlayer from "react-native-youtube-iframe";
 
 const { width, height } = Dimensions.get("window");
@@ -27,6 +34,7 @@ const MatchStats = ({
   const togglePlaying = useCallback(() => {
     setPlaying((prev) => !prev);
   }, []);
+
   return (
     <ScreenContainer style={styles.container}>
       <ScrollView>
@@ -154,17 +162,25 @@ const MatchStats = ({
             ))
           )}
         </View>
-        <View>
-          <Text style={styles.video_title_text}>Resumen del partido</Text>
-          <View>
-            <YoutubePlayer
-              height={300}
-              play={playing}
-              videoId={video_id}
-              onChangeState={onStateChange}
-            />
-          </View>
-        </View>
+        {video_id ? (
+          <>
+            <Pressable
+              onPress={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <Text style={styles.video_title_text}>Resumen del partido</Text>
+              <View>
+                <YoutubePlayer
+                  height={300}
+                  play={playing}
+                  videoId={video_id}
+                  onChangeState={onStateChange}
+                />
+              </View>
+            </Pressable>
+          </>
+        ) : null}
       </ScrollView>
     </ScreenContainer>
   );

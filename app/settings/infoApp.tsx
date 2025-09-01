@@ -38,6 +38,11 @@ const InfoApp = () => {
               Versión actual: {Application.nativeApplicationVersion}
             </Text>
           </View>
+          <View style={styles.versionHeader}>
+            <Text style={styles.currentVersion_text}>
+              Mail de contacto: TucuLive_app@gmail.com
+            </Text>
+          </View>
           {/* Version 1.0.0 */}
           <View style={styles.versions_changes}>
             <View style={styles.versionSection}>
@@ -78,6 +83,28 @@ const InfoApp = () => {
                     Ahora se puede ver el resumen del partido en las
                     estadísticas del partido seleccionado.
                   </Text>
+                </View>
+              </View>
+            </View>
+            {/* Version 1.0.2 */}
+            <View style={styles.versionSection}>
+              <Text style={styles.versionTitle}>Version 1.0.2</Text>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Se agrego los videos resumenes de los partidos.
+                  </Text>
+                </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Cambio y ajustes en los logos generales de la aplicación
+                  </Text>
+                </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>Version estable.</Text>
                 </View>
               </View>
             </View>

@@ -368,7 +368,9 @@ const styles = StyleSheet.create({
   },
   loading_images_text: {
     fontSize: 24,
+    textAlign: "center",
     color: Colors.YELLOW_LIGHT,
+    marginVertical: 20,
   },
 });
 export default MatchInfo;
