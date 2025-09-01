@@ -1,9 +1,9 @@
-import { Colors } from '@/constants/colors/colors';
-import { Standings } from '@/types/game_info';
-import { Image } from 'expo-image';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Colors } from "@/constants/colors/colors";
+import { Standings } from "@/types/game_info";
+import { Image } from "expo-image";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 const MatchStandings = ({
   standings,
 }: {
@@ -98,41 +98,42 @@ const MatchStandings = ({
 
 const styles = StyleSheet.create({
   standing_container: {
-    width: width * 0.9,
+    minWidth: width * 0.9,
     marginTop: 8,
   },
   standing_title_text: {
     fontSize: 24,
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
+    textAlign: "center",
   },
   teams_stats_container: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   team_container: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   team_name_container: {
     paddingVertical: 10,
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
-    height: height * 0.1,
+    minHeight: height * 0.1,
+    maxHeight: height * 0.2,
   },
   stats_container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1.5,
   },
   team_name_text: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
   },
   stat_container: {
-    justifyContent: 'space-evenly',
+    justifyContent: "space-evenly",
 
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
   },
   stat_header: {
     fontSize: 20,

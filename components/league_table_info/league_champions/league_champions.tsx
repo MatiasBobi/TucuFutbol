@@ -1,10 +1,10 @@
-import { ScreenContainer } from '@/components/ui/ScreenContainer';
-import { Colors } from '@/constants/colors/colors';
-import useLeagueChampions from '@/hooks/league_champions/LeagueChampions';
-import { HistoryRow, RankingRow } from '@/types/champions_table';
-import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
-import React, { useCallback } from 'react';
+import { ScreenContainer } from "@/components/ui/ScreenContainer";
+import { Colors } from "@/constants/colors/colors";
+import useLeagueChampions from "@/hooks/league_champions/LeagueChampions";
+import { HistoryRow, RankingRow } from "@/types/champions_table";
+import { Image } from "expo-image";
+import { useRouter } from "expo-router";
+import React, { useCallback } from "react";
 import {
   Dimensions,
   Pressable,
@@ -13,9 +13,9 @@ import {
   StyleSheet,
   Text,
   View,
-} from 'react-native';
+} from "react-native";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 interface Section {
   title: string;
@@ -36,8 +36,8 @@ const RenderChampions = React.memo(
     OnPressFn: (trigger: number, id: string, league_id: string) => void;
   }) => {
     const valueSplit = React.useMemo(
-      () => item.values?.[0].value.split(' ')[0] || item.values?.[0].value,
-      [item.values],
+      () => item.values?.[0].value.split(" ")[0] || item.values?.[0].value,
+      [item.values]
     ); // Mostrar la fecha nada mas.
 
     const indexColor =
@@ -48,16 +48,16 @@ const RenderChampions = React.memo(
         ? item?.game?.id
         : item?.trigger_type === 2
         ? item?.season_id
-        : '';
+        : "";
 
     return (
       <View
         style={[styles.champions_container, { backgroundColor: indexColor }]}
       >
-        <View style={[styles.restValue_container, { flex: 0.2 }]}>
+        <View style={[styles.restValue_container, { flex: 0.3 }]}>
           <Text style={styles.render_item_champion_text}>{valueSplit}</Text>
         </View>
-        <View style={[styles.team_container, { flex: 0.6 }]}>
+        <View style={[styles.team_container, { flex: 0.5 }]}>
           <Image
             source={{
               uri: `https://api.promiedos.com.ar/images/team/${item.entity?.object.id}/4`,
@@ -74,26 +74,26 @@ const RenderChampions = React.memo(
             onPress={() =>
               OnPressFn(
                 item.trigger_type || 0,
-                idTrigger || '',
-                league_id_search,
+                idTrigger || "",
+                league_id_search
               )
             }
           >
             <Text style={styles.render_item_champion_text}>
               {item.trigger_type === 2
-                ? 'Ver'
+                ? "Ver"
                 : item.trigger_type === 1
-                ? 'Final'
+                ? "Final"
                 : null}
             </Text>
           </Pressable>
         </View>
       </View>
     );
-  },
+  }
 );
 
-RenderChampions.displayName = 'RenderChampions';
+RenderChampions.displayName = "RenderChampions";
 
 const RenderRankings = React.memo(
   ({ item, index }: { item: RankingRow; index: number }) => {
@@ -122,10 +122,10 @@ const RenderRankings = React.memo(
         </View>
       </View>
     );
-  },
+  }
 );
 
-RenderRankings.displayName = 'RenderRankings';
+RenderRankings.displayName = "RenderRankings";
 
 const LeagueChampions = ({ league_id }: { league_id: string }) => {
   const { data, isLoading, error, isFetching } = useLeagueChampions(league_id);
@@ -136,14 +136,14 @@ const LeagueChampions = ({ league_id }: { league_id: string }) => {
     (trigger: number, id: string, league_id: string) => {
       if (trigger === 1) {
         router.push({
-          pathname: '/match_info/[match]',
+          pathname: "/match_info/[match]",
           params: {
             match: id,
           },
         });
       } else if (trigger === 2) {
         router.push({
-          pathname: '/modal_table/[season_id]',
+          pathname: "/modal_table/[season_id]",
           params: {
             league_id: league_id,
             season_id: id,
@@ -151,22 +151,22 @@ const LeagueChampions = ({ league_id }: { league_id: string }) => {
         });
       }
     },
-    [],
+    []
   );
 
   // El sectiondata memorizado para no hacer render innecesarios
   const sectionData: Section[] = React.useMemo(
     () => [
       {
-        title: 'Campeones',
+        title: "Campeones",
         data: data?.history?.rows || [],
       },
       {
-        title: 'Ranking',
+        title: "Ranking",
         data: data?.ranking_tables?.[0]?.rows || [],
       },
     ],
-    [data?.history?.rows, data?.ranking_tables],
+    [data?.history?.rows, data?.ranking_tables]
   );
 
   // Este es el render del item, aca se discrimina a que tabla ira cada uno.
@@ -180,7 +180,7 @@ const LeagueChampions = ({ league_id }: { league_id: string }) => {
       index: number;
       section: Section;
     }) => {
-      if (section.title === 'Campeones') {
+      if (section.title === "Campeones") {
         return (
           <RenderChampions
             item={item as HistoryRow}
@@ -193,13 +193,13 @@ const LeagueChampions = ({ league_id }: { league_id: string }) => {
         return <RenderRankings item={item as RankingRow} index={index} />;
       }
     },
-    [],
+    []
   );
 
   // Render del header con su titulo y columnas correspondientes.
   const RenderHeader = React.useCallback(
     ({ section }: { section: SectionListData<HistoryRow, Section> }) => {
-      if (section.title === 'Campeones') {
+      if (section.title === "Campeones") {
         return (
           <View style={styles.sectionHeader_container}>
             <View style={styles.header_title_container}>
@@ -207,12 +207,12 @@ const LeagueChampions = ({ league_id }: { league_id: string }) => {
             </View>
             <View style={styles.header_column_container}>
               <View
-                style={[styles.header_column_text_container, { flex: 0.2 }]}
+                style={[styles.header_column_text_container, { flex: 0.3 }]}
               >
                 <Text style={styles.header_column_text}>Año</Text>
               </View>
               <View
-                style={[styles.header_column_text_container, { flex: 0.6 }]}
+                style={[styles.header_column_text_container, { flex: 0.5 }]}
               >
                 <Text style={styles.header_column_text}>Equipo</Text>
               </View>
@@ -246,13 +246,13 @@ const LeagueChampions = ({ league_id }: { league_id: string }) => {
         );
       }
     },
-    [],
+    []
   );
 
   // Funcion para extraer el key.
   const keyExtractor = React.useCallback(
     (item: HistoryRow, index: number) => `${item.entity?.object?.id}_${index}`,
-    [],
+    []
   );
 
   if (isLoading || isFetching) {
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     width: width,
   },
   sectionHeader_container: {
-    width: '100%',
+    width: "100%",
   },
   sectionList: {
     width: width * 0.95,
@@ -303,17 +303,17 @@ const styles = StyleSheet.create({
   header_text: {
     fontSize: 20,
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
+    textAlign: "center",
   },
   header_title_container: {
     width: width * 1,
     paddingVertical: 15,
   },
   header_column_container: {
-    flexDirection: 'row',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 2,
     borderColor: Colors.YELLOW_LIGHT,
     borderTopEndRadius: 5,
@@ -324,48 +324,49 @@ const styles = StyleSheet.create({
   },
   header_column_text: {
     fontSize: 15,
-    textAlign: 'center',
+    textAlign: "center",
     color: Colors.YELLOW_LIGHT,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   champions_container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     width: width * 0.98,
     borderBottomWidth: 1,
     borderColor: Colors.YELLOW_LIGHT,
   },
   team_container: {
-    flexDirection: 'row',
-    height: height * 0.05,
-
-    alignItems: 'center',
+    minHeight: height * 0.1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   restValue_container: {
-    height: height * 0.05,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: height * 0.1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 5,
   },
   render_item_champion_text: {
     fontSize: 14,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modal_table_containe: {
-    position: 'absolute',
+    position: "absolute",
     width: width * 0.8,
     height: height * 0.9,
   },
   nodata_container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   text_nodata: {
     fontSize: 24,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 export default LeagueChampions;

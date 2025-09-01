@@ -1,18 +1,18 @@
-import { ScreenContainer } from '@/components/ui/ScreenContainer';
-import { Colors } from '@/constants/colors/colors';
-import { GameTable } from '@/types/team_info';
-import { Image } from 'expo-image';
-import { Link } from 'expo-router';
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ScreenContainer } from "@/components/ui/ScreenContainer";
+import { Colors } from "@/constants/colors/colors";
+import { GameTable } from "@/types/team_info";
+import { Image } from "expo-image";
+import { Link } from "expo-router";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const FixtureTable = ({
   fixture_data,
   table_type,
 }: {
   fixture_data: GameTable;
-  table_type: 'next' | 'last';
+  table_type: "next" | "last";
 }) => {
   return (
     <ScreenContainer>
@@ -26,12 +26,12 @@ const FixtureTable = ({
             <Text style={styles.header_text}>Dia</Text>
             <Text style={styles.header_text}>L/V</Text>
             <Text style={styles.header_text}>
-              {table_type === 'next' ? 'Hora' : 'Fin'}
+              {table_type === "next" ? "Hora" : "Fin"}
             </Text>
           </View>
         </View>
         <View>
-          {(table_type === 'last'
+          {(table_type === "last"
             ? fixture_data?.rows?.slice().reverse()
             : fixture_data?.rows
           )?.map((team, index) => {
@@ -41,7 +41,7 @@ const FixtureTable = ({
               <Link
                 asChild
                 href={{
-                  pathname: '/match_info/[match]',
+                  pathname: "/match_info/[match]",
                   params: { match: matchId },
                 }}
                 style={styles.team_container}
@@ -85,7 +85,7 @@ const FixtureTable = ({
                     <Text
                       style={[
                         styles.team_item_text,
-                        table_type === 'last'
+                        table_type === "last"
                           ? team?.result_status === 1
                             ? { color: Colors.GREEN_WIN }
                             : team?.result_status === 2
@@ -111,48 +111,51 @@ const FixtureTable = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '95%',
+    width: "95%",
     marginBottom: 10,
     backgroundColor: Colors.LIGHT_BLUE_DARK,
   },
   header: {
-    flexDirection: 'row',
+    flexDirection: "row",
     height: height * 0.05,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: Colors.BLUE_BORDER,
   },
   header_info: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   header_teams: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   header_text: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
   },
   team_container: {
-    flexDirection: 'row',
-    height: height * 0.08,
+    flexDirection: "row",
+    minHeight: height * 0.1,
+    maxHeight: height * 0.15,
   },
   team_name_container: {
-    width: '50%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "50%",
+
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
   },
   team_values_container: {
-    width: '50%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    width: "50%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   teamImage: {
     width: 24,
@@ -162,7 +165,7 @@ const styles = StyleSheet.create({
   team_item_text: {
     fontSize: 16,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

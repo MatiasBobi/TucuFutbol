@@ -1,9 +1,9 @@
-import { Colors } from '@/constants/colors/colors';
-import useLeagueFixture from '@/hooks/league_fixture/league_fixture';
-import { Picker } from '@react-native-picker/picker';
-import { Image } from 'expo-image';
-import { Link } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { Colors } from "@/constants/colors/colors";
+import useLeagueFixture from "@/hooks/league_fixture/league_fixture";
+import { Picker } from "@react-native-picker/picker";
+import { Image } from "expo-image";
+import { Link } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -11,10 +11,10 @@ import {
   StyleSheet,
   Text,
   View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Game, GameFilter } from '../../../types/league_full_info';
-const { height } = Dimensions.get('window');
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Game, GameFilter } from "../../../types/league_full_info";
+const { height } = Dimensions.get("window");
 
 export default function LeagueFixture({
   league_fixture,
@@ -27,10 +27,10 @@ export default function LeagueFixture({
 
   /* Extraer la fecha a mostrar por default (La que se esta jugando ahora mismo), se consulta por selected === true. */
   const fixtureIdNow = league_fixture.find(
-    (idFixture) => idFixture.selected === true,
+    (idFixture) => idFixture.selected === true
   );
 
-  const [fixturekey, setFixtureKey] = useState(' ');
+  const [fixturekey, setFixtureKey] = useState(" ");
 
   const { data, isLoading, error } = useLeagueFixture(fixturekey, league_id); // Extraer la fecha consultada.
 
@@ -42,7 +42,7 @@ export default function LeagueFixture({
     return (
       <Link
         href={{
-          pathname: '/match_info/[match]',
+          pathname: "/match_info/[match]",
           params: { match: matchid },
         }}
         asChild
@@ -51,17 +51,17 @@ export default function LeagueFixture({
           <View style={styles.result_container}>
             <Text style={styles.time_match_text}>
               {item?.status?.enum === 3
-                ? item?.status?.short_name === 'Final'
-                  ? 'Final'
-                  : item?.status?.symbol_name + ' (Final)'
-                : item?.status?.short_name === 'ET'
-                ? 'ET'
+                ? item?.status?.short_name === "Final"
+                  ? "Final"
+                  : item?.status?.symbol_name + " (Final)"
+                : item?.status?.short_name === "ET"
+                ? "ET"
                 : item?.status?.enum === 1
-                ? `${item?.start_time?.split(' ')[0].split('-')[0]}/${
-                    item?.start_time?.split(' ')[0].split('-')[1]
-                  } ${item?.start_time?.split(' ')[1]}`
-                : item?.game_time_status_to_display === '-1'
-                ? 'ERROR'
+                ? `${item?.start_time?.split(" ")[0].split("-")[0]}/${
+                    item?.start_time?.split(" ")[0].split("-")[1]
+                  } ${item?.start_time?.split(" ")[1]}`
+                : item?.game_time_status_to_display === "-1"
+                ? "ERROR"
                 : item?.game_time_status_to_display}
             </Text>
           </View>
@@ -83,13 +83,13 @@ export default function LeagueFixture({
             <View style={styles.score_container}>
               {item?.penalties ? (
                 <Text style={styles.scoreText}>
-                  {'('}
+                  {"("}
                   {item?.penalties?.[0]}
-                  {') '}
+                  {") "}
                   {item?.scores?.[0]} - {item?.scores?.[1]}
-                  {' ('}
+                  {" ("}
                   {item?.penalties?.[1]}
-                  {')'}
+                  {")"}
                 </Text>
               ) : (
                 <Text style={styles.scoreText}>
@@ -129,7 +129,7 @@ export default function LeagueFixture({
           <Picker.Item
             style={styles.picker_item}
             label={`Fecha disputándose: ${
-              fixtureIdNow?.name ? fixtureIdNow?.name : 'Seleccionar fecha'
+              fixtureIdNow?.name ? fixtureIdNow?.name : "Seleccionar fecha"
             }`}
             value={fixtureIdNow?.key}
           />
@@ -166,7 +166,7 @@ export default function LeagueFixture({
         ) : (
           <FlatList
             data={
-              (fixturekey === ' '
+              (fixturekey === " "
                 ? (fixtureIdNow?.games as Game[] | undefined)
                 : (data?.games as Game[] | undefined)) ?? []
             }
@@ -184,11 +184,12 @@ export default function LeagueFixture({
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: Colors.LIGHT_BLUE_DARK,
+    paddingBottom: 100,
   },
   picker_container: {
-    width: '100%',
+    width: "100%",
     backgroundColor: Colors.SLAT_BLUE,
     color: Colors.YELLOW_LIGHT,
   },
@@ -197,8 +198,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.SLAT_BLUE,
   },
   table_container: {
-    flexDirection: 'row',
-    width: '95%',
+    marginTop: 20,
+    flexDirection: "row",
+    width: "95%",
     marginBottom: 100,
   },
   item_container: {
@@ -209,21 +211,21 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   result_container: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 0.3,
   },
   infoGame_container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     flex: 1,
     paddingHorizontal: 4,
   },
   team_container: {
     flex: 1,
 
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 4,
   },
   teamImage: {
@@ -233,19 +235,19 @@ const styles = StyleSheet.create({
   teamText: {
     fontSize: 16,
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
+    textAlign: "center",
   },
 
   score_container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 8,
   },
   scoreText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
     color: Colors.YELLOW_LIGHT,
   },
 
@@ -254,16 +256,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   DataNotFound_container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
 
-    width: '100%',
+    width: "100%",
     marginTop: 10,
   },
   DataNotFound_text: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

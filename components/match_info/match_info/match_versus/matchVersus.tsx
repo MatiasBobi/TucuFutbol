@@ -1,14 +1,14 @@
-import { Colors } from '@/constants/colors/colors';
-import { head_to_head } from '@/types/game_info';
-import { Image } from 'expo-image';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Colors } from "@/constants/colors/colors";
+import { head_to_head } from "@/types/game_info";
+import { Image } from "expo-image";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 
 type teamInfo = {
   name: string;
   id: string | undefined;
 };
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 const MatchVersus = ({
   headtohead,
   team1Info,
@@ -39,7 +39,7 @@ const MatchVersus = ({
 
             <View style={styles.versus_container}>
               <Text style={styles.wins_text_number}>
-                {headtohead.home_wins}{' '}
+                {headtohead.home_wins}{" "}
               </Text>
 
               <Text style={styles.wins_text}>Victorias</Text>
@@ -65,7 +65,7 @@ const MatchVersus = ({
 
             <View style={styles.versus_container}>
               <Text style={styles.wins_text_number}>
-                {headtohead.away_wins}{' '}
+                {headtohead.away_wins}{" "}
               </Text>
               <Text style={styles.wins_text}>Victorias</Text>
             </View>
@@ -88,7 +88,7 @@ const MatchVersus = ({
                     {match?.scores?.[0]} - {match?.scores?.[1]}
                   </Text>
                   <Text style={styles.text_info_text}>
-                    {match?.start_time?.split(' ')?.[0]}
+                    {match?.start_time?.split(" ")?.[0]}
                   </Text>
                 </View>
                 <View style={styles.team_container_matchs}>
@@ -108,36 +108,41 @@ const MatchVersus = ({
 const styles = StyleSheet.create({
   container: {
     marginTop: 10,
-    width: width * 0.9,
+    minWidth: width * 0.9,
+    alignItems: "center",
+    justifyContent: "center",
   },
   teams_historial_container: {
-    flexDirection: 'row',
+    flexDirection: "row",
 
-    height: height * 0.15,
-    alignItems: 'center',
-    width: '100%',
+    minHeight: height * 0.15,
+    maxHeight: height * 0.3,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
   team_container: {
-    width: '40%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "40%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   draw_container: {
-    width: '20%',
+    width: "20%",
   },
   versus_container: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   name_team_container: {
-    width: '70%',
+    width: "70%",
   },
   draw_versus_container: {
-    flexDirection: 'column',
-    alignItems: 'center',
+    flexDirection: "column",
+    alignItems: "center",
+    minWidth: "100%",
   },
   team_name_text: {
-    textAlign: 'center',
+    textAlign: "center",
     color: Colors.WHITE_GRAY,
   },
   wins_text_number: {
@@ -145,6 +150,7 @@ const styles = StyleSheet.create({
   },
   wins_text: {
     color: Colors.WHITE_GRAY,
+    textAlign: "center",
   },
   draw_text_number: {
     color: Colors.YELLOW_LIGHT,
@@ -152,35 +158,37 @@ const styles = StyleSheet.create({
   historial_text: {
     fontSize: 24,
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
   },
   historial_container_matches: {
     width: width * 0.95,
   },
   match_container: {
-    flexDirection: 'row',
-    height: height * 0.1,
-    width: '100%',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    minHeight: height * 0.1,
+    maxHeight: height * 0.3,
+    width: "100%",
+    justifyContent: "space-around",
     backgroundColor: Colors.LIGHT_BLUE_DARK,
     marginBottom: 10,
   },
   team_container_matchs: {
-    width: '20%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "20%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   match_info_container: {
-    width: '60%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "60%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   team_name: {
     color: Colors.YELLOW_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
   text_info_text: {
+    textAlign: "center",
     color: Colors.WHITE_GRAY,
   },
 });

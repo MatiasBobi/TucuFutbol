@@ -1,10 +1,10 @@
-import { ScreenContainer } from '@/components/ui/ScreenContainer';
-import { Colors } from '@/constants/colors/colors';
-import { MissingPlayer, Team, TeamLineup } from '@/types/game_info';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { Image } from 'expo-image';
-import { useState } from 'react';
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ScreenContainer } from "@/components/ui/ScreenContainer";
+import { Colors } from "@/constants/colors/colors";
+import { MissingPlayer, Team, TeamLineup } from "@/types/game_info";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { Image } from "expo-image";
+import { useState } from "react";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 
 type LineupsTeam = {
   lineups: {
@@ -14,7 +14,7 @@ type LineupsTeam = {
   missing_players?: MissingPlayer[][];
 };
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 const PLAYER_SIZE = 40;
 const FIELD_WIDTH = width - 40;
 const FIELD_HEIGHT = height * 0.6;
@@ -29,7 +29,7 @@ const MatchLineUp = ({
   team2: Team;
 }) => {
   // Estado para las alineaciones
-  const [teamLineUp, setTeamLineUp] = useState<'local' | 'visitante'>('local');
+  const [teamLineUp, setTeamLineUp] = useState<"local" | "visitante">("local");
 
   // Funcion para calcular la posicion del jugador.
   const calculatePlayerPosition = (xPercent: number, yPercent: number) => {
@@ -43,11 +43,11 @@ const MatchLineUp = ({
     return {
       left: Math.max(
         FIELD_MARGIN,
-        Math.min(y, FIELD_WIDTH - PLAYER_SIZE - FIELD_MARGIN),
+        Math.min(y, FIELD_WIDTH - PLAYER_SIZE - FIELD_MARGIN)
       ),
       top: Math.max(
         FIELD_MARGIN,
-        Math.min(x, FIELD_HEIGHT - PLAYER_SIZE - FIELD_MARGIN),
+        Math.min(x, FIELD_HEIGHT - PLAYER_SIZE - FIELD_MARGIN)
       ),
     };
   };
@@ -76,13 +76,13 @@ const MatchLineUp = ({
                   />
                   <View>
                     <Text style={styles.team_name_text}>
-                      {team1?.name || 'Equipo Local'}
+                      {team1?.name || "Equipo Local"}
                     </Text>
                   </View>
                 </View>
                 <View>
                   <Text style={styles.formation_text}>
-                    {lineups?.lineups?.teams?.[0]?.formation || 'x-x-x'}
+                    {lineups?.lineups?.teams?.[0]?.formation || "x-x-x"}
                   </Text>
                 </View>
               </View>
@@ -111,7 +111,7 @@ const MatchLineUp = ({
                   const invertedY = 100 - (player?.pitch_location?.y ?? 0);
                   const position = calculatePlayerPosition(
                     player?.pitch_location?.x ?? 0,
-                    invertedY,
+                    invertedY
                   );
 
                   return (
@@ -129,7 +129,7 @@ const MatchLineUp = ({
                         <FontAwesome5
                           name="tshirt"
                           size={24}
-                          color={team1?.colors?.color || 'red'}
+                          color={team1?.colors?.color || "red"}
                         />
                         {player.events?.substitution.has_substitution}
                         <Text style={styles.playerName}>
@@ -148,7 +148,7 @@ const MatchLineUp = ({
                   const invertedX = 100 - (player?.pitch_location?.x ?? 0);
                   const position = calculatePlayerPosition(
                     invertedX,
-                    player?.pitch_location?.y ?? 0,
+                    player?.pitch_location?.y ?? 0
                   );
                   return (
                     <View
@@ -165,7 +165,7 @@ const MatchLineUp = ({
                         <FontAwesome5
                           name="tshirt"
                           size={24}
-                          color={team2?.colors?.color || 'blue'}
+                          color={team2?.colors?.color || "blue"}
                         />
                         <Text style={styles.playerName}>
                           {player.player_short_name}
@@ -189,13 +189,13 @@ const MatchLineUp = ({
                   />
                   <View>
                     <Text style={styles.team_name_text}>
-                      {team2?.name || 'Equipo Visitante'}
+                      {team2?.name || "Equipo Visitante"}
                     </Text>
                   </View>
                 </View>
                 <View>
                   <Text style={styles.formation_text}>
-                    {lineups?.lineups?.teams?.[1]?.formation || 'x-x-x'}
+                    {lineups?.lineups?.teams?.[1]?.formation || "x-x-x"}
                   </Text>
                 </View>
               </View>
@@ -210,7 +210,7 @@ const MatchLineUp = ({
           <Pressable
             style={[
               styles.button_team_lineup,
-              teamLineUp === 'local'
+              teamLineUp === "local"
                 ? {
                     backgroundColor: Colors.SLAT_BLUE,
                     borderWidth: 2,
@@ -218,7 +218,7 @@ const MatchLineUp = ({
                   }
                 : { backgroundColor: Colors.LIGHT_BLUE_DARK },
             ]}
-            onPress={() => setTeamLineUp('local')}
+            onPress={() => setTeamLineUp("local")}
           >
             <Image
               source={{
@@ -231,7 +231,7 @@ const MatchLineUp = ({
           <Pressable
             style={[
               styles.button_team_lineup,
-              teamLineUp === 'visitante'
+              teamLineUp === "visitante"
                 ? {
                     backgroundColor: Colors.SLAT_BLUE,
                     borderWidth: 2,
@@ -239,7 +239,7 @@ const MatchLineUp = ({
                   }
                 : { backgroundColor: Colors.LIGHT_BLUE_DARK },
             ]}
-            onPress={() => setTeamLineUp('visitante')}
+            onPress={() => setTeamLineUp("visitante")}
           >
             <Image
               source={{
@@ -253,7 +253,7 @@ const MatchLineUp = ({
         <View>
           <View>
             {/* Equipo local */}
-            {teamLineUp === 'local' ? (
+            {teamLineUp === "local" ? (
               <View>
                 {lineups.lineups === undefined ? null : (
                   <>
@@ -271,14 +271,14 @@ const MatchLineUp = ({
                             >
                               <View style={styles.name_jersey_container}>
                                 <Text style={styles.formation_lineup_text}>
-                                  {player?.formation_position.split(' ')[0]}
+                                  {player?.formation_position.split(" ")[0]}
                                 </Text>
                                 <View style={styles.player_container}>
                                   <Text style={styles.jersey_num_text}>
                                     {player?.jersey_num}
                                   </Text>
                                   <Text style={styles.player_lineup_name_text}>
-                                    {' '}
+                                    {" "}
                                     {player?.name}
                                   </Text>
                                 </View>
@@ -310,14 +310,14 @@ const MatchLineUp = ({
                             >
                               <View style={styles.name_jersey_container}>
                                 <Text style={styles.formation_lineup_text}>
-                                  {player?.formation_position.split(' ')[0]}
+                                  {player?.formation_position.split(" ")[0]}
                                 </Text>
                                 <View style={styles.player_container}>
                                   <Text style={styles.jersey_num_text}>
                                     {player?.jersey_num}
                                   </Text>
                                   <Text style={styles.player_lineup_name_text}>
-                                    {' '}
+                                    {" "}
                                     {player?.name}
                                   </Text>
                                 </View>
@@ -353,14 +353,14 @@ const MatchLineUp = ({
                             >
                               <View style={styles.name_jersey_container}>
                                 <Text style={styles.formation_lineup_text}>
-                                  {player?.formation_position.split(' ')[0]}
+                                  {player?.formation_position.split(" ")[0]}
                                 </Text>
                                 <View style={styles.player_container}>
                                   <Text style={styles.jersey_num_text}>
                                     {player?.jersey_num}
                                   </Text>
                                   <Text style={styles.player_lineup_name_text}>
-                                    {' '}
+                                    {" "}
                                     {player?.name}
                                   </Text>
                                 </View>
@@ -399,14 +399,14 @@ const MatchLineUp = ({
                             >
                               <View style={styles.name_jersey_container}>
                                 <Text style={styles.formation_lineup_text}>
-                                  {player?.formation_position.split(' ')[0]}
+                                  {player?.formation_position.split(" ")[0]}
                                 </Text>
                                 <View style={styles.player_container}>
                                   <Text style={styles.jersey_num_text}>
                                     {player?.jersey_num}
                                   </Text>
                                   <Text style={styles.player_lineup_name_text}>
-                                    {' '}
+                                    {" "}
                                     {player?.name}
                                   </Text>
                                 </View>
@@ -438,14 +438,14 @@ const MatchLineUp = ({
                             >
                               <View style={styles.name_jersey_container}>
                                 <Text style={styles.formation_lineup_text}>
-                                  {player?.formation_position.split(' ')[0]}
+                                  {player?.formation_position.split(" ")[0]}
                                 </Text>
                                 <View style={styles.player_container}>
                                   <Text style={styles.jersey_num_text}>
                                     {player?.jersey_num}
                                   </Text>
                                   <Text style={styles.player_lineup_name_text}>
-                                    {' '}
+                                    {" "}
                                     {player?.name}
                                   </Text>
                                 </View>
@@ -481,14 +481,18 @@ const MatchLineUp = ({
                             >
                               <View style={styles.name_jersey_container}>
                                 <Text style={styles.formation_lineup_text}>
-                                  {player?.formation_position.split(' ')[0]}
+                                  {player?.formation_position.split(" ")[0]}
                                 </Text>
                                 <View style={styles.player_container}>
                                   <Text style={styles.jersey_num_text}>
                                     {player?.jersey_num}
                                   </Text>
-                                  <Text style={styles.player_lineup_name_text}>
-                                    {' '}
+                                  <Text
+                                    style={styles.player_lineup_name_text}
+                                    ellipsizeMode="clip"
+                                    numberOfLines={1}
+                                  >
+                                    {" "}
                                     {player?.name}
                                   </Text>
                                 </View>
@@ -519,180 +523,182 @@ const MatchLineUp = ({
 
 const styles = StyleSheet.create({
   mitad_team_container: {
-    height: '50%',
-    width: '100%',
-    backgroundColor: '#153615',
+    height: "50%",
+    width: "100%",
+    backgroundColor: "#153615",
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: "#fff",
     borderRadius: 8,
-    overflow: 'hidden',
-    position: 'relative',
+    overflow: "hidden",
+    position: "relative",
   },
   lineup_container: {
     height: height * 1.2,
-    width: '100%',
+    width: "100%",
   },
   player: {
-    position: 'absolute',
+    position: "absolute",
     width: PLAYER_SIZE,
     height: PLAYER_SIZE,
     zIndex: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   playerContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     width: 60,
     zIndex: 20,
   },
   playerName: {
-    color: 'white',
+    color: "white",
     fontSize: 10,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginTop: 2,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: 4,
     paddingHorizontal: 2,
     zIndex: 20,
   },
   midline: {
-    position: 'absolute',
-    top: '50%',
+    position: "absolute",
+    top: "50%",
     left: 0,
     right: 0,
-    backgroundColor: '#fffFFF',
+    backgroundColor: "#fffFFF",
     height: 100,
     opacity: 0.3,
   },
 
   /* LÍNEAS DEL CAMPO */
   midfieldLine: {
-    position: 'absolute',
-    top: '50%',
+    position: "absolute",
+    top: "50%",
     left: 0,
     right: 0,
     height: 2,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     opacity: 0.3,
     zIndex: 1,
   },
   centerCircle: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
     width: 80,
     height: 80,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: "#fff",
     opacity: 0.3,
     transform: [{ translateX: -40 }, { translateY: -40 }],
     zIndex: 2,
   },
   centerSpot: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     opacity: 0.3,
     transform: [{ translateX: -4 }, { translateY: -4 }],
     zIndex: 2,
   },
   penaltyArea: {
-    position: 'absolute',
-    width: '70%',
+    position: "absolute",
+    width: "70%",
     height: 80,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: "#fff",
     opacity: 0.3,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     zIndex: 1,
   },
   penaltyAreaTop: {
     top: 0,
-    left: '15%',
+    left: "15%",
     borderBottomWidth: 2,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
   penaltyAreaBottom: {
     bottom: 0,
-    left: '15%',
+    left: "15%",
     borderTopWidth: 2,
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
   },
   goalArea: {
-    position: 'absolute',
-    width: '40%',
+    position: "absolute",
+    width: "40%",
     height: 30,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: "#fff",
     opacity: 0.3,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     zIndex: 1,
   },
   goalAreaTop: {
     top: 0,
-    left: '30%',
+    left: "30%",
     borderBottomWidth: 2,
   },
   goalAreaBottom: {
     bottom: 0,
-    left: '30%',
+    left: "30%",
     borderTopWidth: 2,
   },
 
   penaltySpotTop: {
     top: 70,
-    left: '50%',
+    left: "50%",
     transform: [{ translateX: -3 }],
   },
   penaltySpotBottom: {
     bottom: 70,
-    left: '50%',
+    left: "50%",
     transform: [{ translateX: -3 }],
   },
   team_name_text: {
     fontSize: 16,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   name_team_container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 10,
   },
   formation_text: {
     fontSize: 16,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   formation_container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 10,
+    minWidth: width * 0.9,
+    maxWidth: width * 0.95,
   },
   fieldBackground: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     zIndex: 1,
   },
   table_lineup_container: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 24,
     borderBottomWidth: 2,
     borderBottomColor: Colors.LIGHT_BLUE_DARK,
@@ -711,38 +717,40 @@ const styles = StyleSheet.create({
   player_lineup_name_text: {
     color: Colors.WHITE_GRAY,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   height_text: {
     color: Colors.WHITE_GRAY,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   age_text: {
     color: Colors.WHITE_GRAY,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   player_container: {
-    flexDirection: 'row',
+    width: width * 0.5,
+    flexDirection: "row",
+    paddingVertical: 10,
   },
   ageheight_container: {
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   titulares_text: {
     marginVertical: 16,
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
+    textAlign: "center",
   },
   select_lineup_container: {
-    width: '100%',
+    width: "100%",
     height: height * 0.15,
     gap: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
   },
   button_team_lineup: {
     paddingVertical: 20,
@@ -753,8 +761,8 @@ const styles = StyleSheet.create({
   formatioNotFound_text: {
     fontSize: 24,
     color: Colors.RED_CHANGE_PLAYER,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });
 

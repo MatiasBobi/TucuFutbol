@@ -1,17 +1,17 @@
-import { useGetTeams } from '@/hooks/getImagesTeam/useGetTeams';
-import { BracketStage, TableGroup } from '@/types/league_full_info';
-import React from 'react';
-import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
-import { TeamLink } from './team/team_link';
+import { useGetTeams } from "@/hooks/getImagesTeam/useGetTeams";
+import { BracketStage, TableGroup } from "@/types/league_full_info";
+import React from "react";
+import { Dimensions, FlatList, StyleSheet, View } from "react-native";
+import { TeamLink } from "./team/team_link";
 
-const { height } = Dimensions.get('window'); // Dimensiones del dispositivo.
+const { height } = Dimensions.get("window"); // Dimensiones del dispositivo.
 
 export const LeagueTeams = ({
   teams,
   typeInfo,
 }: {
   teams: TableGroup[] | BracketStage[];
-  typeInfo: 'table' | 'brackets';
+  typeInfo: "table" | "brackets";
 }) => {
   /* Interfaz para el array que recibimos de los equipos, */
   interface teams_types {
@@ -25,13 +25,13 @@ export const LeagueTeams = ({
   let allTeams: teams_types[] = useGetTeams(
     teams as TableGroup[],
     teams as BracketStage[],
-    typeInfo,
+    typeInfo
   );
 
   /* Render de los equipos */
   const renderItem = ({ item }: { item: teams_types }) => (
     <View style={styles.team_info}>
-      <TeamLink id={item.id} team_name={item.name} />
+      <TeamLink id={item.id} team_name={item.short_name} />
     </View>
   );
 
@@ -54,11 +54,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   team_info: {
-    width: '50%',
+    width: "50%",
     height: height * 0.15,
     marginBottom: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 export default LeagueTeams;

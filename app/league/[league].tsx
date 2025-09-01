@@ -21,6 +21,8 @@ import {
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
+const { width, height } = Dimensions.get("window");
+
 export default function League() {
   const { league } = useLocalSearchParams(); // League proveniente de la ID
   const league_id = league as string; // Asegurarse de que league es una cadena (TS)
@@ -246,20 +248,20 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center",
   },
-  container_buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    alignItems: "center",
-    width: screenWidth * 0.9,
 
-    marginBottom: 40,
-    gap: 10,
-  },
   container_league_all_tables: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  container_buttons: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+    width: width * 0.9,
+    marginBottom: 40,
+    gap: 10,
   },
   text_buttons: {
     fontSize: 14,
@@ -268,8 +270,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   button_pressable: {
-    width: screenWidth * 0.25,
-    height: screenHeight * 0.08,
+    minWidth: width * 0.25,
+    maxWidth: width * 0.4,
+    minHeight: height * 0.08,
+    maxHeight: height * 0.15,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,

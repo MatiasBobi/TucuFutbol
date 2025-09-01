@@ -40,7 +40,7 @@ const InfoApp = () => {
           </View>
           <View style={styles.versionHeader}>
             <Text style={styles.currentVersion_text}>
-              Mail de contacto: TucuLive_app@gmail.com
+              Mail de contacto: tuculive.contact@gmail.com
             </Text>
           </View>
           {/* Version 1.0.0 */}

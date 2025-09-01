@@ -1,20 +1,22 @@
-import { ScreenContainer } from '@/components/ui/ScreenContainer';
+import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import {
   GameInfoItem,
   RecentForm,
   Standings,
   head_to_head,
-} from '@/types/game_info';
-import { StyleSheet } from 'react-native';
-import MatchGameInfo from './match_game_info/matchGameInfo';
-import MatchResults from './match_results/matchResults';
-import MatchStandings from './match_standings/matchStandings';
-import MatchVersus from './match_versus/matchVersus';
+} from "@/types/game_info";
+import { Dimensions, StyleSheet, View } from "react-native";
+import MatchGameInfo from "./match_game_info/matchGameInfo";
+import MatchResults from "./match_results/matchResults";
+import MatchStandings from "./match_standings/matchStandings";
+import MatchVersus from "./match_versus/matchVersus";
 
 type teamInfo = {
   name: string;
   id: string | undefined;
 };
+
+const { width, height } = Dimensions.get("window");
 const MatchInfoAndHistory = ({
   game_info,
   headtohead,
@@ -32,26 +34,32 @@ const MatchInfoAndHistory = ({
 }) => {
   return (
     <ScreenContainer>
-      {standings && <MatchStandings standings={standings} />}
-      {recent && (
-        <MatchResults
-          recent={recent}
-          team1Info={team1Info}
-          team2Info={team2Info}
-        />
-      )}
-      {headtohead && (
-        <MatchVersus
-          headtohead={headtohead}
-          team1Info={team1Info}
-          team2Info={team2Info}
-        />
-      )}
-      {game_info && <MatchGameInfo game_info={game_info} />}
+      <View style={styles.container}>
+        {standings && <MatchStandings standings={standings} />}
+        {recent && (
+          <MatchResults
+            recent={recent}
+            team1Info={team1Info}
+            team2Info={team2Info}
+          />
+        )}
+        {headtohead && (
+          <MatchVersus
+            headtohead={headtohead}
+            team1Info={team1Info}
+            team2Info={team2Info}
+          />
+        )}
+        {game_info && <MatchGameInfo game_info={game_info} />}
+      </View>
     </ScreenContainer>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    minWidth: width * 0.95,
+  },
+});
 
 export default MatchInfoAndHistory;

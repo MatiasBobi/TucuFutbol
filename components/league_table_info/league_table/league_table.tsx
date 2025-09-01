@@ -358,7 +358,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   title_table_container: {
-    height: height * 0.05,
+    minHeight: height * 0.1,
+    maxHeight: height * 0.15,
     alignItems: "center",
   },
   title_table_text: {

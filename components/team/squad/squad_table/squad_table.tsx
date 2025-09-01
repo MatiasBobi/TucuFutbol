@@ -1,8 +1,8 @@
-import { Colors } from '@/constants/colors/colors';
-import { SquadGroup } from '@/types/team_info';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Colors } from "@/constants/colors/colors";
+import { SquadGroup } from "@/types/team_info";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const SquadTable = ({ squad }: { squad: SquadGroup }) => {
   return (
@@ -16,6 +16,7 @@ const SquadTable = ({ squad }: { squad: SquadGroup }) => {
             return (
               <View
                 key={`${player.entity.object.name}_${player.entity.object.birthdate}`}
+                style={styles.player_container}
               >
                 <View style={styles.player_row}>
                   <View style={styles.player_row_name}>
@@ -52,62 +53,67 @@ const SquadTable = ({ squad }: { squad: SquadGroup }) => {
 
 const styles = StyleSheet.create({
   player_row: {
-    flexDirection: 'row',
-    height: height * 0.05,
-    alignItems: 'center',
+    flexDirection: "row",
+    minHeight: height * 0.1,
+    maxHeight: height * 0.2,
+    alignItems: "center",
     backgroundColor: Colors.DARK_BLUE_PLAYOFFS,
   },
   name_container: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   num_player_text: {
-    width: '20%',
+    width: "20%",
     fontSize: 16,
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
+    textAlign: "center",
   },
   player_row_name: {
-    width: '60%',
+    width: "60%",
     paddingRight: 8,
   },
   player_row_info: {
-    width: '40%',
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: "40%",
+    flexDirection: "row",
+    alignItems: "center",
   },
   player_row_info_item: {
     flex: 1,
     height: height * 0.05,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   player_row_name_text: {
     fontSize: 16,
-    width: '80%',
-    fontWeight: 'bold',
+    width: "80%",
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
   player_row_info_text: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
   squad_table_header: {
     marginVertical: 8,
     height: height * 0.05,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   squad_table_body: {
     flex: 1,
   },
   squad_table_header_text: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
+  },
+  player_container: {
+    minHeight: 50,
+    maxHeight: 100,
   },
 });
 
