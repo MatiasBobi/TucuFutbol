@@ -14,7 +14,7 @@ const useAppUpdate = () => {
         await Updates.reloadAsync();
       }
     } catch (error) {
-      console.log('Error de update: ', error);
+      // Error de update
     }
   }, []);
 

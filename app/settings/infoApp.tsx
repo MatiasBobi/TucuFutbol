@@ -43,6 +43,12 @@ const InfoApp = () => {
               Mail de contacto: tuculive.contact@gmail.com
             </Text>
           </View>
+          <View style={styles.versionHeader}>
+            <Text style={styles.currentVersion_text}>
+              Proyecto de estudio. En el caso de contacto por trabajo, enviar un
+              correo al email indicado arriba
+            </Text>
+          </View>
           {/* Version 1.0.0 */}
           <View style={styles.versions_changes}>
             <View style={styles.versionSection}>
@@ -105,6 +111,39 @@ const InfoApp = () => {
                 <View style={styles.texts_changes_container}>
                   <Text style={styles.check_text}>✓ </Text>
                   <Text style={styles.text_info_change}>Version estable.</Text>
+                </View>
+              </View>
+            </View>
+            {/* Version 1.0.3 */}
+            <View style={styles.versionSection}>
+              <Text style={styles.versionTitle}>Version 1.0.3</Text>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Se corrigieron todos los anchos y altos de varios
+                    contenedores.
+                  </Text>
+                </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Ahora no muestra el texto de cómo agregar un equipo a
+                    favoritos una vez agregado.
+                  </Text>
+                </View>
+
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Agregada la funcionalidad de notificaciones.
+                  </Text>
+                </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Lanzamiento en la Google Play Store.
+                  </Text>
                 </View>
               </View>
             </View>

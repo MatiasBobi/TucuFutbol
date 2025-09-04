@@ -3,7 +3,7 @@
     "name": "TucuLive",
     "slug": "TucuLive",
     "runtimeVersion": "1.0.2",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tuculive",
@@ -17,6 +17,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions":["android.permission.POST_NOTIFICATIONS"],
+      "googleServicesFile": "./google-services.json",
       "edgeToEdgeEnabled": true,
       "package": "com.futapk_TucuLive"
     },
@@ -26,6 +28,17 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/crashlytics",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
       "expo-router",
       [
         "expo-splash-screen",
@@ -38,6 +51,7 @@
       ],
       "expo-secure-store",
       "expo-web-browser"
+      
     ],
     "experiments": {
       "typedRoutes": true

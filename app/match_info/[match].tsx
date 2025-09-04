@@ -357,6 +357,7 @@ const styles = StyleSheet.create({
   time_match_text: {
     fontSize: 24,
     color: Colors.WHITE_GRAY,
+    textAlign: "center",
   },
   notfound_container: {
     flex: 1,

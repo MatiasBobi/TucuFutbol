@@ -25,7 +25,7 @@ export default function useCheckUpdates() {
         setStatus('available'); 
       } else {
         setStatus('noUpdate');
-        console.log('Entre a no update')
+        // No hay actualizaciones disponibles
       }
     } catch (err: any) {
       setError(err?.message ?? String(err));
