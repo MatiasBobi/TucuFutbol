@@ -147,7 +147,7 @@ const InfoApp = () => {
                 </View>
               </View>
             </View>
-            {/* Version 1.0.3 */}
+            {/* Version 1.0.4 */}
             <View style={styles.versionSection}>
               <Text style={styles.versionTitle}>Version 1.0.4</Text>
               <View>

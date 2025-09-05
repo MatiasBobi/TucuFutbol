@@ -1,7 +1,7 @@
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Colors } from "@/constants/colors/colors";
 import { MissingPlayer, Team, TeamLineup } from "@/types/game_info";
-import FontAwesome from "@expo/vector-icons/FontAwesome"; // Icono del Gol
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"; // Tarjeta amarilla
 import { Image } from "expo-image";

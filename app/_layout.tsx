@@ -2,8 +2,8 @@ import { Colors } from "@/constants/colors/colors";
 import useAppUpdate from "@/hooks/checkUpdates/useAppUpdate";
 import { useAndroidNotificationPermission } from "@/hooks/notifications/useNotificationsPermissions";
 import { Ionicons } from "@expo/vector-icons";
+import messaging from "@react-native-firebase/messaging";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import * as Application from "expo-application";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
@@ -12,18 +12,13 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
-  const isExpoGo = Application.applicationId === "host.exp.exponent";
   const { hasPermission, request } = useAndroidNotificationPermission();
 
   const [showModal, setShowModal] = useState(false);
   const [fcmToken, setFcmToken] = useState<string | null>(null);
 
   // Función para configurar FCM
-  /*const setupFirebaseMessaging = async () => {
-    if (isExpoGo) {
-      console.log("⚠️ Firebase deshabilitado en Expo Go");
-      return;
-    }
+  const setupFirebaseMessaging = async () => {
     try {
       if (!messaging().isDeviceRegisteredForRemoteMessages) {
         await messaging().registerDeviceForRemoteMessages();
@@ -48,7 +43,7 @@ export default function RootLayout() {
     } catch (error) {
       console.log("Error configurando FCM:", error);
     }
-  };*/
+  };
 
   useEffect(() => {
     // Mostrar modal solo si no tiene permisos y no esta bloqueado
@@ -60,7 +55,7 @@ export default function RootLayout() {
   }, [hasPermission]);
 
   useEffect(() => {
-    //setupFirebaseMessaging();
+    setupFirebaseMessaging();
   }, []);
 
   const handleActivateNotifications = async () => {

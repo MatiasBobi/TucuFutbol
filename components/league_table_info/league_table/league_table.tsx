@@ -336,7 +336,8 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     backgroundColor: Colors.LIGHT_BLUE_DARK,
-    width: width * 0.9,
+    width: width * 0.95,
+    maxWidth: width * 1,
     borderWidth: 1,
     borderColor: Colors.YELLOW_LIGHT,
     borderRadius: 10,
