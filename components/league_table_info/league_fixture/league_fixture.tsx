@@ -3,7 +3,7 @@ import useLeagueFixture from "@/hooks/league_fixture/league_fixture";
 import { Picker } from "@react-native-picker/picker";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -30,14 +30,18 @@ export default function LeagueFixture({
     (idFixture) => idFixture.selected === true
   );
 
-  const [fixturekey, setFixtureKey] = useState(" ");
+  const [fixturekey, setFixtureKey] = useState(fixtureIdNow?.key || " ");
 
-  const { data, isLoading, error } = useLeagueFixture(fixturekey, league_id); // Extraer la fecha consultada.
+  const { data, isLoading, error, isFetching } = useLeagueFixture(
+    fixturekey,
+    league_id
+  ); // Extraer la fecha consultada.
 
-  const keyStractorFixtureTable = useCallback((item: Game) => `${item.id}`, []); // Extraer key para el flatlist
+  const keyStractorFixtureTable = (item: Game) =>
+    `${item.id}-${item.game_time_status_to_display}`; // Extraer key para el flatlist
 
   /* Renderizado unico de cada enfretamiento,  */
-  const renderItem = useCallback(({ item }: { item: Game }) => {
+  const renderItem = ({ item }: { item: Game }) => {
     const matchid = item.id;
     return (
       <Link
@@ -115,7 +119,7 @@ export default function LeagueFixture({
         </Pressable>
       </Link>
     );
-  }, []);
+  };
 
   return (
     <View style={styles.container}>
@@ -149,7 +153,7 @@ export default function LeagueFixture({
         {error ? (
           <View style={styles.DataNotFound_container}>
             <Text style={styles.DataNotFound_text}>
-              ERROR: No se pudo realizar el fetching.
+              ERROR: No se pudo consultar la fecha, vuelve a intentarlo.
             </Text>
           </View>
         ) : isLoading ? (
@@ -160,21 +164,18 @@ export default function LeagueFixture({
           (fixtureIdNow === undefined && data === undefined) ? (
           <View style={styles.DataNotFound_container}>
             <Text style={styles.DataNotFound_text}>
-              No hay data, seleccione otra fecha.
+              No hay información, seleccione otra fecha.
             </Text>
           </View>
         ) : (
           <FlatList
-            data={
-              (fixturekey === " "
-                ? (fixtureIdNow?.games as Game[] | undefined)
-                : (data?.games as Game[] | undefined)) ?? []
-            }
+            data={data?.games ?? []}
             renderItem={renderItem}
             keyExtractor={keyStractorFixtureTable}
             showsVerticalScrollIndicator={false}
             removeClippedSubviews={true}
             contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
+            extraData={data}
           />
         )}
       </View>

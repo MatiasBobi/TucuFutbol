@@ -98,7 +98,8 @@ const MatchStandings = ({
 
 const styles = StyleSheet.create({
   standing_container: {
-    minWidth: width * 0.9,
+    width: width * 0.9,
+    maxWidth: width * 0.95,
     marginTop: 8,
   },
   standing_title_text: {

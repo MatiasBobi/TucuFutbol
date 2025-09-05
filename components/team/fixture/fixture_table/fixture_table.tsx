@@ -142,6 +142,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     minHeight: height * 0.1,
     maxHeight: height * 0.15,
+    justifyContent: "center",
+    alignItems: "center",
   },
   team_name_container: {
     width: "50%",

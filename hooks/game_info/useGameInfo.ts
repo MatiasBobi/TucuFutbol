@@ -26,5 +26,7 @@ export default function useGameInfo(
     enabled: isExpanded && matchStatus !== 'pre',
     refetchOnWindowFocus: isExpanded && matchStatus === 'live',
   });
+
+ 
   return { data, isLoading, error, isFetching };
 }

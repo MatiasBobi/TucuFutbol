@@ -108,7 +108,8 @@ const MatchVersus = ({
 const styles = StyleSheet.create({
   container: {
     marginTop: 10,
-    minWidth: width * 0.9,
+    width: width * 0.95,
+    maxWidth: width * 0.99,
     alignItems: "center",
     justifyContent: "center",
   },

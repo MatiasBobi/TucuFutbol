@@ -261,7 +261,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.DARK_BLUE,
     padding: 10,
-    alignItems: "center",
   },
 
   container_league_all_tables: {
@@ -273,10 +272,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
+
     justifyContent: "center",
     width: width * 0.9,
+    minWidth: width * 0.9,
+    maxWidth: Math.min(width * 0.95, 600),
     marginBottom: 40,
     gap: 10,
+    alignSelf: "center",
   },
   text_buttons: {
     fontSize: 14,
@@ -309,7 +312,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     minHeight: height * 0.15,
     maxHeight: height * 0.4,
-    minWidth: width * 0.95,
+    width: width * 0.5,
+    minWidth: width * 1,
     maxWidth: width * 1,
     borderRadius: 10,
     backgroundColor: Colors.LIGHT_BLUE_DARK,

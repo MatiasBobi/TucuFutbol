@@ -4,12 +4,18 @@ import { LeagueFullInfo } from '../../types/league_full_info';
 
 const useLeagueFullInfo = (league_id: string) => {
   // Hook para obtener la informacion de una liga.
-  // No realiza un refetching ya que solo muestra la informacion de una liga.
-  const { data, isLoading, error } = useQuery<LeagueFullInfo>({
+  // Realiza refetching cada 15 segundos para mantener los datos actualizados.
+  const { data, isLoading, error, isFetching } = useQuery<LeagueFullInfo>({
     queryKey: ['league_full_info', league_id],
     queryFn: () => getLeagueFullInfo(league_id),
+    enabled: league_id.trim() !== '',
+    refetchInterval: 15000,
+    refetchOnMount: true,
+    refetchIntervalInBackground: true,
+    staleTime: 0, 
+    gcTime: 0, 
   });
-  return { data, isLoading, error };
+  return { data, isLoading, error, isFetching };
 };
 
 export default useLeagueFullInfo;

@@ -8,5 +8,6 @@ export const useLeagueList = () => {
     queryKey: ['leagueList'],
     queryFn: getLeagueList,
   });
+ 
   return { data, isLoading, error, isFetching, refetch };
 };

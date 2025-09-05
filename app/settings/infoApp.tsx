@@ -46,7 +46,7 @@ const InfoApp = () => {
           <View style={styles.versionHeader}>
             <Text style={styles.currentVersion_text}>
               Proyecto de estudio. En el caso de contacto por trabajo, enviar un
-              correo al email indicado arriba
+              Correo al email indicado arriba
             </Text>
           </View>
           {/* Version 1.0.0 */}
@@ -139,6 +139,31 @@ const InfoApp = () => {
                     Agregada la funcionalidad de notificaciones.
                   </Text>
                 </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Mejoras de rendimiento.
+                  </Text>
+                </View>
+              </View>
+            </View>
+            {/* Version 1.0.3 */}
+            <View style={styles.versionSection}>
+              <Text style={styles.versionTitle}>Version 1.0.4</Text>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Últimos arreglos visuales pre-Play Store.
+                  </Text>
+                </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Se agregaron más información en las formaciones del partido.
+                  </Text>
+                </View>
+
                 <View style={styles.texts_changes_container}>
                   <Text style={styles.check_text}>✓ </Text>
                   <Text style={styles.text_info_change}>
