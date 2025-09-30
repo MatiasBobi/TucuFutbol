@@ -10,6 +10,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 export default function HomeScreen() {
   const { data, isLoading, error, isFetching } = useToday();
   const [lastData, setLastData] = useState<TodayMatches | null>(null);
@@ -42,7 +43,9 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {error && !lastData && (
         <View style={styles.loadingContainer}>
-          <Text style={styles.errorText}>Error: {error.message}</Text>
+          <Text style={styles.errorText}>
+            Error: No se pudieron consultar los partidos de hoy.
+          </Text>
         </View>
       )}
       {lastData && (
@@ -72,13 +75,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.DARK_BLUE,
   },
   loadingText: {
-    fontSize: 20,
+    fontSize: RFValue(20),
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
   },
   errorText: {
-    fontSize: 36,
+    fontSize: RFValue(36),
     fontWeight: "bold",
     color: "red",
+    textAlign: "center",
   },
 });

@@ -9,11 +9,7 @@ const useLeagueFullInfo = (league_id: string) => {
     queryKey: ['league_full_info', league_id],
     queryFn: () => getLeagueFullInfo(league_id),
     enabled: league_id.trim() !== '',
-    refetchInterval: 15000,
-    refetchOnMount: true,
-    refetchIntervalInBackground: true,
-    staleTime: 0, 
-    gcTime: 0, 
+
   });
   return { data, isLoading, error, isFetching };
 };

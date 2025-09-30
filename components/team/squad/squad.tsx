@@ -1,11 +1,11 @@
-import { ScreenContainer } from '@/components/ui/ScreenContainer';
-import { Colors } from '@/constants/colors/colors';
-import { SquadData, SquadGroup } from '@/types/team_info';
-import { useCallback } from 'react';
-import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
-import SquadTable from './squad_table/squad_table';
+import { ScreenContainer } from "@/components/ui/ScreenContainer";
+import { Colors } from "@/constants/colors/colors";
+import { SquadData, SquadGroup } from "@/types/team_info";
+import { useCallback } from "react";
+import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
+import SquadTable from "./squad_table/squad_table";
 
-const { height } = Dimensions.get('window');
+const { height } = Dimensions.get("window");
 
 export default function SquadTeam({ squad }: { squad: SquadData }) {
   const keyStractorFn = useCallback((item: SquadGroup, index: number) => {
@@ -48,14 +48,14 @@ export default function SquadTeam({ squad }: { squad: SquadData }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '95%',
+    width: "95%",
     padding: 16,
     backgroundColor: Colors.LIGHT_BLUE_DARK,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
     backgroundColor: Colors.LIGHT_BLACK,
     height: height * 0.05,
   },
@@ -63,21 +63,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header_items: {
-    width: '40%',
-    flexDirection: 'row',
+    width: "40%",
+    flexDirection: "row",
   },
   header_item: {
     flex: 1,
     paddingHorizontal: 4,
   },
   header_item_name: {
-    width: '60%',
+    width: "60%",
     paddingHorizontal: 4,
   },
   header_item_text: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

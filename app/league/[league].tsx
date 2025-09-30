@@ -8,7 +8,7 @@ import { Colors } from "@/constants/colors/colors";
 import useLeagueFullInfo from "@/hooks/league_full_info/league_full";
 import { TableGroup } from "@/types/league_full_info";
 import { Stack, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -17,139 +17,94 @@ import {
   Text,
   View,
 } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const { width, height } = Dimensions.get("window");
 
-export default function League() {
-  const { league } = useLocalSearchParams(); // League proveniente de la ID
-  const league_id = league as string; // Asegurarse de que league es una cadena (TS)
-  //const { getMappingKey } = useMappingHelper();
+// Tipo para las secciones del FlatList principal
+type SectionItem = {
+  type: "header" | "section_content";
+  sectionType?:
+    | "tabla"
+    | "equipos"
+    | "estadisticas"
+    | "fixture"
+    | "brackets"
+    | "champions";
+};
 
-  const { data, isLoading, error } = useLeagueFullInfo(league_id); // Query para obtener la info dela liga.
+export default function League() {
+  const { league } = useLocalSearchParams();
+  const league_id = league as string;
+
+  const { data, isLoading, error } = useLeagueFullInfo(league_id);
 
   const leagueExists = useMemo(() => {
-    // Si está cargando, no podemos determinar si existe o no
     if (isLoading) return undefined;
     if (!data) return false;
-    // Si el objeto solo tiene TTL, la liga no existe
     const keys = Object.keys(data);
     return keys.length > 1 || (keys.length === 1 && keys[0] !== "TTL");
   }, [data, isLoading]);
 
-  // Si hay tablas, mostrar tabla, si no, brackets
   const [activeSection, setActiveSection] = useState<
     "tabla" | "equipos" | "estadisticas" | "fixture" | "brackets" | "champions"
   >("tabla");
 
-  //
-
-  //////////////// TABLA DE POSICIONES /////////////////////////////
-  const keyStractorLeagueTable = useCallback(
-    (item: TableGroup, index: number) => `${item.name}_${index}`,
-    []
-  );
-
-  // Funcion para renderizar cada item de la tabla
-  const RenderItemTable = React.memo(function RenderItemTable({
-    item,
-  }: {
-    item: TableGroup;
-  }) {
-    if (item?.tables?.length === 0) return null;
-
-    return (
-      <View>
-        <Text style={styles.table_name_text}>{item.name}</Text>
-        {item?.tables?.map((table, index) => (
-          <LeagueTableData
-            key={keyStractorLeagueTable(item, index)}
-            table={table.table}
-            table_name={table.name}
-          />
-        ))}
-      </View>
-    );
-  });
-
-  const renderItemTableFn = useCallback(
-    ({ item }: { item: TableGroup }) => <RenderItemTable item={item} />,
-    []
-  );
-
-  // Render de estadisticas de los jugadores
-
-  const keyExtractorTable = useCallback(
-    (item: TableGroup, index: number) => `${item.name}_${index}`,
-    []
-  );
-  // FlatList para la info de las tablas de posiciones.
-  const renderTablaSection = useMemo(
-    () => (
-      <FlatList
-        data={data?.tables_groups || []}
-        renderItem={renderItemTableFn}
-        keyExtractor={keyExtractorTable}
-        showsVerticalScrollIndicator={false}
-        removeClippedSubviews={true}
-      />
-    ),
-    [data?.tables_groups]
-  );
-
-  //////////////// FIN TABLA DE POSICIONES /////////////////////////////
-
-  //////////////// TABLA DE EQUIPOS /////////////////////////////
-
-  const renderTeamSection = () => {
-    if (data?.tables_groups) {
-      return (
-        <LeagueTeams teams={data?.tables_groups} typeInfo="table"></LeagueTeams>
-      );
+  useEffect(() => {
+    if (!isLoading && data) {
+      if (!data?.tables_groups && data?.brackets?.stages) {
+        setActiveSection("brackets");
+      } else {
+        setActiveSection("tabla");
+      }
     }
-    if (data?.brackets?.stages) {
-      return (
-        <LeagueTeams
-          teams={data?.brackets?.stages}
-          typeInfo="brackets"
-        ></LeagueTeams>
-      );
-    }
-  };
+  }, [data, isLoading]);
 
-  //////////////// FIN TABLA DE EQUIPOS /////////////////////////////
+  // Datos para el FlatList principal
+  const flatListData = useMemo((): SectionItem[] => {
+    return [
+      { type: "header" },
+      { type: "section_content", sectionType: activeSection },
+    ];
+  }, [activeSection]);
 
-  // Funcion para renderizar la seccion activa
-  const renderSection = () => {
-    switch (activeSection) {
-      case "tabla":
-        return renderTablaSection;
-
-      case "equipos":
-        return renderTeamSection();
-      case "estadisticas":
-        return (
-          <LeaguePlayerStats league_stats={data?.players_statistics?.tables} />
-        );
-      case "fixture":
-        return (
-          <View>
-            <LeagueFixture
-              league_fixture={data?.games?.filters || []}
-              league_id={data?.league?.id || ""}
+  // Esta parte renderiza cada item del FlatList principal
+  const renderFlatListItem = useCallback(
+    ({ item }: { item: SectionItem }) => {
+      switch (item.type) {
+        case "header":
+          return (
+            <HeaderButtons
+              activeSection={activeSection}
+              setActiveSection={setActiveSection}
+              data={data}
+              isLoading={isLoading}
             />
-          </View>
-        );
-      case "brackets":
-        return <LeagueBrackets brackets={data?.brackets?.stages || []} />;
-      case "champions":
-        return <LeagueChampions league_id={data?.league?.id ?? ""} />;
-      default:
-        return null;
-    }
-  };
+          );
+
+        case "section_content":
+          return (
+            <SectionContent
+              sectionType={item.sectionType}
+              data={data}
+              league_id={league_id}
+            />
+          );
+
+        default:
+          return null;
+      }
+    },
+    [activeSection, data, league_id]
+  );
+
+  // Key extractor
+  const keyExtractor = useCallback((item: SectionItem, index: number) => {
+    return `${item.type}_${item.sectionType || ""}_${index}`;
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -164,95 +119,215 @@ export default function League() {
         }}
       />
 
-      {leagueExists === false ? (
+      {isLoading ? (
+        <View style={styles.loading_container}>
+          <Text style={styles.loading_text}>
+            Cargando información de la liga...
+          </Text>
+        </View>
+      ) : leagueExists === false ? (
         <View style={styles.league_notfound}>
           <Text style={styles.league_notfound_text}>
             La liga solicitada no existe o no está disponible
           </Text>
         </View>
       ) : (
-        <>
+        <FlatList
+          data={flatListData}
+          renderItem={renderFlatListItem}
+          keyExtractor={keyExtractor}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
+    </View>
+  );
+}
+
+// Componente para los botones del header (ahora es parte del FlatList)
+const HeaderButtons = React.memo(
+  ({
+    activeSection,
+    setActiveSection,
+    data,
+    isLoading,
+  }: {
+    activeSection: string;
+    setActiveSection: (section: any) => void;
+    data: any;
+    isLoading: boolean;
+  }) => {
+    return (
+      <View style={styles.headerContainer}>
+        <Text style={styles.league_name}>{data?.league?.name}</Text>
+
+        {!isLoading && (
           <View style={styles.container_buttons}>
-            {
-              data?.tables_groups ? (
-                <Pressable
-                  style={styles.button_pressable}
-                  onPress={() => setActiveSection("tabla")}
-                >
-                  <Text style={styles.text_buttons}>Tabla</Text>
-                </Pressable>
-              ) : null /* Si no hay tablas, no mostrar el botón de tabla */
-            }
-            {
-              data?.brackets?.stages ? (
-                <Pressable
-                  style={styles.button_pressable}
-                  onPress={() => setActiveSection("brackets")}
-                >
-                  <Text style={styles.text_buttons}>Playoffs</Text>
-                </Pressable>
-              ) : null /* Si no hay brackets, no mostrar el botón de playoffs */
-            }
-            {/* Botones para cambiar la sección */}
+            {data?.tables_groups ? (
+              <Pressable
+                style={[
+                  styles.button_pressable,
+                  activeSection === "tabla" && styles.button_active,
+                ]}
+                onPress={() => setActiveSection("tabla")}
+              >
+                <Text style={styles.text_buttons}>Tabla</Text>
+              </Pressable>
+            ) : null}
+
+            {data?.brackets?.stages ? (
+              <Pressable
+                style={[
+                  styles.button_pressable,
+                  activeSection === "brackets" && styles.button_active,
+                ]}
+                onPress={() => setActiveSection("brackets")}
+              >
+                <Text style={styles.text_buttons}>Playoffs</Text>
+              </Pressable>
+            ) : null}
+
             <Pressable
-              style={styles.button_pressable}
+              style={[
+                styles.button_pressable,
+                activeSection === "equipos" && styles.button_active,
+              ]}
               onPress={() => setActiveSection("equipos")}
             >
               <Text style={styles.text_buttons}>Equipos</Text>
             </Pressable>
+
             <Pressable
-              style={styles.button_pressable}
+              style={[
+                styles.button_pressable,
+                activeSection === "fixture" && styles.button_active,
+              ]}
               onPress={() => setActiveSection("fixture")}
             >
               <Text style={styles.text_buttons}>Fixture</Text>
             </Pressable>
+
             <Pressable
-              style={styles.button_pressable}
+              style={[
+                styles.button_pressable,
+                activeSection === "estadisticas" && styles.button_active,
+              ]}
               onPress={() => setActiveSection("estadisticas")}
             >
               <Text style={styles.text_buttons}>Estadisticas</Text>
             </Pressable>
+
             <Pressable
-              style={styles.button_pressable}
+              style={[
+                styles.button_pressable,
+                activeSection === "champions" && styles.button_active,
+              ]}
               onPress={() => setActiveSection("champions")}
             >
               <Text style={styles.text_buttons}>Campeones</Text>
             </Pressable>
           </View>
+        )}
+      </View>
+    );
+  }
+);
 
-          {/* Se renderiza la sección.*/}
+// Componente para el contenido de cada seccion
+const SectionContent = React.memo(
+  ({
+    sectionType,
+    data,
+    league_id,
+  }: {
+    sectionType?: string;
+    data: any;
+    league_id: string;
+  }) => {
+    switch (sectionType) {
+      case "tabla":
+        return <TableSection tables_groups={data?.tables_groups} />;
 
-          <View style={styles.container_league_table}>
-            <Text style={styles.league_name}>{data?.league?.name}</Text>
-            {isLoading ? (
-              <Text style={styles.container_league_section_text}>
-                Cargando...
-              </Text>
-            ) : error ? (
-              <Text style={styles.container_league_section_text}>
-                Error al cargar la liga
-              </Text>
-            ) : (
-              renderSection()
+      case "equipos":
+        return <TeamsSection data={data} />;
+
+      case "estadisticas":
+        return (
+          <LeaguePlayerStats league_stats={data?.players_statistics?.tables} />
+        );
+
+      case "fixture":
+        return (
+          <View>
+            <LeagueFixture
+              league_fixture={data?.games?.filters || []}
+              league_id={data?.league?.id || ""}
+            />
+          </View>
+        );
+
+      case "brackets":
+        return <LeagueBrackets brackets={data?.brackets?.stages || []} />;
+
+      case "champions":
+        return <LeagueChampions league_id={data?.league?.id ?? ""} />;
+
+      default:
+        return null;
+    }
+  }
+);
+
+// Componente para la seccion de tabla
+const TableSection = React.memo(
+  ({ tables_groups }: { tables_groups: TableGroup[] }) => {
+    if (!tables_groups?.length) return null;
+
+    return (
+      <View style={styles.sectionContainer}>
+        {tables_groups.map((item, index) => (
+          <View key={`${item.name}_${index}`}>
+            {item?.tables?.length > 0 && (
+              <>
+                <Text style={styles.table_name_text}>{item.name}</Text>
+                {item.tables.map((table, tableIndex) => (
+                  <LeagueTableData
+                    key={`${item.name}_${tableIndex}`}
+                    table={table.table}
+                    table_name={table.name}
+                  />
+                ))}
+              </>
             )}
           </View>
-        </>
-      )}
-    </View>
-  );
-}
+        ))}
+      </View>
+    );
+  }
+);
+
+// Componente para la sección de equipos
+const TeamsSection = React.memo(({ data }: { data: any }) => {
+  if (data?.tables_groups) {
+    return <LeagueTeams teams={data.tables_groups} typeInfo="table" />;
+  }
+  if (data?.brackets?.stages) {
+    return <LeagueTeams teams={data.brackets.stages} typeInfo="brackets" />;
+  }
+  return null;
+});
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.DARK_BLUE,
+  },
+  headerContainer: {
+    backgroundColor: Colors.DARK_BLUE,
     padding: 10,
     alignItems: "center",
   },
-
-  container_league_all_tables: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  sectionContainer: {
+    padding: 10,
   },
   container_buttons: {
     flexDirection: "row",
@@ -260,11 +335,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: width * 0.9,
-    marginBottom: 40,
+    marginBottom: 20,
     gap: 10,
   },
   text_buttons: {
-    fontSize: 14,
+    fontSize: RFValue(14),
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
     textAlign: "center",
@@ -282,25 +357,37 @@ const styles = StyleSheet.create({
     borderColor: Colors.YELLOW_LIGHT,
     backgroundColor: Colors.LIGHT_BLUE_DARK,
   },
+  button_active: {
+    backgroundColor: Colors.SLAT_BLUE,
+  },
   table_name_text: {
-    fontSize: 24,
+    fontSize: RFValue(24),
     color: Colors.WHITE_GRAY,
     textAlign: "center",
     paddingVertical: 10,
   },
-  container_league_table: {
-    flex: 1,
-    width: screenWidth * 0.95,
-  },
   league_name: {
-    fontSize: 20,
+    fontSize: RFValue(20),
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
     textAlign: "center",
+    marginBottom: 10,
   },
-  container_league_section_text: {
-    fontSize: 16,
-    color: Colors.WHITE_GRAY,
+  loading_container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.DARK_BLUE,
+  },
+  loading_text: {
+    fontSize: RFValue(18),
+    color: Colors.YELLOW_LIGHT,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  error_text: {
+    fontSize: RFValue(16),
+    color: "red",
     textAlign: "center",
   },
   league_notfound: {
@@ -310,7 +397,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   league_notfound_text: {
-    fontSize: 26,
+    fontSize: RFValue(26),
     color: Colors.YELLOW_LIGHT,
     textAlign: "center",
     fontWeight: "bold",

@@ -38,8 +38,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    width: width * 0.4,
-    height: 250,
+    width: width < 400 ? width * 0.45 : width * 0.3,
+    minWidth: 120,
+    maxWidth: 180,
+    height: width < 400 ? 200 : 250,
     maxHeight: 350,
     backgroundColor: Colors.LIGHT_BLUE_DARK,
     borderRadius: 10,
@@ -48,12 +50,12 @@ const styles = StyleSheet.create({
   },
   teamLink: {
     color: "#FFD700",
-    fontSize: 16,
+    fontSize: width < 400 ? 14 : 16, // Tamaño de fuente adaptativo
     fontWeight: "bold",
     textAlign: "center",
   },
   teamImage: {
-    width: 50,
-    height: 50,
+    width: width < 400 ? 40 : 50, // Imagen más pequeña en pantallas pequeñas
+    height: width < 400 ? 40 : 50,
   },
 });

@@ -111,7 +111,7 @@ const FixtureTable = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: "95%",
+    width: "100%",
     marginBottom: 10,
     backgroundColor: Colors.LIGHT_BLUE_DARK,
   },

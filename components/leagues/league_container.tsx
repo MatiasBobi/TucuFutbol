@@ -3,6 +3,7 @@ import { Category } from "@/types/league_list";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 export default function League_table_headers({ league }: { league: Category }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.YELLOW_LIGHT,
   },
   league_subcategory: {
-    fontSize: 18,
+    fontSize: RFValue(18),
     backgroundColor: Colors.DARK_BLUE,
     color: Colors.YELLOW_LIGHT,
     padding: 10,

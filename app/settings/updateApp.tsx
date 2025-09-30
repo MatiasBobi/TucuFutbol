@@ -1,9 +1,10 @@
-import { Colors } from '@/constants/colors/colors';
-import useCheckUpdates from '@/hooks/checkUpdates/useCheckUpdates';
-import * as Application from 'expo-application';
-import { Stack } from 'expo-router';
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
-const { width, height } = Dimensions.get('window');
+import { Colors } from "@/constants/colors/colors";
+import useCheckUpdates from "@/hooks/checkUpdates/useCheckUpdates";
+import * as Application from "expo-application";
+import { Stack } from "expo-router";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+const { width, height } = Dimensions.get("window");
+
 const UpdateApp = () => {
   const { status, error, check, download, apply } = useCheckUpdates();
 
@@ -12,7 +13,7 @@ const UpdateApp = () => {
       <Stack.Screen
         options={{
           headerShown: true,
-          headerTitle: 'Actualizaciones',
+          headerTitle: "Actualizaciones",
           headerStyle: {
             backgroundColor: Colors.DARK_BLUE,
           },
@@ -32,7 +33,7 @@ const UpdateApp = () => {
           <Text style={styles.check_text_button}>Comprobar</Text>
         </Pressable>
       </View>
-      {status === 'available' && (
+      {status === "available" && (
         <View style={styles.status_container}>
           <View>
             <Text style={styles.update_available_text}>
@@ -46,12 +47,12 @@ const UpdateApp = () => {
           </View>
         </View>
       )}
-      {status === 'downloading' && (
+      {status === "downloading" && (
         <View style={styles.status_container}>
           <Text style={styles.noupdate_text}>Descargando actualización...</Text>
         </View>
       )}
-      {status === 'ready' && (
+      {status === "ready" && (
         <View style={styles.status_container}>
           <View>
             <Text style={styles.update_available_text}>
@@ -65,7 +66,7 @@ const UpdateApp = () => {
           </View>
         </View>
       )}
-      {status === 'noUpdate' && (
+      {status === "noUpdate" && (
         <View style={styles.status_container}>
           <Text style={styles.noupdate_text}>
             No hay actualizaciones disponibles.
@@ -88,11 +89,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.DARK_BLUE,
-    alignItems: 'center',
+    alignItems: "center",
   },
   menu_container: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     marginLeft: 16,
     marginTop: 16,
   },
@@ -102,48 +103,48 @@ const styles = StyleSheet.create({
   },
   title_text: {
     fontSize: 24,
-    textAlign: 'center',
+    textAlign: "center",
     color: Colors.YELLOW_LIGHT,
   },
   check_button_container: {
     marginTop: 24,
-    width: width * 0.4,
+    width: width * 0.7,
     height: height * 0.07,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: Colors.LIGHT_BLUE_DARK,
   },
   check_text_button: {
     fontSize: 20,
     color: Colors.YELLOW_LIGHT,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   currentVersion_text: {
     fontSize: 18,
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   status_container: {
-    alignItems: 'center',
+    alignItems: "center",
     width: width * 0.9,
     marginTop: 16,
   },
   update_available_text: {
     fontSize: 18,
     color: Colors.YELLOW_LIGHT,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   noupdate_text: {
     fontSize: 18,
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
+    textAlign: "center",
   },
   error_text: {
     fontSize: 18,
     color: Colors.RED_CHANGE_PLAYER,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 

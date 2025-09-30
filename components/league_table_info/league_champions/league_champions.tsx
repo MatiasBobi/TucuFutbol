@@ -14,6 +14,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const { width, height } = Dimensions.get("window");
 
@@ -298,7 +299,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   sectionList: {
-    width: width * 0.95,
+    width: width * 1,
   },
   header_text: {
     fontSize: 20,
@@ -311,23 +312,24 @@ const styles = StyleSheet.create({
   },
   header_column_container: {
     flexDirection: "row",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 2,
-    borderColor: Colors.YELLOW_LIGHT,
-    borderTopEndRadius: 5,
-    borderTopStartRadius: 5,
+    width: "98%",
+    alignSelf: "center",
+    backgroundColor: Colors.LIGHT_BLACK,
+    paddingVertical: 6,
+    borderTopStartRadius: 8,
+    borderTopEndRadius: 8,
+  },
+  header_column_text: {
+    flex: 1,
+    fontSize: RFValue(14),
+    fontWeight: "bold",
+    color: Colors.YELLOW_LIGHT,
+    textAlign: "center",
   },
   header_column_text_container: {
     paddingVertical: 10,
   },
-  header_column_text: {
-    fontSize: 15,
-    textAlign: "center",
-    color: Colors.YELLOW_LIGHT,
-    fontWeight: "bold",
-  },
+
   champions_container: {
     flexDirection: "row",
     alignItems: "center",

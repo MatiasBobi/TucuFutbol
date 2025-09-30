@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
     width: "20%",
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 5,
   },
   match_info_container: {
     width: "60%",

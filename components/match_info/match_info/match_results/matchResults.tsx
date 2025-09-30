@@ -1,9 +1,10 @@
-import { Colors } from '@/constants/colors/colors';
-import { RecentForm } from '@/types/game_info';
-import { Image } from 'expo-image';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Colors } from "@/constants/colors/colors";
+import { RecentForm } from "@/types/game_info";
+import { Image } from "expo-image";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 type teamInfo = {
   name: string;
@@ -35,7 +36,13 @@ const MatchResults = ({
               contentFit="contain"
             />
             <View style={styles.name_team_container}>
-              <Text style={styles.team_name_text}>{team1Info.name}</Text>
+              <Text
+                style={styles.team_name_text}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
+                {team1Info.name}
+              </Text>
             </View>
           </View>
           <View style={styles.last_results_container}>
@@ -47,15 +54,15 @@ const MatchResults = ({
                   {
                     backgroundColor:
                       value === 1
-                        ? '#16831b'
+                        ? "#16831b"
                         : value === 0
-                        ? '#B50B0B'
-                        : '#828204',
+                        ? "#B50B0B"
+                        : "#828204",
                   },
                 ]}
               >
                 <Text style={[styles.text_recent]}>
-                  {value === 1 ? 'V' : value === 0 ? 'P' : 'E'}
+                  {value === 1 ? "V" : value === 0 ? "P" : "E"}
                 </Text>
               </View>
             ))}
@@ -71,7 +78,13 @@ const MatchResults = ({
               contentFit="contain"
             />
             <View style={styles.name_team_container}>
-              <Text style={styles.team_name_text}>{team2Info.name}</Text>
+              <Text
+                style={styles.team_name_text}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
+                {team2Info.name}
+              </Text>
             </View>
           </View>
           <View style={styles.last_results_container}>
@@ -83,15 +96,15 @@ const MatchResults = ({
                   {
                     backgroundColor:
                       value === 1
-                        ? '#16831b'
+                        ? "#16831b"
                         : value === 0
-                        ? '#B50B0B'
-                        : '#828204',
+                        ? "#B50B0B"
+                        : "#828204",
                   },
                 ]}
               >
-                <Text style={[styles.text_recent, ,]}>
-                  {value === 1 ? 'V' : value === 0 ? 'P' : 'E'}
+                <Text style={[styles.text_recent]}>
+                  {value === 1 ? "V" : value === 0 ? "P" : "E"}
                 </Text>
               </View>
             ))}
@@ -112,59 +125,65 @@ const styles = StyleSheet.create({
     width: width * 0.95,
   },
   name_team_container: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 5,
-    maxWidth: '100%',
+    maxWidth: "100%",
   },
   title_text: {
-    fontSize: 18,
+    fontSize: RFValue(18),
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
     marginBottom: 15,
   },
   last_results_container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     gap: 5,
     marginTop: 10,
   },
   text_recent_container: {
-    height: 25,
-    width: 25,
-    borderRadius: 12.5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: 24,
+    width: 24,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 2,
   },
   teams_container: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 10,
   },
   team_container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    minHeight: 150,
+    maxHeight: 190,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    paddingHorizontal: 5,
   },
 
   image_container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
   text_recent: {
     color: Colors.WHITE_GRAY,
-    fontWeight: 'bold',
-    fontSize: 12,
+    fontWeight: "bold",
+    fontSize: RFValue(12),
   },
   team_name_text: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: RFValue(14),
+    fontWeight: "bold",
     color: Colors.WHITE_GRAY,
-    textAlign: 'center',
-    maxWidth: 100,
+    textAlign: "center",
+    flexWrap: "wrap",
   },
 });
 export default MatchResults;

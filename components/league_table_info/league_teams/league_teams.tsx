@@ -1,7 +1,6 @@
 import { useGetTeams } from "@/hooks/getImagesTeam/useGetTeams";
 import { BracketStage, TableGroup } from "@/types/league_full_info";
-import React from "react";
-import { Dimensions, FlatList, StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { TeamLink } from "./team/team_link";
 
 const { height } = Dimensions.get("window"); // Dimensiones del dispositivo.
@@ -37,12 +36,9 @@ export const LeagueTeams = ({
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={allTeams}
-        keyExtractor={(equipo) => equipo.id}
-        numColumns={2}
-        renderItem={renderItem}
-      />
+      {allTeams.map((item) => {
+        return <View key={item.id}>{renderItem({ item })}</View>;
+      })}
     </View>
   );
 };
@@ -51,14 +47,19 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
     flex: 1,
-    paddingHorizontal: 8,
+    width: "100%",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    alignItems: "flex-start",
+    paddingHorizontal: 10,
   },
   team_info: {
-    width: "50%",
     height: height * 0.15,
     marginBottom: 10,
     justifyContent: "center",
     alignItems: "center",
+    flex: 0,
   },
 });
 export default LeagueTeams;

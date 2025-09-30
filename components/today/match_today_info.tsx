@@ -15,6 +15,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 import MatchStats from "../match_info/match_stats/match_stats";
 
 const { width, height } = Dimensions.get("window");
@@ -106,20 +107,6 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
               </Text>
             </View>
             <View style={styles.team_match_score}>
-              <View style={styles.goals_match_container_team1_results}>
-                <Text style={styles.team_match_score_text}>
-                  {teams?.status?.enum === 1
-                    ? " "
-                    : teams?.scores?.[0].toString()}
-                </Text>
-                {teams?.penalties && (
-                  <Text style={styles.events_text_penalty}>
-                    {"("}
-                    {teams?.penalties?.[0].toString()}
-                    {")"}
-                  </Text>
-                )}
-              </View>
               <View>
                 {/* Contenedor para el resultado o el horaro de comienzo
               si el estado es 3, el partido finalizo entonces muestra el resultado final.
@@ -140,19 +127,38 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                     : teams?.game_time_to_display}
                 </Text>
               </View>
-              <View style={styles.goals_match_container_team2_results}>
-                <Text style={styles.team_match_score_text}>
-                  {teams?.status?.enum === 1
-                    ? " "
-                    : teams?.scores?.[1].toString()}
-                </Text>
-                {teams?.penalties && (
-                  <Text style={styles.events_text_penalty}>
-                    {"("}
-                    {teams?.penalties?.[1].toString()}
-                    {")"}
+              <View style={styles.teams_scores}>
+                <View style={styles.goals_match_container_team1_results}>
+                  <Text style={styles.team_match_score_text}>
+                    {teams?.status?.enum === 1
+                      ? " "
+                      : teams?.scores?.[0].toString()}
                   </Text>
-                )}
+                  {teams?.penalties && (
+                    <Text style={styles.events_text_penalty}>
+                      {"("}
+                      {teams?.penalties?.[0].toString()}
+                      {")"}
+                    </Text>
+                  )}
+                </View>
+                <View>
+                  <Text style={styles.separator_score_text}>-</Text>
+                </View>
+                <View style={styles.goals_match_container_team2_results}>
+                  <Text style={styles.team_match_score_text}>
+                    {teams?.status?.enum === 1
+                      ? " "
+                      : teams?.scores?.[1].toString()}
+                  </Text>
+                  {teams?.penalties && (
+                    <Text style={styles.events_text_penalty}>
+                      {"("}
+                      {teams?.penalties?.[1].toString()}
+                      {")"}
+                    </Text>
+                  )}
+                </View>
               </View>
             </View>
             <View style={styles.team_match_info}>
@@ -227,6 +233,7 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                   <MatchStats
                     events={events}
                     statistics={statistics || undefined}
+                    video_id={data?.game?.videos?.[0]?.video_id ?? ""}
                   />
                 </>
               ) : (
@@ -285,23 +292,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   team_match_info: {
-    width: 140,
+    flex: 1,
     alignItems: "center",
+    paddingHorizontal: 2,
   },
+
   team_match_text: {
-    fontSize: 17,
+    fontSize: RFValue(17),
     color: Colors.WHITE_GRAY,
     fontWeight: "bold",
-    width: 140,
     textAlign: "center",
+    flexShrink: 1,
+    flexWrap: "wrap",
+    maxWidth: "90%",
   },
   team_match_score: {
-    width: 80,
-
-    flexDirection: "row",
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
+  },
+  teams_scores: {
+    gap: 10,
+    flexDirection: "row",
+  },
+  separator_score_text: {
+    color: Colors.WHITE_GRAY,
+    fontSize: RFValue(20),
   },
   expandedContent: {
     width: "100%",
@@ -314,23 +331,23 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: Colors.WHITE_GRAY,
-    fontSize: 16,
+    fontSize: RFValue(16),
   },
   noEventsText: {
     color: Colors.WHITE_GRAY,
     textAlign: "center",
     padding: 20,
-    fontSize: 20,
+    fontSize: RFValue(20),
   },
   team_match_score_text: {
-    fontSize: 20,
+    fontSize: RFValue(20),
     color: Colors.GRAY_LIGHT,
     fontWeight: "bold",
     width: 10,
     textAlign: "center",
   },
   time_match_text: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: Colors.YELLOW_LIGHT,
     fontWeight: "bold",
   },
@@ -352,12 +369,12 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   goal_text: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: Colors.WHITE_GRAY,
     fontWeight: "bold",
   },
   time_text: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: Colors.YELLOW_LIGHT,
     fontWeight: "bold",
   },
@@ -368,7 +385,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   events_name: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: Colors.WHITE_GRAY,
     paddingVertical: 20,
     fontWeight: "bold",
@@ -382,7 +399,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: "50%",
     transform: [{ translateY: -10 }],
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: Colors.WHITE_GRAY,
     fontWeight: "bold",
     textAlign: "center",
@@ -431,16 +448,14 @@ const styles = StyleSheet.create({
   goal_player_name_text: {},
   goals_match_container_team1_results: {
     alignItems: "center",
-    flexDirection: "row",
   },
   goals_match_container_team2_results: {
-    flexDirection: "row",
     alignItems: "center",
   },
   events_text_penalty: {
     color: Colors.RED_CHANGE_PLAYER,
 
-    fontSize: 20,
+    fontSize: RFValue(20),
     fontWeight: "bold",
     textAlign: "center",
     marginLeft: 5,
@@ -466,7 +481,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   value_stat_text: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     fontWeight: "bold",
     color: Colors.GRAY_LIGHT,
     textAlign: "center",
@@ -476,7 +491,7 @@ const styles = StyleSheet.create({
   },
   progress_bar_name_text: {
     textAlign: "center",
-    fontSize: 18,
+    fontSize: RFValue(18),
     color: Colors.YELLOW_LIGHT,
   },
   moreInfo_container: {
@@ -487,7 +502,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   moreInfo_text: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
   },

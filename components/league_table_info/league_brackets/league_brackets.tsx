@@ -6,10 +6,10 @@ import {
   BracketStage,
 } from "@/types/league_full_info";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Link } from "expo-router";
 import { useCallback, useState } from "react";
 import {
   Dimensions,
-  FlatList,
   Image,
   Pressable,
   StyleSheet,
@@ -17,6 +17,7 @@ import {
   View,
 } from "react-native";
 import { useSharedValue, withTiming } from "react-native-reanimated";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window"); // Dimensiones del dispositivo.
 const SLIDER_WIDTH = SCREEN_WIDTH - 100; // Ancho del slider
@@ -135,77 +136,87 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
       gameTitle = "Tercer Puesto";
     if (isFinal_length === 2 && game?.is_final) gameTitle = "Final";
 
-    return (
+    let idLinkmatch = "";
+
+    if (game?.games?.length && game.games.length > 0) {
+      idLinkmatch = game?.games?.[game.games.length - 1]?.id;
+    }
+
+    const gameContent = (
       <View style={styles.container_brackets_game}>
         <Text style={styles.game_title}>{gameTitle}</Text>
-        <View style={styles.game_info_container}>
-          <View style={styles.game_info_name_team_container}>
-            <View style={styles.game_info_team_items}>
-              <Image
-                source={{
-                  uri: `https://api.promiedos.com.ar/images/team/${game?.participants?.[0]?.id?.toString()}/4`,
-                }}
-                style={{ width: 25, height: 25 }}
-                resizeMode="contain"
-              />
-              <Text
-                style={[
-                  styles.game_teams_text,
-                  {
-                    color:
-                      game.winner === 1
-                        ? Colors.YELLOW_LIGHT
-                        : Colors.WHITE_GRAY,
-                  },
-                ]}
-              >
-                {renderTeamName({
-                  teams: game?.participants,
-                  teamIndex: 0,
-                  TeamPrevA: allPreviousGames?.[index]?.[0],
-                  TeamPrevB: allPreviousGames?.[index]?.[1],
-                })}
-              </Text>
-            </View>
-            <View style={styles.game_info_team_items}>
-              <Image
-                source={{
-                  uri: `https://api.promiedos.com.ar/images/team/${game?.participants?.[1]?.id?.toString()}/4`,
-                }}
-                style={{ width: 25, height: 25 }}
-                resizeMode="contain"
-              />
-              <Text
-                style={[
-                  styles.game_teams_text,
-                  {
-                    color:
-                      game.winner === 2
-                        ? Colors.YELLOW_LIGHT
-                        : Colors.WHITE_GRAY,
-                  },
-                ]}
-              >
-                {renderTeamName({
-                  teams: game?.participants,
-                  teamIndex: 1,
-                  TeamPrevA: allPreviousGames?.[index]?.[2],
-                  TeamPrevB: allPreviousGames?.[index]?.[3],
-                })}
-              </Text>
-            </View>
+
+        <View style={styles.formatedText_container}>
+          {game.score ? null : (
+            <Text style={styles.game_scores_text}>
+              {noDate === 0 ? `${formattedDate} ${time}` : "Sin fecha"}
+            </Text>
+          )}
+        </View>
+        <View>
+          <View>
+            <Text style={styles.isGlobal_text}>
+              {isGlobal === "" ? null : "Global"}
+            </Text>
           </View>
-          <View
-            style={[
-              styles.game_scores_container,
-              game.score
-                ? isGlobal === ""
-                  ? { flex: 0.1 }
-                  : { flex: 0.4 }
-                : { flex: 0.2 },
-            ]}
-          >
-            {game.score ? (
+          <View style={styles.game_info_container}>
+            <View style={styles.game_info_name_team_container}>
+              <View style={styles.game_info_team_items}>
+                <Image
+                  source={{
+                    uri: `https://api.promiedos.com.ar/images/team/${game?.participants?.[0]?.id?.toString()}/4`,
+                  }}
+                  style={{ width: 25, height: 25 }}
+                  resizeMode="contain"
+                />
+                <Text
+                  style={[
+                    styles.game_teams_text,
+                    {
+                      color:
+                        game.winner === 1
+                          ? Colors.YELLOW_LIGHT
+                          : Colors.WHITE_GRAY,
+                    },
+                  ]}
+                >
+                  {renderTeamName({
+                    teams: game?.participants,
+                    teamIndex: 0,
+                    TeamPrevA: allPreviousGames?.[index]?.[0],
+                    TeamPrevB: allPreviousGames?.[index]?.[1],
+                  })}
+                </Text>
+              </View>
+              <View style={styles.game_info_team_items}>
+                <Image
+                  source={{
+                    uri: `https://api.promiedos.com.ar/images/team/${game?.participants?.[1]?.id?.toString()}/4`,
+                  }}
+                  style={{ width: 25, height: 25 }}
+                  resizeMode="contain"
+                />
+                <Text
+                  style={[
+                    styles.game_teams_text,
+                    {
+                      color:
+                        game.winner === 2
+                          ? Colors.YELLOW_LIGHT
+                          : Colors.WHITE_GRAY,
+                    },
+                  ]}
+                >
+                  {renderTeamName({
+                    teams: game?.participants,
+                    teamIndex: 1,
+                    TeamPrevA: allPreviousGames?.[index]?.[2],
+                    TeamPrevB: allPreviousGames?.[index]?.[3],
+                  })}
+                </Text>
+              </View>
+            </View>
+            <View style={[styles.game_scores_container, { flex: 0.1 }]}>
               <View
                 style={
                   isGlobal === ""
@@ -213,11 +224,6 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
                     : styles.global_container
                 }
               >
-                {isGlobal === "" ? null : (
-                  <View style={styles.isGlobal_container}>
-                    <Text style={styles.isGlobal_text}>{isGlobal}</Text>
-                  </View>
-                )}
                 <View style={styles.game_scores}>
                   <Text
                     style={[
@@ -247,17 +253,25 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
                   </Text>
                 </View>
               </View>
-            ) : (
-              <View style={styles.formatedText_container}>
-                <Text style={styles.game_scores_text}>
-                  {noDate === 0 ? `${formattedDate} ${time}` : `Sin fecha`}
-                </Text>
-              </View>
-            )}
+            </View>
           </View>
         </View>
       </View>
     );
+
+    if (idLinkmatch) {
+      return (
+        <Link
+          href={{
+            pathname: "/match_info/[match]",
+            params: { match: idLinkmatch },
+          }}
+        >
+          {gameContent}
+        </Link>
+      );
+    }
+    return gameContent;
   };
 
   const keyStractorLeagueTable = useCallback(
@@ -281,20 +295,24 @@ const LeagueBrackets = ({ brackets = [] }: { brackets: BracketStage[] }) => {
 
     return (
       <View style={styles.container_brackets_index}>
-        <FlatList
-          data={allGames}
-          renderItem={({ item, index }) =>
-            renderBracketGame({
-              game: item,
-              index,
-              allPreviousGames,
-              isFinal_length: isFinal_lenght,
-            })
-          }
-          showsVerticalScrollIndicator={false}
-          keyExtractor={keyStractorLeagueTable}
-          style={styles.container_brackets_game_fix}
-        />
+        <View style={styles.container_brackets_game_fix}>
+          {allGames.map((item, index) => {
+            return (
+              <View
+                key={`game-${index}-${item?.games?.[0]?.start_time ?? ""}-${
+                  item?.games?.[0]?.start_time ?? ""
+                }`}
+              >
+                {renderBracketGame({
+                  game: item,
+                  index,
+                  allPreviousGames,
+                  isFinal_length: isFinal_lenght,
+                })}
+              </View>
+            );
+          })}
+        </View>
       </View>
     );
   };
@@ -350,7 +368,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.WHITE_GRAY,
   },
   title_bracket_text: {
-    fontSize: 18,
+    fontSize: RFValue(18),
     fontWeight: "bold",
     textAlign: "center",
     color: Colors.WHITE_GRAY,
@@ -364,8 +382,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   isGlobal_text: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: Colors.WHITE_GRAY,
+    textAlign: "center",
   },
   formatedText_container: {
     flex: 1,
@@ -373,7 +392,7 @@ const styles = StyleSheet.create({
   },
   container_brackets_index: {
     width: "100%",
-    height: SCREEN_HEIGHT * 0.6,
+
     borderRadius: 10,
     padding: 10,
 
@@ -384,7 +403,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   game_title: {
-    fontSize: 20,
+    fontSize: RFValue(20),
     fontWeight: "bold",
     marginBottom: 10,
     color: Colors.WHITE_GRAY,
@@ -415,7 +434,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   game_teams_text: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     fontWeight: "bold",
     marginLeft: 10,
     textAlign: "center",
@@ -423,7 +442,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   game_scores_text: {
-    fontSize: 20,
+    fontSize: RFValue(20),
     fontWeight: "bold",
     textAlign: "center",
     color: Colors.YELLOW_LIGHT,

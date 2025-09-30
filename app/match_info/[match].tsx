@@ -19,6 +19,14 @@ const { width, height } = Dimensions.get("window");
 const MatchInfo = () => {
   const { match } = useLocalSearchParams();
 
+  if (!match || match === "not_match_found") {
+    return (
+      <View>
+        <Text>El partido no existe o no esta disponible todavia.</Text>
+      </View>
+    );
+  }
+
   const { data, isFetching } = useGameInfo(match.toString());
   const matchData = data;
 
@@ -122,7 +130,7 @@ const MatchInfo = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Stack.Screen
           options={{
             headerShown: true,
@@ -162,7 +170,12 @@ const MatchInfo = () => {
             <Text style={styles.loading_images_text}>Cargando horario...</Text>
           </View>
         ) : (
-          <View style={styles.team_match}>
+          <View
+            style={[
+              styles.team_match,
+              status?.enum === 1 && styles.team_match_no_score,
+            ]}
+          >
             <View style={styles.team_match_info}>
               {/* Imagen del equipo 1, no puede exceder los 100px de ancho y alto. */}
               <Image
@@ -180,6 +193,20 @@ const MatchInfo = () => {
               >
                 {team1?.short_name || "Sin equipo"}
               </Text>
+              {status?.enum !== 1 && (
+                <View style={styles.goals_match_container_team1_results}>
+                  {penalties && (
+                    <Text style={styles.events_text_penalty}>
+                      {"("}
+                      {penalties?.[0].toString()}
+                      {")"}
+                    </Text>
+                  )}
+                  <Text style={styles.team_match_score_text}>
+                    {scores?.[0].toString()}
+                  </Text>
+                </View>
+              )}
             </View>
             <View style={styles.team_match_score}>
               <View>
@@ -202,33 +229,6 @@ const MatchInfo = () => {
                     : game_time_to_display}
                 </Text>
               </View>
-              <View style={styles.results_container}>
-                <View style={styles.goals_match_container_team1_results}>
-                  {penalties && (
-                    <Text style={styles.events_text_penalty}>
-                      {"("}
-                      {penalties?.[0].toString()}
-                      {")"}
-                    </Text>
-                  )}
-                  <Text style={styles.team_match_score_text}>
-                    {status?.enum === 1 ? " " : scores?.[0].toString()}
-                  </Text>
-                </View>
-                <Text style={styles.separator_text}>-</Text>
-                <View style={styles.goals_match_container_team2_results}>
-                  <Text style={styles.team_match_score_text}>
-                    {status?.enum === 1 ? " " : scores?.[1].toString()}
-                  </Text>
-                  {penalties && (
-                    <Text style={styles.events_text_penalty}>
-                      {"("}
-                      {penalties?.[1].toString()}
-                      {")"}
-                    </Text>
-                  )}
-                </View>
-              </View>
             </View>
             <View style={styles.team_match_info}>
               {/* Imagen del equipo 2, no puede exceder los 100px de ancho y alto. */}
@@ -247,6 +247,20 @@ const MatchInfo = () => {
               >
                 {team2?.short_name || "Sin equipo"}
               </Text>
+              {status?.enum !== 1 && (
+                <View style={styles.goals_match_container_team2_results}>
+                  <Text style={styles.team_match_score_text}>
+                    {scores?.[1].toString()}
+                  </Text>
+                  {penalties && (
+                    <Text style={styles.events_text_penalty}>
+                      {"("}
+                      {penalties?.[1].toString()}
+                      {")"}
+                    </Text>
+                  )}
+                </View>
+              )}
             </View>
           </View>
         )}
@@ -308,15 +322,19 @@ const styles = StyleSheet.create({
   },
   team_match: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "center",
-    minHeight: height * 0.15,
-    maxHeight: height * 0.4,
-    width: width * 0.5,
-    minWidth: width * 1,
-    maxWidth: width * 1,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 10,
     backgroundColor: Colors.LIGHT_BLUE_DARK,
+    width: "100%",
+    maxWidth: 600,
+    alignSelf: "center",
+  },
+  team_match_no_score: {
+    paddingVertical: 5,
+    minHeight: 80,
   },
   team_match_text: {
     fontSize: 16,
@@ -325,7 +343,6 @@ const styles = StyleSheet.create({
   },
   team_match_score: {
     flex: 1,
-
     alignItems: "center",
     justifyContent: "center",
   },

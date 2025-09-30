@@ -2,6 +2,7 @@ import { Colors } from "@/constants/colors/colors";
 import { PlayerStatistic } from "@/types/league_full_info";
 import { Image } from "expo-image";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 const { width, height } = Dimensions.get("window");
 export default function StatsTable({
   rows_table,
@@ -45,21 +46,20 @@ export default function StatsTable({
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
-    width: width * 0.9,
-    borderRadius: 10,
+    marginBottom: RFValue(20),
+    width: width * 0.9, // se mantiene responsivo al ancho
+    borderRadius: RFValue(10),
     backgroundColor: Colors.LIGHT_BLUE_DARK,
   },
   table_name_container: {
     alignItems: "center",
     justifyContent: "center",
-    borderTopStartRadius: 10,
-    borderTopEndRadius: 10,
+    borderTopStartRadius: RFValue(10),
+    borderTopEndRadius: RFValue(10),
     backgroundColor: Colors.LIGHT_BLACK,
-    paddingVertical: 10,
+    paddingVertical: RFValue(10),
   },
   rowPar: {
     backgroundColor: Colors.BLUE_BORDER,
@@ -70,21 +70,21 @@ const styles = StyleSheet.create({
   player_name_container: {
     flex: 0.9,
     minWidth: width * 0.4,
-    minHeight: height * 0.05,
+    minHeight: height * 0.08,
     flexDirection: "row",
-    marginLeft: 10,
+    marginLeft: RFValue(10),
     alignItems: "center",
-    gap: 20,
+    gap: RFValue(10),
   },
   player_value_container: {
     flex: 0.1,
     minWidth: width * 0.05,
     justifyContent: "center",
-    borderBottomWidth: 2,
+    borderBottomWidth: RFValue(2),
     borderColor: Colors.YELLOW_LIGHT,
   },
   table_name_text: {
-    fontSize: 24,
+    fontSize: RFValue(20),
     color: Colors.YELLOW_LIGHT,
     textAlign: "center",
   },
@@ -94,12 +94,12 @@ const styles = StyleSheet.create({
   },
   player_name_text: {
     textAlign: "center",
-    fontSize: 20,
+    fontSize: RFValue(16), // antes 20 fijo
     color: Colors.YELLOW_LIGHT,
   },
   player_value_text: {
     textAlign: "center",
-    fontSize: 20,
+    fontSize: RFValue(16),
     color: Colors.WHITE_GRAY,
   },
 });

@@ -4,14 +4,8 @@ import { Picker } from "@react-native-picker/picker";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { useState } from "react";
-import {
-  Dimensions,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Game, GameFilter } from "../../../types/league_full_info";
 const { height } = Dimensions.get("window");
@@ -168,15 +162,11 @@ export default function LeagueFixture({
             </Text>
           </View>
         ) : (
-          <FlatList
-            data={data?.games ?? []}
-            renderItem={renderItem}
-            keyExtractor={keyStractorFixtureTable}
-            showsVerticalScrollIndicator={false}
-            removeClippedSubviews={true}
-            contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
-            extraData={data}
-          />
+          <View style={styles.mapteam_container}>
+            {data?.games?.map((game: Game) => {
+              return <View key={game.id}>{renderItem({ item: game })}</View>;
+            })}
+          </View>
         )}
       </View>
     </View>
@@ -187,7 +177,9 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     backgroundColor: Colors.LIGHT_BLUE_DARK,
-    paddingBottom: 100,
+  },
+  mapteam_container: {
+    width: "100%",
   },
   picker_container: {
     width: "100%",
@@ -234,7 +226,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   teamText: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: Colors.WHITE_GRAY,
     textAlign: "center",
   },
@@ -247,14 +239,14 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: RFValue(16),
     textAlign: "center",
     color: Colors.YELLOW_LIGHT,
   },
 
   time_match_text: {
     color: Colors.YELLOW_LIGHT,
-    fontSize: 18,
+    fontSize: RFValue(18),
   },
   DataNotFound_container: {
     alignItems: "center",
@@ -264,7 +256,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   DataNotFound_text: {
-    fontSize: 24,
+    fontSize: RFValue(24),
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
     textAlign: "center",

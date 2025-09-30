@@ -5,8 +5,9 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"; // Tarjeta amarilla
 import { Image } from "expo-image";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 type LineupsTeam = {
   lineups: {
@@ -17,6 +18,7 @@ type LineupsTeam = {
 };
 
 const { width, height } = Dimensions.get("window");
+
 const PLAYER_SIZE = 40;
 const FIELD_WIDTH = width - 40;
 const FIELD_HEIGHT = height * 0.6;
@@ -32,6 +34,84 @@ const MatchLineUp = ({
 }) => {
   // Estado para las alineaciones
   const [teamLineUp, setTeamLineUp] = useState<"local" | "visitante">("local");
+
+  // Función helper para renderizar eventos con separadores
+  const renderPlayerEvents = (player: any): React.ReactNode[] => {
+    const events: React.ReactNode[] = [];
+
+    // Tarjeta amarilla
+    if (player.events?.cards?.yellow === true) {
+      events.push(
+        <View key="yellow_card" style={styles.goals_container}>
+          <MaterialCommunityIcons
+            name="card"
+            size={24}
+            color={Colors.YELLOW_LIGHT}
+          />
+        </View>
+      );
+    }
+
+    // Tarjeta roja
+    if (player.events?.cards?.red === true) {
+      events.push(
+        <View key="red_card" style={styles.goals_container}>
+          <MaterialCommunityIcons
+            name="card"
+            size={24}
+            color={Colors.RED_CHANGE_PLAYER}
+          />
+        </View>
+      );
+    }
+
+    // Sustitución
+    if (player.events?.substitution?.has_substitution === true) {
+      events.push(
+        <View key="substitution" style={[styles.goals_container]}>
+          <Text style={styles.goals_number_text}>
+            {player?.events?.substitution?.time}'
+          </Text>
+          <FontAwesome
+            name="exchange"
+            size={24}
+            color={Colors.RED_CHANGE_PLAYER}
+          />
+        </View>
+      );
+    }
+
+    // Goles
+    if (player.events?.goals?.goals && player.events.goals.goals > 0) {
+      events.push(
+        <View key="goals" style={styles.goals_container}>
+          <Text style={styles.goals_number_text}>
+            {player.events.goals.goals}x
+          </Text>
+          <FontAwesome
+            name="soccer-ball-o"
+            size={24}
+            color={Colors.WHITE_GRAY}
+          />
+        </View>
+      );
+    }
+
+    // Agregar separadores entre eventos
+    const eventsWithSeparators: React.ReactNode[] = [];
+    events.forEach((event, index) => {
+      eventsWithSeparators.push(event);
+      if (index < events.length - 1) {
+        eventsWithSeparators.push(
+          <View key={`separator_${index}`} style={styles.event_separator}>
+            <Text style={styles.separator_text}>|</Text>
+          </View>
+        );
+      }
+    });
+
+    return eventsWithSeparators;
+  };
 
   // Funcion para calcular la posicion del jugador.
   const calculatePlayerPosition = (xPercent: number, yPercent: number) => {
@@ -82,7 +162,10 @@ const MatchLineUp = ({
                     </Text>
                   </View>
                 </View>
-                <View>
+                <View style={styles.formation_text_container}>
+                  <Text style={styles.initial_lineup_text}>
+                    Formación inicial:{" "}
+                  </Text>
                   <Text style={styles.formation_text}>
                     {lineups?.lineups?.teams?.[0]?.formation || "x-x-x"}
                   </Text>
@@ -194,7 +277,10 @@ const MatchLineUp = ({
                     </Text>
                   </View>
                 </View>
-                <View>
+                <View style={styles.formation_text_container}>
+                  <Text style={styles.initial_lineup_text}>
+                    Formación inicial:{" "}
+                  </Text>
                   <Text style={styles.formation_text}>
                     {lineups?.lineups?.teams?.[1]?.formation || "x-x-x"}
                   </Text>
@@ -269,87 +355,39 @@ const MatchLineUp = ({
                             return (
                               <View
                                 key={`local_starting_${player.jersey_num}_${player.name}_${index}`}
-                                style={styles.table_lineup_container}
+                                style={styles.player_container_info}
                               >
-                                <View style={styles.name_jersey_container}>
-                                  <Text style={styles.formation_lineup_text}>
-                                    {player?.formation_position?.split(
-                                      " "
-                                    )[0] || "N/A"}
-                                  </Text>
-                                  <View style={styles.player_container}>
-                                    <Text style={styles.jersey_num_text}>
-                                      {player?.jersey_num}
+                                <View style={styles.table_lineup_container}>
+                                  <View style={styles.name_jersey_container}>
+                                    <Text style={styles.formation_lineup_text}>
+                                      {player?.formation_position?.split(
+                                        " "
+                                      )[0] || "N/A"}
                                     </Text>
-                                    <Text
-                                      style={styles.player_lineup_name_text}
-                                    >
-                                      {` ${player?.name}`}
-                                    </Text>
+                                    <View style={styles.player_container}>
+                                      <Text style={styles.jersey_num_text}>
+                                        {player?.jersey_num}
+                                      </Text>
+                                      <Text
+                                        style={styles.player_lineup_name_text}
+                                      >
+                                        {` ${player?.name}`}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                  <View style={styles.ageheight_container}>
+                                    <View>
+                                      <Text style={styles.height_text}>
+                                        {player?.height} m
+                                      </Text>
+                                      <Text style={styles.age_text}>
+                                        {player?.age} años
+                                      </Text>
+                                    </View>
                                   </View>
                                 </View>
-                                <View style={styles.ageheight_container}>
-                                  <View style={styles.events_container}>
-                                    {player.events?.cards?.yellow !==
-                                    true ? null : (
-                                      <View style={styles.goals_container}>
-                                        <MaterialCommunityIcons
-                                          name="card"
-                                          size={24}
-                                          color={Colors.YELLOW_LIGHT}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.cards?.red !==
-                                    true ? null : (
-                                      <View style={styles.goals_container}>
-                                        <MaterialCommunityIcons
-                                          name="card"
-                                          size={24}
-                                          color={Colors.RED_CHANGE_PLAYER}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.substitution
-                                      .has_substitution !== true ? null : (
-                                      <View
-                                        style={[
-                                          styles.goals_container,
-                                          { flexDirection: "column" },
-                                        ]}
-                                      >
-                                        <Text style={styles.goals_number_text}>
-                                          {player?.events?.substitution?.time}'
-                                        </Text>
-                                        <FontAwesome
-                                          name="exchange"
-                                          size={24}
-                                          color={Colors.RED_CHANGE_PLAYER}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.goals?.goals &&
-                                    player.events.goals.goals > 0 ? (
-                                      <View style={styles.goals_container}>
-                                        <Text style={styles.goals_number_text}>
-                                          {player.events.goals.goals}x
-                                        </Text>
-                                        <FontAwesome
-                                          name="soccer-ball-o"
-                                          size={24}
-                                          color={Colors.WHITE_GRAY}
-                                        />
-                                      </View>
-                                    ) : null}
-                                  </View>
-                                  <View>
-                                    <Text style={styles.height_text}>
-                                      {player?.height} m
-                                    </Text>
-                                    <Text style={styles.age_text}>
-                                      {player?.age} años
-                                    </Text>
-                                  </View>
+                                <View style={styles.events_container}>
+                                  {renderPlayerEvents(player)}
                                 </View>
                               </View>
                             );
@@ -368,87 +406,39 @@ const MatchLineUp = ({
                             return (
                               <View
                                 key={`local_bench_${player.jersey_num}_${player.name}_${index}`}
-                                style={styles.table_lineup_container}
+                                style={styles.player_container_info}
                               >
-                                <View style={styles.name_jersey_container}>
-                                  <Text style={styles.formation_lineup_text}>
-                                    {player?.formation_position?.split(
-                                      " "
-                                    )[0] || "N/A"}
-                                  </Text>
-                                  <View style={styles.player_container}>
-                                    <Text style={styles.jersey_num_text}>
-                                      {player?.jersey_num}
+                                <View style={styles.table_lineup_container}>
+                                  <View style={styles.name_jersey_container}>
+                                    <Text style={styles.formation_lineup_text}>
+                                      {player?.formation_position?.split(
+                                        " "
+                                      )[0] || "N/A"}
                                     </Text>
-                                    <Text
-                                      style={styles.player_lineup_name_text}
-                                    >
-                                      {` ${player?.name}`}
-                                    </Text>
+                                    <View style={styles.player_container}>
+                                      <Text style={styles.jersey_num_text}>
+                                        {player?.jersey_num}
+                                      </Text>
+                                      <Text
+                                        style={styles.player_lineup_name_text}
+                                      >
+                                        {` ${player?.name}`}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                  <View style={styles.ageheight_container}>
+                                    <View>
+                                      <Text style={styles.height_text}>
+                                        {player?.height} m
+                                      </Text>
+                                      <Text style={styles.age_text}>
+                                        {player?.age} años
+                                      </Text>
+                                    </View>
                                   </View>
                                 </View>
-                                <View style={styles.ageheight_container}>
-                                  <View style={styles.events_container}>
-                                    {player.events?.cards?.yellow !==
-                                    true ? null : (
-                                      <View style={styles.goals_container}>
-                                        <MaterialCommunityIcons
-                                          name="card"
-                                          size={24}
-                                          color={Colors.YELLOW_LIGHT}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.cards?.red !==
-                                    true ? null : (
-                                      <View style={styles.goals_container}>
-                                        <MaterialCommunityIcons
-                                          name="card"
-                                          size={24}
-                                          color={Colors.RED_CHANGE_PLAYER}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.substitution
-                                      .has_substitution !== true ? null : (
-                                      <View
-                                        style={[
-                                          styles.goals_container,
-                                          { flexDirection: "column" },
-                                        ]}
-                                      >
-                                        <Text style={styles.goals_number_text}>
-                                          {player?.events?.substitution?.time}'
-                                        </Text>
-                                        <FontAwesome
-                                          name="exchange"
-                                          size={24}
-                                          color={Colors.RED_CHANGE_PLAYER}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.goals?.goals &&
-                                    player.events.goals.goals > 0 ? (
-                                      <View style={styles.goals_container}>
-                                        <Text style={styles.goals_number_text}>
-                                          {player.events.goals.goals}x
-                                        </Text>
-                                        <FontAwesome
-                                          name="soccer-ball-o"
-                                          size={24}
-                                          color={Colors.WHITE_GRAY}
-                                        />
-                                      </View>
-                                    ) : null}
-                                  </View>
-                                  <View>
-                                    <Text style={styles.height_text}>
-                                      {player?.height} m
-                                    </Text>
-                                    <Text style={styles.age_text}>
-                                      {player?.age} años
-                                    </Text>
-                                  </View>
+                                <View style={styles.events_container}>
+                                  {renderPlayerEvents(player)}
                                 </View>
                               </View>
                             );
@@ -470,29 +460,36 @@ const MatchLineUp = ({
                           return (
                             <View
                               key={`local_missing_${player.jersey_num}_${player.name}_${index}`}
-                              style={styles.table_lineup_container}
+                              style={styles.player_container_info}
                             >
-                              <View style={styles.name_jersey_container}>
-                                <Text style={styles.formation_lineup_text}>
-                                  {player?.formation_position?.split(" ")[0] ||
-                                    "N/A"}
-                                </Text>
-                                <View style={styles.player_container}>
-                                  <Text style={styles.jersey_num_text}>
-                                    {player?.jersey_num}
+                              <View style={styles.table_lineup_container}>
+                                <View style={styles.name_jersey_container}>
+                                  <Text style={styles.formation_lineup_text}>
+                                    {player?.formation_position?.split(
+                                      " "
+                                    )[0] || "N/A"}
                                   </Text>
-                                  <Text style={styles.player_lineup_name_text}>
-                                    {` ${player?.name}`}
-                                  </Text>
+                                  <View style={styles.player_container}>
+                                    <Text style={styles.jersey_num_text}>
+                                      {player?.jersey_num}
+                                    </Text>
+                                    <Text
+                                      style={styles.player_lineup_name_text}
+                                    >
+                                      {` ${player?.name}`}
+                                    </Text>
+                                  </View>
                                 </View>
-                              </View>
-                              <View style={styles.ageheight_container}>
-                                <Text style={styles.height_text}>
-                                  {player?.height} m
-                                </Text>
-                                <Text style={styles.age_text}>
-                                  {player?.age} años
-                                </Text>
+                                <View style={styles.ageheight_container}>
+                                  <View>
+                                    <Text style={styles.height_text}>
+                                      {player?.height} m
+                                    </Text>
+                                    <Text style={styles.age_text}>
+                                      {player?.age} años
+                                    </Text>
+                                  </View>
+                                </View>
                               </View>
                             </View>
                           );
@@ -517,87 +514,39 @@ const MatchLineUp = ({
                             return (
                               <View
                                 key={`visitor_starting_${player.jersey_num}_${player.name}_${index}`}
-                                style={styles.table_lineup_container}
+                                style={styles.player_container_info}
                               >
-                                <View style={styles.name_jersey_container}>
-                                  <Text style={styles.formation_lineup_text}>
-                                    {player?.formation_position?.split(
-                                      " "
-                                    )[0] || "N/A"}
-                                  </Text>
-                                  <View style={styles.player_container}>
-                                    <Text style={styles.jersey_num_text}>
-                                      {player?.jersey_num}
+                                <View style={styles.table_lineup_container}>
+                                  <View style={styles.name_jersey_container}>
+                                    <Text style={styles.formation_lineup_text}>
+                                      {player?.formation_position?.split(
+                                        " "
+                                      )[0] || "N/A"}
                                     </Text>
-                                    <Text
-                                      style={styles.player_lineup_name_text}
-                                    >
-                                      {` ${player?.name}`}
-                                    </Text>
+                                    <View style={styles.player_container}>
+                                      <Text style={styles.jersey_num_text}>
+                                        {player?.jersey_num}
+                                      </Text>
+                                      <Text
+                                        style={styles.player_lineup_name_text}
+                                      >
+                                        {` ${player?.name}`}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                  <View style={styles.ageheight_container}>
+                                    <View>
+                                      <Text style={styles.height_text}>
+                                        {player?.height} m
+                                      </Text>
+                                      <Text style={styles.age_text}>
+                                        {player?.age} años
+                                      </Text>
+                                    </View>
                                   </View>
                                 </View>
-                                <View style={styles.ageheight_container}>
-                                  <View style={styles.events_container}>
-                                    {player.events?.cards?.yellow !==
-                                    true ? null : (
-                                      <View style={styles.goals_container}>
-                                        <MaterialCommunityIcons
-                                          name="card"
-                                          size={24}
-                                          color={Colors.YELLOW_LIGHT}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.cards?.red !==
-                                    true ? null : (
-                                      <View style={styles.goals_container}>
-                                        <MaterialCommunityIcons
-                                          name="card"
-                                          size={24}
-                                          color={Colors.RED_CHANGE_PLAYER}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.substitution
-                                      .has_substitution !== true ? null : (
-                                      <View
-                                        style={[
-                                          styles.goals_container,
-                                          { flexDirection: "column" },
-                                        ]}
-                                      >
-                                        <Text style={styles.goals_number_text}>
-                                          {player?.events?.substitution?.time}'
-                                        </Text>
-                                        <FontAwesome
-                                          name="exchange"
-                                          size={24}
-                                          color={Colors.RED_CHANGE_PLAYER}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.goals?.goals &&
-                                    player.events.goals.goals > 0 ? (
-                                      <View style={styles.goals_container}>
-                                        <Text style={styles.goals_number_text}>
-                                          {player.events.goals.goals}x
-                                        </Text>
-                                        <FontAwesome
-                                          name="soccer-ball-o"
-                                          size={24}
-                                          color={Colors.WHITE_GRAY}
-                                        />
-                                      </View>
-                                    ) : null}
-                                  </View>
-                                  <View>
-                                    <Text style={styles.height_text}>
-                                      {player?.height} m
-                                    </Text>
-                                    <Text style={styles.age_text}>
-                                      {player?.age} años
-                                    </Text>
-                                  </View>
+                                <View style={styles.events_container}>
+                                  {renderPlayerEvents(player)}
                                 </View>
                               </View>
                             );
@@ -616,87 +565,39 @@ const MatchLineUp = ({
                             return (
                               <View
                                 key={`visitor_bench_${player.jersey_num}_${player.name}_${index}`}
-                                style={styles.table_lineup_container}
+                                style={styles.player_container_info}
                               >
-                                <View style={styles.name_jersey_container}>
-                                  <Text style={styles.formation_lineup_text}>
-                                    {player?.formation_position?.split(
-                                      " "
-                                    )[0] || "N/A"}
-                                  </Text>
-                                  <View style={styles.player_container}>
-                                    <Text style={styles.jersey_num_text}>
-                                      {player?.jersey_num}
+                                <View style={styles.table_lineup_container}>
+                                  <View style={styles.name_jersey_container}>
+                                    <Text style={styles.formation_lineup_text}>
+                                      {player?.formation_position?.split(
+                                        " "
+                                      )[0] || "N/A"}
                                     </Text>
-                                    <Text
-                                      style={styles.player_lineup_name_text}
-                                    >
-                                      {` ${player?.name}`}
-                                    </Text>
+                                    <View style={styles.player_container}>
+                                      <Text style={styles.jersey_num_text}>
+                                        {player?.jersey_num}
+                                      </Text>
+                                      <Text
+                                        style={styles.player_lineup_name_text}
+                                      >
+                                        {` ${player?.name}`}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                  <View style={styles.ageheight_container}>
+                                    <View>
+                                      <Text style={styles.height_text}>
+                                        {player?.height} m
+                                      </Text>
+                                      <Text style={styles.age_text}>
+                                        {player?.age} años
+                                      </Text>
+                                    </View>
                                   </View>
                                 </View>
-                                <View style={styles.ageheight_container}>
-                                  <View style={styles.events_container}>
-                                    {player.events?.cards?.yellow !==
-                                    true ? null : (
-                                      <View style={styles.goals_container}>
-                                        <MaterialCommunityIcons
-                                          name="card"
-                                          size={24}
-                                          color={Colors.YELLOW_LIGHT}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.cards?.red !==
-                                    true ? null : (
-                                      <View style={styles.goals_container}>
-                                        <MaterialCommunityIcons
-                                          name="card"
-                                          size={24}
-                                          color={Colors.RED_CHANGE_PLAYER}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.substitution
-                                      .has_substitution !== true ? null : (
-                                      <View
-                                        style={[
-                                          styles.goals_container,
-                                          { flexDirection: "column" },
-                                        ]}
-                                      >
-                                        <Text style={styles.goals_number_text}>
-                                          {player?.events?.substitution?.time}'
-                                        </Text>
-                                        <FontAwesome
-                                          name="exchange"
-                                          size={24}
-                                          color={Colors.RED_CHANGE_PLAYER}
-                                        />
-                                      </View>
-                                    )}
-                                    {player.events?.goals?.goals &&
-                                    player.events.goals.goals > 0 ? (
-                                      <View style={styles.goals_container}>
-                                        <Text style={styles.goals_number_text}>
-                                          {player.events.goals.goals}x
-                                        </Text>
-                                        <FontAwesome
-                                          name="soccer-ball-o"
-                                          size={24}
-                                          color={Colors.WHITE_GRAY}
-                                        />
-                                      </View>
-                                    ) : null}
-                                  </View>
-                                  <View>
-                                    <Text style={styles.height_text}>
-                                      {player?.height} m
-                                    </Text>
-                                    <Text style={styles.age_text}>
-                                      {player?.age} años
-                                    </Text>
-                                  </View>
+                                <View style={styles.events_container}>
+                                  {renderPlayerEvents(player)}
                                 </View>
                               </View>
                             );
@@ -718,33 +619,38 @@ const MatchLineUp = ({
                           return (
                             <View
                               key={`visitor_missing_${player.jersey_num}_${player.name}_${index}`}
-                              style={styles.table_lineup_container}
+                              style={styles.player_container_info}
                             >
-                              <View style={styles.name_jersey_container}>
-                                <Text style={styles.formation_lineup_text}>
-                                  {player?.formation_position?.split(" ")[0] ||
-                                    "N/A"}
-                                </Text>
-                                <View style={styles.player_container}>
-                                  <Text style={styles.jersey_num_text}>
-                                    {player?.jersey_num}
+                              <View style={styles.table_lineup_container}>
+                                <View style={styles.name_jersey_container}>
+                                  <Text style={styles.formation_lineup_text}>
+                                    {player?.formation_position?.split(
+                                      " "
+                                    )[0] || "N/A"}
                                   </Text>
-                                  <Text
-                                    style={styles.player_lineup_name_text}
-                                    ellipsizeMode="clip"
-                                    numberOfLines={1}
-                                  >
-                                    {` ${player?.name}`}
-                                  </Text>
+                                  <View style={styles.player_container}>
+                                    <Text style={styles.jersey_num_text}>
+                                      {player?.jersey_num}
+                                    </Text>
+                                    <Text
+                                      style={styles.player_lineup_name_text}
+                                      ellipsizeMode="clip"
+                                      numberOfLines={1}
+                                    >
+                                      {` ${player?.name}`}
+                                    </Text>
+                                  </View>
                                 </View>
-                              </View>
-                              <View style={styles.ageheight_container}>
-                                <Text style={styles.height_text}>
-                                  {player?.height} m
-                                </Text>
-                                <Text style={styles.age_text}>
-                                  {player?.age} años
-                                </Text>
+                                <View style={styles.ageheight_container}>
+                                  <View>
+                                    <Text style={styles.height_text}>
+                                      {player?.height} m
+                                    </Text>
+                                    <Text style={styles.age_text}>
+                                      {player?.age} años
+                                    </Text>
+                                  </View>
+                                </View>
                               </View>
                             </View>
                           );
@@ -913,13 +819,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
+  formation_text_container: {
+    flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "center",
+  },
+  initial_lineup_text: {
+    color: Colors.YELLOW_LIGHT,
+    fontSize: RFValue(16),
+    fontWeight: "bold",
+  },
   formation_text: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: Colors.WHITE_GRAY,
     fontWeight: "bold",
   },
   formation_container: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     padding: 10,
@@ -936,38 +851,51 @@ const styles = StyleSheet.create({
     height: "100%",
     zIndex: 1,
   },
+  player_container_info: {
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    marginVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.BLUE_BORDER,
+    width: "100%",
+    backgroundColor: Colors.DARK_BLUE_PLAYOFFS,
+    borderRadius: 6,
+  },
   table_lineup_container: {
     width: "100%",
-    flexDirection: "row",
+    flex: 1,
     justifyContent: "space-between",
-    paddingHorizontal: 24,
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.LIGHT_BLUE_DARK,
+    flexDirection: "row",
+    paddingHorizontal: 4,
     marginBottom: 10,
   },
+
   name_jersey_container: {
     marginTop: 14,
   },
   jersey_num_text: {
-    color: Colors.GREEN_TEAM_STATS_TWO,
-    fontSize: 16,
+    color: Colors.RED_CHANGE_PLAYER,
+    fontSize: RFValue(14),
+    fontWeight: "bold",
   },
   formation_lineup_text: {
     color: Colors.YELLOW_LIGHT,
   },
   player_lineup_name_text: {
     color: Colors.WHITE_GRAY,
-    fontSize: 16,
+    fontSize: RFValue(14),
     fontWeight: "bold",
   },
   height_text: {
     color: Colors.WHITE_GRAY,
-    fontSize: 16,
+    fontSize: RFValue(14),
     fontWeight: "bold",
   },
   age_text: {
     color: Colors.WHITE_GRAY,
-    fontSize: 16,
+    fontSize: RFValue(14),
     fontWeight: "bold",
   },
   player_container: {
@@ -1009,6 +937,8 @@ const styles = StyleSheet.create({
   },
   goals_container: {
     marginRight: 10,
+    flexDirection: "row",
+    gap: 10,
   },
   goals_number_text: {
     marginBottom: 5,
@@ -1019,6 +949,16 @@ const styles = StyleSheet.create({
   events_container: {
     alignItems: "center",
     flexDirection: "row",
+  },
+  event_separator: {
+    marginHorizontal: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  separator_text: {
+    color: Colors.WHITE_GRAY,
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
