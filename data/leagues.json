@@ -1,0 +1,348 @@
+[
+  {
+    "id": 1,
+    "name": "Argentina",
+    "sub_categories": [
+      {
+        "id": "hc",
+        "name": "Liga Profesional",
+        "url_name": "liga-profesional"
+      },
+      {
+        "id": "ebj",
+        "name": "Primera B Nacional",
+        "url_name": "primera-nacional"
+      },
+      {
+        "id": "fahh",
+        "name": "Primera B Metropolitana",
+        "url_name": "primera-b-metropolitana"
+      },
+      {
+        "id": "ffjb",
+        "name": "Primera C",
+        "url_name": "primera-c"
+      },
+      {
+        "id": "gea",
+        "name": "Copa Argentina",
+        "url_name": "copa-argentina"
+      },
+      {
+        "id": "hcbe",
+        "name": "Copa de la Liga",
+        "url_name": "copa-de-la-liga-profesional"
+      },
+      {
+        "id": "fahi",
+        "name": "Federal A",
+        "url_name": "federal-a"
+      },
+      {
+        "id": "iage",
+        "name": "Promocional Amateur",
+        "url_name": "Promocional-amateur"
+      },
+      {
+        "id": "hhbc",
+        "name": "Liga Profesional - Reserva+",
+        "url_name": "liga-profesional---reserva"
+      },
+      {
+        "id": "gcce",
+        "name": "Liga Profesional Femenina",
+        "url_name": "campeonato-femenino"
+      },
+      {
+        "id": "hgee",
+        "name": "Copa de la Liga - Reserva",
+        "url_name": "copa-de-la-liga---reserva"
+      },
+      {
+        "id": "th",
+        "name": "Tabla Historica",
+        "url_name": "tablahistorica"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Internacionales",
+    "sub_categories": [
+      {
+        "id": "bac",
+        "name": "Copa Libertadores",
+        "url_name": "libertadores"
+      },
+      {
+        "id": "dij",
+        "name": "Copa Sudamericana",
+        "url_name": "conmebol-sudamericana"
+      },
+      {
+        "id": "fhc",
+        "name": "Champions League",
+        "url_name": "uefa-champions-league"
+      },
+      {
+        "id": "fhd",
+        "name": "Europa League",
+        "url_name": "uefa-europa-league"
+      },
+      {
+        "id": "hgif",
+        "name": "Conference League",
+        "url_name": "uefa-conference-league"
+      },
+      {
+        "id": "fajg",
+        "name": "Mundial de Clubes",
+        "url_name": "fifa-club-world-cup"
+      },
+      {
+        "id": "bhb",
+        "name": "Concacaf Champions",
+        "url_name": "concacaf-champions-cup"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Inglaterra",
+    "sub_categories": [
+      {
+        "id": "h",
+        "name": "Premier League",
+        "url_name": "premier-league"
+      },
+      {
+        "id": "j",
+        "name": "Carabao Cup",
+        "url_name": "efl-cup"
+      },
+      {
+        "id": "i",
+        "name": "FA Cup",
+        "url_name": "fa-cup"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "España",
+    "sub_categories": [
+      {
+        "id": "bb",
+        "name": "La Liga",
+        "url_name": "laliga"
+      },
+      {
+        "id": "bd",
+        "name": "Copa del Rey",
+        "url_name": "copa-del-rey"
+      },
+      {
+        "id": "bf",
+        "name": "Supercopa",
+        "url_name": "super-cup"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Italia",
+    "sub_categories": [
+      {
+        "id": "bh",
+        "name": "Serie A",
+        "url_name": "serie-a"
+      },
+      {
+        "id": "ca",
+        "name": "Coppa Italia",
+        "url_name": "coppa-italia"
+      },
+      {
+        "id": "cd",
+        "name": "Supercopa",
+        "url_name": "supercoppa-italiana"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Alemania",
+    "sub_categories": [
+      {
+        "id": "cf",
+        "name": "Bundesliga",
+        "url_name": "bundesliga"
+      },
+      {
+        "id": "ci",
+        "name": "DFB-Pokal",
+        "url_name": "dfb-pokal"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Portugal",
+    "sub_categories": [
+      {
+        "id": "hd",
+        "name": "Primeira Liga",
+        "url_name": "liga-portugal"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Francia",
+    "sub_categories": [
+      {
+        "id": "df",
+        "name": "Ligue 1",
+        "url_name": "ligue-1"
+      },
+      {
+        "id": "dh",
+        "name": "Coupe de France",
+        "url_name": "coupe-de-france"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Brasil",
+    "sub_categories": [
+      {
+        "id": "bbd",
+        "name": "Brasileirao",
+        "url_name": "brasileirao-serie-a"
+      },
+      {
+        "id": "bbf",
+        "name": "Copa do Brasil",
+        "url_name": "copa-do-brasil"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Uruguay",
+    "sub_categories": [
+      {
+        "id": "gbh",
+        "name": "Primera División",
+        "url_name": "uruguayan-championship"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Paraguay",
+    "sub_categories": [
+      {
+        "id": "gcb",
+        "name": "Copa de primera",
+        "url_name": "copa-de-primera"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Colombia",
+    "sub_categories": [
+      {
+        "id": "gca",
+        "name": "Liga BetPlay",
+        "url_name": "liga-betplay"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Chile",
+    "sub_categories": [
+      {
+        "id": "bdf",
+        "name": "Primera División",
+        "url_name": "campeonato-nacional"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "México",
+    "sub_categories": [
+      {
+        "id": "beb",
+        "name": "Liga MX",
+        "url_name": "liga-mx"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Estados Unidos",
+    "sub_categories": [
+      {
+        "id": "bae",
+        "name": "MLS",
+        "url_name": "mls"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Selecciones",
+    "sub_categories": [
+      {
+        "id": "fjf",
+        "name": "Copa América",
+        "url_name": "copa-america"
+      },
+      {
+        "id": "gbd",
+        "name": "Eliminatorias sudamericanas",
+        "url_name": "conmebol-wc-qualification"
+      },
+      {
+        "id": "fecb",
+        "name": "Eliminatorias UEFA",
+        "url_name": "uefa-world-cup-qualification"
+      },
+      {
+        "id": "gdbg",
+        "name": "Eurocopa",
+        "url_name": "euro"
+      },
+      {
+        "id": "habg",
+        "name": "UEFA Nations League",
+        "url_name": "uefa-nations-league"
+      },
+      {
+        "id": "gahb",
+        "name": "Eliminatorias Eurocopa",
+        "url_name": "european-qualifiers"
+      },
+      {
+        "id": "fjda",
+        "name": "Mundial",
+        "url_name": "fifa-world-cup"
+      },
+      {
+        "id": "fefd",
+        "name": "Sudamericano Sub-20",
+        "url_name": "sudamericano-u20"
+      },
+      {
+        "id": "gbb",
+        "name": "Eliminatorias Concacaf",
+        "url_name": "concacaf-world-cup-qualification"
+      }
+    ]
+  }
+]
