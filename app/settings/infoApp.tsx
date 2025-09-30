@@ -170,6 +170,18 @@ const InfoApp = () => {
                     Lanzamiento en la Google Play Store.
                   </Text>
                 </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Se arreglo los problemas con los celulares viejos.
+                  </Text>
+                </View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Los partidos ahora son accesibles desde los playoffs
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
