@@ -1,3 +1,4 @@
+import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { useGetTeams } from "@/hooks/getImagesTeam/useGetTeams";
 import { BracketStage, TableGroup } from "@/types/league_full_info";
 import { Dimensions, StyleSheet, View } from "react-native";
@@ -35,11 +36,13 @@ export const LeagueTeams = ({
   );
 
   return (
-    <View style={styles.container}>
-      {allTeams.map((item) => {
-        return <View key={item.id}>{renderItem({ item })}</View>;
-      })}
-    </View>
+    <ScreenContainer>
+      <View style={styles.container}>
+        {allTeams.map((item) => {
+          return <View key={item.id}>{renderItem({ item })}</View>;
+        })}
+      </View>
+    </ScreenContainer>
   );
 };
 

@@ -4,7 +4,7 @@ import MatchStats from "@/components/match_info/match_stats/match_stats";
 import { Colors } from "@/constants/colors/colors";
 import useGameInfo from "@/hooks/game_info/useGameInfo";
 import { Image } from "expo-image";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Dimensions,
@@ -176,38 +176,47 @@ const MatchInfo = () => {
               status?.enum === 1 && styles.team_match_no_score,
             ]}
           >
-            <View style={styles.team_match_info}>
-              {/* Imagen del equipo 1, no puede exceder los 100px de ancho y alto. */}
-              <Image
-                source={{
-                  uri: `https://api.promiedos.com.ar/images/team/${team1?.id}/2`,
+            <Pressable>
+              <Link
+                href={{
+                  pathname: "/team/[team]",
+                  params: { team: team1?.id ?? "" },
                 }}
-                style={{ width: 51, height: 60 }}
-                contentFit="contain"
-              />
-              {/* Nombre del equipo 1, elipsesize en tail, para no romper el contenido. */}
-              <Text
-                style={styles.team_match_text}
-                numberOfLines={1}
-                ellipsizeMode="tail"
               >
-                {team1?.short_name || "Sin equipo"}
-              </Text>
-              {status?.enum !== 1 && (
-                <View style={styles.goals_match_container_team1_results}>
-                  {penalties && (
-                    <Text style={styles.events_text_penalty}>
-                      {"("}
-                      {penalties?.[0].toString()}
-                      {")"}
-                    </Text>
-                  )}
-                  <Text style={styles.team_match_score_text}>
-                    {scores?.[0].toString()}
+                <View style={styles.team_match_info}>
+                  {/* Imagen del equipo 1, no puede exceder los 100px de ancho y alto. */}
+                  <Image
+                    source={{
+                      uri: `https://api.promiedos.com.ar/images/team/${team1?.id}/2`,
+                    }}
+                    style={{ width: 51, height: 60 }}
+                    contentFit="contain"
+                  />
+                  {/* Nombre del equipo 1, elipsesize en tail, para no romper el contenido. */}
+                  <Text
+                    style={styles.team_match_text}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {team1?.short_name || "Sin equipo"}
                   </Text>
+                  {status?.enum !== 1 && (
+                    <View style={styles.goals_match_container_team1_results}>
+                      {penalties && (
+                        <Text style={styles.events_text_penalty}>
+                          {"("}
+                          {penalties?.[0].toString()}
+                          {")"}
+                        </Text>
+                      )}
+                      <Text style={styles.team_match_score_text}>
+                        {scores?.[0].toString()}
+                      </Text>
+                    </View>
+                  )}
                 </View>
-              )}
-            </View>
+              </Link>
+            </Pressable>
             <View style={styles.team_match_score}>
               <View>
                 {/* Contenedor para el resultado o el horaro de comienzo
@@ -230,38 +239,47 @@ const MatchInfo = () => {
                 </Text>
               </View>
             </View>
-            <View style={styles.team_match_info}>
-              {/* Imagen del equipo 2, no puede exceder los 100px de ancho y alto. */}
-              <Image
-                source={{
-                  uri: `https://api.promiedos.com.ar/images/team/${team2?.id}/2`,
+            <Pressable>
+              <Link
+                href={{
+                  pathname: "/team/[team]",
+                  params: { team: team2?.id ?? "" },
                 }}
-                style={{ width: 60, height: 60 }}
-                contentFit="contain"
-              />
-              {/* Nombre del equipo 2, elipsesize en tail, para no romper el contenido. */}
-              <Text
-                style={styles.team_match_text}
-                numberOfLines={1}
-                ellipsizeMode="tail"
               >
-                {team2?.short_name || "Sin equipo"}
-              </Text>
-              {status?.enum !== 1 && (
-                <View style={styles.goals_match_container_team2_results}>
-                  <Text style={styles.team_match_score_text}>
-                    {scores?.[1].toString()}
+                <View style={styles.team_match_info}>
+                  {/* Imagen del equipo 2, no puede exceder los 100px de ancho y alto. */}
+                  <Image
+                    source={{
+                      uri: `https://api.promiedos.com.ar/images/team/${team2?.id}/2`,
+                    }}
+                    style={{ width: 60, height: 60 }}
+                    contentFit="contain"
+                  />
+                  {/* Nombre del equipo 2, elipsesize en tail, para no romper el contenido. */}
+                  <Text
+                    style={styles.team_match_text}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {team2?.short_name || "Sin equipo"}
                   </Text>
-                  {penalties && (
-                    <Text style={styles.events_text_penalty}>
-                      {"("}
-                      {penalties?.[1].toString()}
-                      {")"}
-                    </Text>
+                  {status?.enum !== 1 && (
+                    <View style={styles.goals_match_container_team2_results}>
+                      <Text style={styles.team_match_score_text}>
+                        {scores?.[1].toString()}
+                      </Text>
+                      {penalties && (
+                        <Text style={styles.events_text_penalty}>
+                          {"("}
+                          {penalties?.[1].toString()}
+                          {")"}
+                        </Text>
+                      )}
+                    </View>
                   )}
                 </View>
-              )}
-            </View>
+              </Link>
+            </Pressable>
           </View>
         )}
         {renderSection()}

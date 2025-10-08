@@ -2,11 +2,18 @@ import { Colors } from "@/constants/colors/colors";
 import useAppUpdate from "@/hooks/checkUpdates/useAppUpdate";
 import { useAndroidNotificationPermission } from "@/hooks/notifications/useNotificationsPermissions";
 import { Ionicons } from "@expo/vector-icons";
-import messaging from "@react-native-firebase/messaging";
+//import messaging from "@react-native-firebase/messaging";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Modal,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const queryClient = new QueryClient();
@@ -18,7 +25,7 @@ export default function RootLayout() {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
 
   // Función para configurar FCM
-  const setupFirebaseMessaging = async () => {
+  /*const setupFirebaseMessaging = async () => {
     try {
       if (!messaging().isDeviceRegisteredForRemoteMessages) {
         await messaging().registerDeviceForRemoteMessages();
@@ -43,7 +50,7 @@ export default function RootLayout() {
     } catch (error) {
       console.log("Error configurando FCM:", error);
     }
-  };
+  };*/
 
   useEffect(() => {
     // Mostrar modal solo si no tiene permisos y no esta bloqueado
@@ -55,7 +62,7 @@ export default function RootLayout() {
   }, [hasPermission]);
 
   useEffect(() => {
-    setupFirebaseMessaging();
+    //setupFirebaseMessaging();
   }, []);
 
   const handleActivateNotifications = async () => {
@@ -76,7 +83,12 @@ export default function RootLayout() {
   useAppUpdate();
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={{ backgroundColor: Colors.DARK_BLUE }}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={Colors.DARK_BLUE}
+        translucent={false}
+      />
       <QueryClientProvider client={queryClient}>
         {/* Pantalla principal */}
         <Stack>
