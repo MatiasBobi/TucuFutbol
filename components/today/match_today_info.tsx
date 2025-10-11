@@ -51,6 +51,8 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
     ); // Hook para obtener los eventos del partido (Tanstack Query)
     const events = data?.game?.events || null; // Eventos del partido
     const statistics = data?.game?.statistics || null; // Estadisticas del partido
+    const goals_team1 = data?.game?.teams?.[0]?.goals; // Goles del Local
+    const goals_team2 = data?.game?.teams?.[1]?.goals; // Goles del Visitante
     const matchid = teams?.id; // ID del Match
 
     // Animacion para expandir o contraer el partido
@@ -233,6 +235,8 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                   <MatchStats
                     events={events}
                     statistics={statistics || undefined}
+                    goals_team_1={goals_team1 ?? []}
+                    goals_team_2={goals_team2 ?? []}
                     video_id={data?.game?.videos?.[0]?.video_id ?? ""}
                   />
                 </>
@@ -343,13 +347,15 @@ const styles = StyleSheet.create({
     fontSize: RFValue(20),
     color: Colors.GRAY_LIGHT,
     fontWeight: "bold",
-    width: 10,
+
     textAlign: "center",
   },
   time_match_text: {
     fontSize: RFValue(16),
     color: Colors.YELLOW_LIGHT,
     fontWeight: "bold",
+
+    textAlign: "center",
   },
   goals_match_container: {
     flexDirection: "row",

@@ -14,6 +14,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const { width, height } = Dimensions.get("window");
 const MatchInfo = () => {
@@ -42,6 +43,8 @@ const MatchInfo = () => {
   const recent = matchData?.game?.recent_form;
   const standings = matchData?.game?.standings;
   const videoId = matchData?.game?.videos?.[0].video_id || "";
+  const goals_team1 = matchData?.game?.teams?.[0]?.goals;
+  const goals_team2 = matchData?.game?.teams?.[1]?.goals;
 
   const [activeSection, setActiveSection] = useState<
     "estadisticas" | "lineup" | "informacion"
@@ -70,6 +73,8 @@ const MatchInfo = () => {
           <MatchStats
             events={matchData?.game?.events}
             statistics={matchData?.game?.statistics}
+            goals_team_1={goals_team1 ?? []}
+            goals_team_2={goals_team2 ?? []}
             video_id={videoId}
           />
         );
@@ -176,14 +181,14 @@ const MatchInfo = () => {
               status?.enum === 1 && styles.team_match_no_score,
             ]}
           >
-            <Pressable>
+            <Pressable style={styles.team_match_info}>
               <Link
                 href={{
                   pathname: "/team/[team]",
                   params: { team: team1?.id ?? "" },
                 }}
               >
-                <View style={styles.team_match_info}>
+                <View style={styles.team_match_info_subcontainer}>
                   {/* Imagen del equipo 1, no puede exceder los 100px de ancho y alto. */}
                   <Image
                     source={{
@@ -193,11 +198,7 @@ const MatchInfo = () => {
                     contentFit="contain"
                   />
                   {/* Nombre del equipo 1, elipsesize en tail, para no romper el contenido. */}
-                  <Text
-                    style={styles.team_match_text}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
+                  <Text style={styles.team_match_text}>
                     {team1?.short_name || "Sin equipo"}
                   </Text>
                   {status?.enum !== 1 && (
@@ -239,14 +240,14 @@ const MatchInfo = () => {
                 </Text>
               </View>
             </View>
-            <Pressable>
+            <Pressable style={styles.team_match_info}>
               <Link
                 href={{
                   pathname: "/team/[team]",
                   params: { team: team2?.id ?? "" },
                 }}
               >
-                <View style={styles.team_match_info}>
+                <View style={styles.team_match_info_subcontainer}>
                   {/* Imagen del equipo 2, no puede exceder los 100px de ancho y alto. */}
                   <Image
                     source={{
@@ -256,11 +257,7 @@ const MatchInfo = () => {
                     contentFit="contain"
                   />
                   {/* Nombre del equipo 2, elipsesize en tail, para no romper el contenido. */}
-                  <Text
-                    style={styles.team_match_text}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
+                  <Text style={styles.team_match_text}>
                     {team2?.short_name || "Sin equipo"}
                   </Text>
                   {status?.enum !== 1 && (
@@ -340,8 +337,8 @@ const styles = StyleSheet.create({
   },
   team_match: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 10,
@@ -358,21 +355,37 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.YELLOW_LIGHT,
     textAlign: "center",
+    maxWidth: width * 0.25,
   },
   team_match_score: {
-    flex: 1,
+    flex: 2,
     alignItems: "center",
     justifyContent: "center",
   },
   team_match_info: {
-    flex: 1,
     alignItems: "center",
+    justifyContent: "center",
+    flex: 3,
+  },
+  team_match_info_subcontainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
   goals_match_container_team1_results: {
     flexDirection: "row",
+
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    marginTop: 5,
   },
   goals_match_container_team2_results: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    marginTop: 5,
   },
   team_match_score_text: {
     fontSize: 24,
@@ -394,8 +407,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   time_match_text: {
-    fontSize: 24,
-    color: Colors.WHITE_GRAY,
+    fontSize: RFValue(16),
+    color: Colors.YELLOW_LIGHT,
     textAlign: "center",
   },
   notfound_container: {
