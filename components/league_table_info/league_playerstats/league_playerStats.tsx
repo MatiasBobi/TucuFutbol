@@ -1,3 +1,4 @@
+import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Colors } from "@/constants/colors/colors";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { StatisticsTable } from "../../../types/league_full_info";
@@ -29,15 +30,17 @@ export default function LeaguePlayerStats({
     );
   }
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={league_stats}
-        renderItem={renderSubTable}
-        keyExtractor={(item, index) =>
-          `${item?.name}_${index} || 'no-name'LP_${index} `
-        }
-      />
-    </View>
+    <ScreenContainer>
+      <View style={styles.container}>
+        <FlatList
+          data={league_stats}
+          renderItem={renderSubTable}
+          keyExtractor={(item, index) =>
+            `${item?.name}_${index} || 'no-name'LP_${index} `
+          }
+        />
+      </View>
+    </ScreenContainer>
   );
 }
 

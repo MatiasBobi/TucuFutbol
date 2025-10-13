@@ -1,6 +1,6 @@
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Colors } from "@/constants/colors/colors";
-import { GameStage, Statistic } from "@/types/game_info";
+import { GameStage, Goal, Statistic } from "@/types/game_info";
 import { Image } from "expo-image";
 import { useCallback, useState } from "react";
 import {
@@ -17,10 +17,14 @@ const { width, height } = Dimensions.get("window");
 const MatchStats = ({
   events,
   statistics,
+  goals_team_1,
+  goals_team_2,
   video_id,
 }: {
   events?: GameStage[];
   statistics?: Statistic[];
+  goals_team_1: Goal[];
+  goals_team_2: Goal[];
   video_id: string;
 }) => {
   const [playing, setPlaying] = useState(false);
@@ -38,6 +42,57 @@ const MatchStats = ({
   return (
     <ScreenContainer style={styles.container}>
       <ScrollView>
+        <View>
+          <Text style={styles.goals_header_text}>Goles</Text>
+        </View>
+        <View style={styles.goals_match_container}>
+          <View
+            style={{
+              flex: 1,
+            }}
+          >
+            {goals_team_1?.map((goal, index) => {
+              return (
+                <View
+                  key={`${goal.player_sname}_${index}`}
+                  style={[
+                    styles.team_goal_container,
+                    { justifyContent: "flex-start" },
+                  ]}
+                >
+                  <Text style={styles.team_goal_time}>
+                    {goal.time_to_display}
+                  </Text>
+                  <Text style={styles.team_goal_type}>{goal.goal_type}</Text>
+                  <Text style={styles.team_goal_sname}>
+                    {goal.player_sname}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+          <View style={{ flex: 1 }}>
+            {goals_team_2?.map((goal, index) => {
+              return (
+                <View
+                  key={`${goal.player_sname}_${index}`}
+                  style={[
+                    styles.team_goal_container,
+                    { justifyContent: "flex-end" },
+                  ]}
+                >
+                  <Text style={styles.team_goal_sname}>
+                    {goal.player_sname}
+                  </Text>
+                  <Text style={styles.team_goal_time}>
+                    {goal.time_to_display}
+                  </Text>
+                  <Text style={styles.team_goal_type}>{goal.goal_type}</Text>
+                </View>
+              );
+            })}
+          </View>
+        </View>
         <View style={styles.teamcolors_container}>
           <Text style={styles.local_text}>{"(Local)"} Rojo</Text>
           <Text style={styles.separator_text}>-</Text>
@@ -93,8 +148,10 @@ const MatchStats = ({
           </View>
           <Text style={styles.events_name}>Comienzo del partido</Text>
           {events === undefined ? (
-            <View>
-              <Text>No hay eventos en vivo disponibles.</Text>
+            <View style={styles.events_container}>
+              <Text style={styles.events_text}>
+                No hay eventos en vivo disponibles.
+              </Text>
             </View>
           ) : (
             events.map((event, index) => (
@@ -271,8 +328,11 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   events_text: {
+    marginTop: 10,
     color: Colors.YELLOW_LIGHT,
     textAlign: "center",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   events_text_change: {
     color: Colors.RED_CHANGE_PLAYER,
@@ -347,6 +407,46 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: Colors.WHITE_GRAY,
     fontWeight: "bold",
+  },
+  goals_match_container: {
+    flexDirection: "row",
+    borderBottomWidth: 2,
+
+    borderBottomColor: Colors.YELLOW_LIGHT,
+    marginBottom: 10,
+    paddingBottom: 10,
+  },
+  team_goal_container: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: "100%",
+    alignItems: "center",
+    paddingVertical: 10,
+    gap: 5,
+  },
+  team_goal_type: {
+    fontSize: 14,
+    color: Colors.RED_CHANGE_PLAYER,
+    fontWeight: "bold",
+  },
+  team_goal_sname: {
+    fontSize: 14,
+    color: Colors.WHITE_GRAY,
+    fontWeight: "bold",
+    flexShrink: 1,
+    flexWrap: "wrap",
+  },
+  team_goal_time: {
+    fontSize: 14,
+    color: Colors.YELLOW_LIGHT,
+    fontWeight: "bold",
+  },
+  goals_header_text: {
+    fontSize: 20,
+    color: Colors.WHITE_GRAY,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 5,
   },
 });
 

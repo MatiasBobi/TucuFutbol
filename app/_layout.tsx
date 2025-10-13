@@ -6,7 +6,14 @@ import messaging from "@react-native-firebase/messaging";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Modal,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const queryClient = new QueryClient();
@@ -76,7 +83,12 @@ export default function RootLayout() {
   useAppUpdate();
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={{ backgroundColor: Colors.DARK_BLUE }}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={Colors.DARK_BLUE}
+        translucent={false}
+      />
       <QueryClientProvider client={queryClient}>
         {/* Pantalla principal */}
         <Stack>

@@ -154,12 +154,6 @@ const InfoApp = () => {
                 <View style={styles.texts_changes_container}>
                   <Text style={styles.check_text}>✓ </Text>
                   <Text style={styles.text_info_change}>
-                    Últimos arreglos visuales pre-Play Store.
-                  </Text>
-                </View>
-                <View style={styles.texts_changes_container}>
-                  <Text style={styles.check_text}>✓ </Text>
-                  <Text style={styles.text_info_change}>
                     Se agregaron más información en las formaciones del partido.
                   </Text>
                 </View>
@@ -180,6 +174,18 @@ const InfoApp = () => {
                   <Text style={styles.check_text}>✓ </Text>
                   <Text style={styles.text_info_change}>
                     Los partidos ahora son accesibles desde los playoffs.
+                  </Text>
+                </View>
+              </View>
+            </View>
+            {/* Version 1.0.5 */}
+            <View style={styles.versionSection}>
+              <Text style={styles.versionTitle}>Version 1.0.5</Text>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Lanzamiento en la Google Play Store.
                   </Text>
                 </View>
               </View>

@@ -3,7 +3,7 @@
     "name": "TucuLive",
     "slug": "TucuLive",
     "runtimeVersion": "1.0.2",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tuculive",
@@ -17,10 +17,20 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "enableProguardInReleaseBuilds": true,
       "permissions":["android.permission.POST_NOTIFICATIONS"],
       "googleServicesFile": "./google-services.json",
       "edgeToEdgeEnabled": true,
-      "package": "com.futapk_TucuLive"
+      "package": "com.futapk_TucuLive",
+      "androidNavigationBar": {
+        "backgroundColor": "#041026",
+        "barStyle": "light-content"
+      },
+      "androidStatusBar": {
+        "backgroundColor": "#041026",
+        "barStyle": "light-content",
+        "translucent": false
+      }
     },
     "web": {
       "bundler": "metro",
@@ -34,8 +44,10 @@
       [
         "expo-build-properties",
         {
-          "ios": {
-            "useFrameworks": "static"
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "extraProguardRules": "-keep public class com.futapk_TucuLive.** {*;}",
+            "allowBackup": false
           }
         }
       ],
