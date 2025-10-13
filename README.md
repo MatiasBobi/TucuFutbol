@@ -6,4 +6,4 @@
 
 Mi primer proyecto a producción servido para Google PlayStore.
 
-Version 1.0.4.
+Version 1.0.5.
