@@ -1,12 +1,13 @@
 import { League } from "@/types/todayMatches";
 import { Link } from "expo-router";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { MatchTodayInfo } from "./match_today_info";
 export const LeagueTableToday = React.memo(function LeagueTableToday(props: {
   league: League;
 }) {
   const { league } = props;
+
   return (
     <View style={styles.container_today}>
       <Link
@@ -14,6 +15,13 @@ export const LeagueTableToday = React.memo(function LeagueTableToday(props: {
         asChild
       >
         <Pressable style={styles.title}>
+          <Image
+            source={{
+              uri: `https://api.promiedos.com.ar/images/league/${league.id}/2`,
+            }}
+            style={{ width: 51, height: 60 }}
+            resizeMode="center"
+          />
           <Text style={styles.titleText}> {league.name}</Text>
         </Pressable>
       </Link>
@@ -43,6 +51,10 @@ const styles = StyleSheet.create({
   title: {
     backgroundColor: "#141c34",
     padding: 10,
+
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
   },
   matches_container: {
     padding: 10,

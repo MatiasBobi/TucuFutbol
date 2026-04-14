@@ -4,8 +4,9 @@ import useLeagueChampions from "@/hooks/league_champions/LeagueChampions";
 import { HistoryRow, RankingRow } from "@/types/champions_table";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
+  Animated,
   Dimensions,
   Pressable,
   SectionList,
@@ -20,9 +21,64 @@ const { width, height } = Dimensions.get("window");
 
 interface Section {
   title: string;
+  type: "champions" | "rankings";
   data: HistoryRow[] | RankingRow[];
 }
 
+const SkeletonView = () => {
+  const opacity = useRef(new Animated.Value(0.3)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 0.7,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.3,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+  }, []);
+
+  return (
+    <Animated.View style={[styles.champions_container, { opacity }]}>
+      <View style={[styles.team_container, { flex: 0.8 }]}>
+        <View
+          style={{
+            width: 40,
+            height: 40,
+            backgroundColor: Colors.GRAY_LIGHT,
+            borderRadius: 20,
+            marginRight: 10,
+          }}
+        />
+        <View
+          style={{
+            width: 100,
+            height: 20,
+            backgroundColor: Colors.GRAY_LIGHT,
+            borderRadius: 4,
+          }}
+        />
+      </View>
+      <View style={[styles.restValue_container, { flex: 0.2 }]}>
+        <View
+          style={{
+            width: 30,
+            height: 20,
+            backgroundColor: Colors.GRAY_LIGHT,
+            borderRadius: 4,
+          }}
+        />
+      </View>
+    </Animated.View>
+  );
+};
 //Render de la tabla de los campeones.
 const RenderChampions = React.memo(
   ({
@@ -38,23 +94,18 @@ const RenderChampions = React.memo(
   }) => {
     const valueSplit = React.useMemo(
       () => item.values?.[0].value.split(" ")[0] || item.values?.[0].value,
-      [item.values]
+      [item.values],
     ); // Mostrar la fecha nada mas.
-
-    const indexColor =
-      index % 2 === 0 ? Colors.LIGHT_BLUE_DARK : Colors.DARK_BLUE_HIDDEN_ROWS; // Colores intercalados
 
     let idTrigger =
       item.trigger_type === 1
         ? item?.game?.id
         : item?.trigger_type === 2
-        ? item?.season_id
-        : "";
+          ? item?.season_id
+          : "";
 
     return (
-      <View
-        style={[styles.champions_container, { backgroundColor: indexColor }]}
-      >
+      <View style={[styles.champions_container]}>
         <View style={[styles.restValue_container, { flex: 0.3 }]}>
           <Text style={styles.render_item_champion_text}>{valueSplit}</Text>
         </View>
@@ -64,7 +115,7 @@ const RenderChampions = React.memo(
               uri: `https://api.promiedos.com.ar/images/team/${item.entity?.object.id}/4`,
             }}
             contentFit="contain"
-            style={{ width: 20, height: 20, marginRight: 10 }}
+            style={{ width: 30, height: 30, marginRight: 10 }}
           />
           <Text style={styles.render_item_champion_text}>
             {item.entity?.object.name}
@@ -76,41 +127,46 @@ const RenderChampions = React.memo(
               OnPressFn(
                 item.trigger_type || 0,
                 idTrigger || "",
-                league_id_search
+                league_id_search,
               )
             }
           >
-            <Text style={styles.render_item_champion_text}>
-              {item.trigger_type === 2
-                ? "Ver"
-                : item.trigger_type === 1
-                ? "Final"
-                : null}
-            </Text>
+            <View
+              style={[item?.trigger_type ? styles.textVer_container : null]}
+            >
+              <Text
+                style={[
+                  styles.render_item_champion_text,
+                  { color: Colors.DARK_BLUE_HIDDEN_ROWS },
+                ]}
+              >
+                {item.trigger_type === 2
+                  ? "Ver"
+                  : item.trigger_type === 1
+                    ? "Final"
+                    : null}
+              </Text>
+            </View>
           </Pressable>
         </View>
       </View>
     );
-  }
+  },
 );
 
 RenderChampions.displayName = "RenderChampions";
 
 const RenderRankings = React.memo(
   ({ item, index }: { item: RankingRow; index: number }) => {
-    const indexColor =
-      index % 2 === 0 ? Colors.LIGHT_BLUE_DARK : Colors.DARK_BLUE_HIDDEN_ROWS;
     return (
-      <View
-        style={[styles.champions_container, { backgroundColor: indexColor }]}
-      >
+      <View style={[styles.champions_container]}>
         <View style={[styles.team_container, { flex: 0.8 }]}>
           <Image
             source={{
               uri: `https://api.promiedos.com.ar/images/team/${item.entity?.object.id}/4`,
             }}
             contentFit="contain"
-            style={{ width: 20, height: 20, marginRight: 10 }}
+            style={{ width: 40, height: 40, marginRight: 10 }}
           />
           <Text style={styles.render_item_champion_text}>
             {item.entity?.object.name}
@@ -123,7 +179,7 @@ const RenderRankings = React.memo(
         </View>
       </View>
     );
-  }
+  },
 );
 
 RenderRankings.displayName = "RenderRankings";
@@ -152,22 +208,24 @@ const LeagueChampions = ({ league_id }: { league_id: string }) => {
         });
       }
     },
-    []
+    [],
   );
 
   // El sectiondata memorizado para no hacer render innecesarios
   const sectionData: Section[] = React.useMemo(
     () => [
       {
-        title: "Campeones",
+        type: "champions",
+        title: "🏆 Campeones",
         data: data?.history?.rows || [],
       },
       {
-        title: "Ranking",
+        type: "rankings",
+        title: "📊 Ranking",
         data: data?.ranking_tables?.[0]?.rows || [],
       },
     ],
-    [data?.history?.rows, data?.ranking_tables]
+    [data?.history?.rows, data?.ranking_tables],
   );
 
   // Este es el render del item, aca se discrimina a que tabla ira cada uno.
@@ -181,7 +239,7 @@ const LeagueChampions = ({ league_id }: { league_id: string }) => {
       index: number;
       section: Section;
     }) => {
-      if (section.title === "Campeones") {
+      if (section.type === "champions") {
         return (
           <RenderChampions
             item={item as HistoryRow}
@@ -194,13 +252,13 @@ const LeagueChampions = ({ league_id }: { league_id: string }) => {
         return <RenderRankings item={item as RankingRow} index={index} />;
       }
     },
-    []
+    [],
   );
 
   // Render del header con su titulo y columnas correspondientes.
   const RenderHeader = React.useCallback(
     ({ section }: { section: SectionListData<HistoryRow, Section> }) => {
-      if (section.title === "Campeones") {
+      if (section.type === "champions") {
         return (
           <View style={styles.sectionHeader_container}>
             <View style={styles.header_title_container}>
@@ -247,19 +305,26 @@ const LeagueChampions = ({ league_id }: { league_id: string }) => {
         );
       }
     },
-    []
+    [],
   );
 
   // Funcion para extraer el key.
   const keyExtractor = React.useCallback(
     (item: HistoryRow, index: number) => `${item.entity?.object?.id}_${index}`,
-    []
+    [],
   );
 
   if (isLoading || isFetching) {
     return (
       <View style={styles.nodata_container}>
-        <Text style={styles.text_nodata}>Cargando campeones...</Text>
+        <SkeletonView />
+        <SkeletonView />
+        <SkeletonView />
+        <SkeletonView />
+        <SkeletonView />
+        <SkeletonView />
+        <SkeletonView />
+        <SkeletonView />
       </View>
     );
   }
@@ -333,9 +398,12 @@ const styles = StyleSheet.create({
   champions_container: {
     flexDirection: "row",
     alignItems: "center",
-    width: width * 0.98,
-    borderBottomWidth: 1,
-    borderColor: Colors.YELLOW_LIGHT,
+    width: "95%",
+    alignSelf: "center",
+    marginVertical: 6,
+    borderRadius: 10,
+    paddingVertical: 10,
+    backgroundColor: Colors.LIGHT_BLUE_DARK,
   },
   team_container: {
     minHeight: height * 0.1,
@@ -347,6 +415,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 5,
+  },
+  textVer_container: {
+    backgroundColor: Colors.YELLOW_LIGHT,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
   },
   render_item_champion_text: {
     fontSize: 14,

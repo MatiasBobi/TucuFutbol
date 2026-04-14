@@ -2,6 +2,7 @@ import { Colors } from "@/constants/colors/colors";
 import useGameInfo from "@/hooks/game_info/useGameInfo";
 
 import { Game } from "@/types/todayMatches";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
@@ -41,13 +42,13 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
       teams?.status?.enum === 3
         ? "finished"
         : teams?.status?.enum === 1
-        ? "pre"
-        : "live";
+          ? "pre"
+          : "live";
 
     const { data, isFetching } = useGameInfo(
       teams?.id,
       isExpanded,
-      matchStatus
+      matchStatus,
     ); // Hook para obtener los eventos del partido (Tanstack Query)
     const events = data?.game?.events || null; // Eventos del partido
     const statistics = data?.game?.statistics || null; // Estadisticas del partido
@@ -83,7 +84,18 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
     return (
       <View>
         <Pressable
-          style={styles.info_match_container}
+          style={[
+            styles.info_match_container,
+            {
+              borderLeftWidth: 4,
+              borderLeftColor:
+                matchStatus === "live"
+                  ? Colors.GREEN_WIN
+                  : matchStatus === "finished"
+                    ? Colors.GRAY_LIGHT
+                    : Colors.YELLOW_LIGHT,
+            },
+          ]}
           onPress={() => {
             setIsExpanded(!isExpanded);
           }}
@@ -91,7 +103,7 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
           {/* Contenedor de los equipos y el resultado u horario si no comenzo.*/}
           <View style={styles.team_match}>
             <View style={styles.team_match_info}>
-              {/* Imagen del equipo 1, no puede exceder los 100px de ancho y alto. */}
+              {/* Imagen del equipo 1 */}
               <Image
                 source={{
                   uri: `https://api.promiedos.com.ar/images/team/${team1?.id}/2`,
@@ -99,7 +111,7 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                 style={{ width: 51, height: 60 }}
                 contentFit="contain"
               />
-              {/* Nombre del equipo 1, elipsesize en tail, para no romper el contenido. */}
+              {/* Nombre del equipo 1 */}
               <Text
                 style={styles.team_match_text}
                 numberOfLines={1}
@@ -121,12 +133,12 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                       ? "Final"
                       : teams?.status?.symbol_name + " (Final)"
                     : teams?.status?.short_name === "ET"
-                    ? "ET"
-                    : teams?.status?.enum === 1
-                    ? teams?.start_time?.split(" ")[1]
-                    : teams?.game_time_to_display === "-1"
-                    ? "ERROR"
-                    : teams?.game_time_to_display}
+                      ? "ET"
+                      : teams?.status?.enum === 1
+                        ? teams?.start_time?.split(" ")[1]
+                        : teams?.game_time_to_display === "-1"
+                          ? "ERROR"
+                          : teams?.game_time_to_display}
                 </Text>
               </View>
               <View style={styles.teams_scores}>
@@ -145,7 +157,7 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                   )}
                 </View>
                 <View>
-                  <Text style={styles.separator_score_text}>-</Text>
+                  <Text style={styles.separator_score_text}>:</Text>
                 </View>
                 <View style={styles.goals_match_container_team2_results}>
                   <Text style={styles.team_match_score_text}>
@@ -164,7 +176,7 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
               </View>
             </View>
             <View style={styles.team_match_info}>
-              {/* Imagen del equipo 2, no puede exceder los 100px de ancho y alto. */}
+              {/* Imagen del equipo 2 */}
               <Image
                 source={{
                   uri: `https://api.promiedos.com.ar/images/team/${team2?.id}/2`,
@@ -172,7 +184,7 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                 style={{ width: 60, height: 60 }}
                 contentFit="contain"
               />
-              {/* Nombre del equipo 2, elipsesize en tail, para no romper el contenido. */}
+              {/* Nombre del equipo 2 */}
               <Text
                 style={styles.team_match_text}
                 numberOfLines={1}
@@ -221,14 +233,22 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                     >
                       {/* Aquí el stopPropagation para que no se cierre */}
                       <Pressable
-                        onPress={(e) => {
-                          e.stopPropagation();
-                        }}
+                        onPress={(e) => e.stopPropagation()}
                         style={styles.moreInfo_container}
                       >
+                        <MaterialCommunityIcons
+                          name="information-outline"
+                          size={20}
+                          color={Colors.YELLOW_LIGHT}
+                        />
                         <Text style={styles.moreInfo_text}>
                           Ver información completa
                         </Text>
+                        <MaterialCommunityIcons
+                          name="chevron-right"
+                          size={20}
+                          color={Colors.YELLOW_LIGHT}
+                        />
                       </Pressable>
                     </Link>
                   </View>
@@ -237,6 +257,8 @@ export const MatchTodayInfo = React.memo(function MatchTodayInfo(props: {
                     statistics={statistics || undefined}
                     goals_team_1={goals_team1 ?? []}
                     goals_team_2={goals_team2 ?? []}
+                    team1_name={team1?.short_name || "Equipo 1"}
+                    team2_name={team2?.short_name || "Equipo 2"}
                     video_id={data?.game?.videos?.[0]?.video_id ?? ""}
                   />
                 </>
@@ -501,14 +523,20 @@ const styles = StyleSheet.create({
     color: Colors.YELLOW_LIGHT,
   },
   moreInfo_container: {
-    width: "100%",
-    height: height * 0.1,
-    backgroundColor: Colors.DARK_BLUE_PLAYOFFS,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 8,
+    backgroundColor: Colors.DARK_BLUE_PLAYOFFS,
+    marginHorizontal: 10,
+    marginVertical: 8,
+    paddingVertical: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.YELLOW_LIGHT,
   },
   moreInfo_text: {
-    fontSize: RFValue(16),
+    fontSize: RFValue(14),
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
   },

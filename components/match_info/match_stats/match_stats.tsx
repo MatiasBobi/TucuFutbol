@@ -19,13 +19,17 @@ const MatchStats = ({
   statistics,
   goals_team_1,
   goals_team_2,
+  team1_name,
+  team2_name,
   video_id,
 }: {
   events?: GameStage[];
   statistics?: Statistic[];
-  goals_team_1: Goal[];
-  goals_team_2: Goal[];
-  video_id: string;
+  goals_team_1?: Goal[];
+  goals_team_2?: Goal[];
+  team1_name?: string;
+  team2_name?: string;
+  video_id?: string;
 }) => {
   const [playing, setPlaying] = useState(false);
 
@@ -94,9 +98,9 @@ const MatchStats = ({
           </View>
         </View>
         <View style={styles.teamcolors_container}>
-          <Text style={styles.local_text}>{"(Local)"} Rojo</Text>
+          <Text style={styles.local_text}>{team1_name}</Text>
           <Text style={styles.separator_text}>-</Text>
-          <Text style={styles.visitante_text}>Verde {"(Visitante)"}</Text>
+          <Text style={styles.visitante_text}>{team2_name}</Text>
         </View>
         <View style={styles.all_stats_container}>
           <View style={styles.stats_match_container}>
@@ -214,7 +218,11 @@ const MatchStats = ({
                     ))}
                   </View>
                 ))}
-                <Text style={styles.events_name}>{event.name}</Text>
+                <View style={styles.stage_separator}>
+                  <View style={styles.stage_line} />
+                  <Text style={styles.stage_text}>{event.name}</Text>
+                  <View style={styles.stage_line} />
+                </View>
               </View>
             ))
           )}
@@ -231,7 +239,7 @@ const MatchStats = ({
                 <YoutubePlayer
                   height={300}
                   play={playing}
-                  videoId={video_id}
+                  videoId={video_id ?? ""}
                   onChangeState={onStateChange}
                 />
               </View>
@@ -261,7 +269,7 @@ const styles = StyleSheet.create({
   visitante_text: {
     fontSize: 16,
     fontWeight: "bold",
-    color: Colors.GREEN_TEAM_STATS_TWO,
+    color: Colors.GREEN_WIN,
   },
   separator_text: {
     fontSize: 16,
@@ -271,7 +279,7 @@ const styles = StyleSheet.create({
   events_row_container: {
     borderBottomWidth: 1,
     borderBottomColor: Colors.BLUE_BORDER,
-    paddingVertical: 10,
+    paddingVertical: 20,
     paddingHorizontal: 10,
     position: "relative",
   },
@@ -447,6 +455,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 5,
+  },
+  stage_separator: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 16,
+    gap: 10,
+  },
+  stage_line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.BLUE_BORDER,
+  },
+  stage_text: {
+    fontSize: 14,
+    color: Colors.WHITE_GRAY,
+    fontWeight: "bold",
   },
 });
 

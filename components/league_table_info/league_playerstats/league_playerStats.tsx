@@ -10,7 +10,7 @@ export default function LeaguePlayerStats({
 }) {
   const renderSubTable = ({ item }: { item: StatisticsTable }) => {
     return (
-      <View style={{ alignItems: "center" }}>
+      <View style={[styles.cardItem, { alignItems: "center" }]}>
         <StatsTable
           rows_table={item?.rows.slice(0, 20)}
           table_name={item?.name}
@@ -38,6 +38,8 @@ export default function LeaguePlayerStats({
           keyExtractor={(item, index) =>
             `${item?.name}_${index} || 'no-name'LP_${index} `
           }
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 40 }}
         />
       </View>
     </ScreenContainer>
@@ -48,6 +50,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
+    paddingHorizontal: 16,
   },
   error_container: {
     flex: 1,
@@ -60,5 +63,15 @@ const styles = StyleSheet.create({
     fontSize: 28,
     textAlign: "center",
     color: Colors.WHITE_GRAY,
+  },
+  cardItem: {
+    backgroundColor: "#1e2a44",
+    borderRadius: 16,
+    paddingVertical: 10,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 5,
   },
 });

@@ -5,7 +5,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Tabs } from "expo-router";
 import { setBackgroundColorAsync } from "expo-system-ui";
 import { useEffect } from "react";
-import { Pressable } from "react-native";
+import { Pressable, StatusBar } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Layout() {
@@ -16,6 +16,7 @@ export default function Layout() {
   }, []);
   return (
     <>
+      <StatusBar backgroundColor="#041026" translucent={false} />
       <Tabs
         screenOptions={{
           headerShown: true,

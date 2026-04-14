@@ -1,147 +1,137 @@
 import { Colors } from "@/constants/colors/colors";
-import { Standings } from "@/types/game_info";
+import { StandingRow, Standings } from "@/types/game_info";
 import { Image } from "expo-image";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
+
+const STATS = [
+  { key: "Pos", getValue: (row: StandingRow) => row?.num },
+  { key: "PTS", getValue: (row: StandingRow) => row?.values?.[0]?.value },
+  { key: "J", getValue: (row: StandingRow) => row?.values?.[1]?.value },
+  { key: "+/-", getValue: (row: StandingRow) => row?.values?.[2]?.value },
+];
+
 const MatchStandings = ({
   standings,
 }: {
   standings: Standings | undefined;
 }) => {
+  const rows = standings?.rows?.slice(0, 2) ?? [];
+
   return (
-    <View style={styles.standing_container}>
-      <View>
-        <Text style={styles.standing_title_text}>Posiciones</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Posiciones</Text>
+
+      {/* Header de columnas */}
+      <View style={styles.row}>
+        <View style={styles.team_col} />
+        {STATS.map((stat) => (
+          <Text key={stat.key} style={styles.col_header}>
+            {stat.key}
+          </Text>
+        ))}
       </View>
-      <View>
-        <View style={styles.teams_stats_container}>
-          <View style={styles.team_name_container}>
+
+      {/* Fila por equipo */}
+      {rows.map((row, index) => (
+        <View
+          key={row?.entity?.object?.id ?? index}
+          style={[
+            styles.row,
+            styles.team_row,
+            {
+              backgroundColor:
+                index % 2 === 0
+                  ? Colors.LIGHT_BLUE_DARK
+                  : Colors.DARK_BLUE_PLAYOFFS,
+            },
+          ]}
+        >
+          {/* Equipo */}
+          <View style={styles.team_col}>
             <Image
               source={{
-                uri: `https://api.promiedos.com.ar/images/team/${standings?.rows?.[0]?.entity?.object?.id}/2`,
+                uri: `https://api.promiedos.com.ar/images/team/${row?.entity?.object?.id}/2`,
               }}
-              style={{ width: 40, height: 40 }}
+              style={{ width: 36, height: 36 }}
               contentFit="contain"
             />
-            <Text style={styles.team_name_text}>
-              {standings?.rows?.[0]?.entity?.object?.short_name}
+            <Text
+              style={styles.team_name}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {row?.entity?.object?.short_name}
             </Text>
           </View>
-          <View style={styles.stats_container}>
-            <View style={styles.stat_container}>
-              <Text style={styles.stat_header}>Pos</Text>
-              <Text style={styles.stat_value}>{standings?.rows?.[0]?.num}</Text>
-            </View>
-            <View style={styles.stat_container}>
-              <Text style={styles.stat_header}>PTS</Text>
-              <Text style={styles.stat_value}>
-                {standings?.rows?.[0].values?.[0]?.value}
-              </Text>
-            </View>
-            <View style={styles.stat_container}>
-              <Text style={styles.stat_header}>J</Text>
-              <Text style={styles.stat_value}>
-                {standings?.rows?.[0].values?.[1]?.value}
-              </Text>
-            </View>
-            <View style={styles.stat_container}>
-              <Text style={styles.stat_header}>+/-</Text>
-              <Text style={styles.stat_value}>
-                {standings?.rows?.[0].values?.[2]?.value}
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.team_container}>
-          <View style={styles.team_name_container}>
-            <Image
-              source={{
-                uri: `https://api.promiedos.com.ar/images/team/${standings?.rows?.[1]?.entity?.object?.id}/2`,
-              }}
-              style={{ width: 40, height: 40 }}
-              contentFit="contain"
-            />
-            <Text style={styles.team_name_text}>
-              {standings?.rows?.[1]?.entity?.object?.short_name}
+
+          {/* Stats */}
+          {STATS.map((stat) => (
+            <Text key={stat.key} style={styles.stat_value}>
+              {stat.getValue(row)}
             </Text>
-          </View>
-          <View style={styles.stats_container}>
-            <View style={styles.stat_container}>
-              <Text style={styles.stat_header}>Pos</Text>
-              <Text style={styles.stat_value}>{standings?.rows?.[1]?.num}</Text>
-            </View>
-            <View style={styles.stat_container}>
-              <Text style={styles.stat_header}>PTS</Text>
-              <Text style={styles.stat_value}>
-                {standings?.rows?.[1].values?.[0]?.value}
-              </Text>
-            </View>
-            <View style={styles.stat_container}>
-              <Text style={styles.stat_header}>J</Text>
-              <Text style={styles.stat_value}>
-                {standings?.rows?.[1].values?.[1]?.value}
-              </Text>
-            </View>
-            <View style={styles.stat_container}>
-              <Text style={styles.stat_header}>+/-</Text>
-              <Text style={styles.stat_value}>
-                {standings?.rows?.[1].values?.[2]?.value}
-              </Text>
-            </View>
-          </View>
+          ))}
         </View>
-      </View>
+      ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  standing_container: {
-    width: width * 0.9,
-    maxWidth: width * 0.95,
-    marginTop: 8,
+  container: {
+    width: "100%",
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: Colors.BLUE_BORDER,
+    marginVertical: 10,
   },
-  standing_title_text: {
-    fontSize: 24,
+  title: {
+    fontSize: RFValue(18),
+    fontWeight: "bold",
     color: Colors.WHITE_GRAY,
     textAlign: "center",
+    paddingVertical: 12,
+    backgroundColor: Colors.DARK_BLUE,
   },
-  teams_stats_container: {
+  row: {
     flexDirection: "row",
-  },
-  team_container: {
-    flexDirection: "row",
-  },
-  team_name_container: {
-    paddingVertical: 10,
     alignItems: "center",
+    paddingHorizontal: 12,
+  },
+  team_row: {
+    paddingVertical: 12,
+    gap: 4,
+  },
+  team_col: {
     flex: 1,
-    minHeight: height * 0.1,
-    maxHeight: height * 0.2,
-  },
-  stats_container: {
     flexDirection: "row",
     alignItems: "center",
-    flex: 1.5,
+    gap: 8,
+    minWidth: 0,
   },
-  team_name_text: {
-    fontSize: 20,
+  team_name: {
+    fontSize: RFValue(13),
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
+    flexShrink: 1,
   },
-  stat_container: {
-    justifyContent: "space-evenly",
-
-    flex: 1,
-    alignItems: "center",
-  },
-  stat_header: {
-    fontSize: 20,
-    color: Colors.WHITE_GRAY,
+  col_header: {
+    width: width * 0.12,
+    textAlign: "center",
+    fontSize: RFValue(12),
+    color: Colors.GRAY_LIGHT,
+    fontWeight: "bold",
+    paddingVertical: 6,
+    backgroundColor: Colors.DARK_BLUE,
   },
   stat_value: {
-    fontSize: 16,
+    width: width * 0.12,
+    textAlign: "center",
+    fontSize: RFValue(14),
+    fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
   },
 });

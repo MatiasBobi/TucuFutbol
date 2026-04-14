@@ -8,8 +8,15 @@ import { Colors } from "@/constants/colors/colors";
 import useLeagueFullInfo from "@/hooks/league_full_info/league_full";
 import { TableGroup } from "@/types/league_full_info";
 import { Stack, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
+  Animated,
   Dimensions,
   FlatList,
   Pressable,
@@ -18,9 +25,6 @@ import {
   View,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const { width, height } = Dimensions.get("window");
 
@@ -34,6 +38,71 @@ type SectionItem = {
     | "fixture"
     | "brackets"
     | "champions";
+};
+
+const SkeletonView = () => {
+  const opacity = useRef(new Animated.Value(0.3)).current;
+
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.3,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+
+    animation.start();
+
+    return () => animation.stop();
+  }, []);
+
+  return (
+    <>
+      <Animated.View
+        style={{
+          opacity,
+          width: "90%",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: 10,
+          paddingHorizontal: 10,
+          marginBottom: 10,
+        }}
+      >
+        <View style={styles.skeletonView_container2}>
+          <View style={styles.buttonSkeletton_container}></View>
+          <View style={styles.buttonSkeletton_container}></View>
+          <View style={styles.buttonSkeletton_container}></View>
+          <View style={styles.buttonSkeletton_container}></View>
+          <View style={styles.buttonSkeletton_container}></View>
+        </View>
+      </Animated.View>
+
+      <Animated.View
+        style={{
+          opacity,
+          width: "90%",
+          flex: 1,
+          backgroundColor: "#1b2a57",
+          borderRadius: 10,
+          marginHorizontal: 10,
+        }}
+      >
+        <View style={styles.skeletonView_container}>
+          <View style={styles.sectionSkeletton_container}></View>
+        </View>
+      </Animated.View>
+    </>
+  );
 };
 
 export default function League() {
@@ -98,7 +167,7 @@ export default function League() {
           return null;
       }
     },
-    [activeSection, data, league_id]
+    [activeSection, data, league_id],
   );
 
   // Key extractor
@@ -121,9 +190,7 @@ export default function League() {
 
       {isLoading ? (
         <View style={styles.loading_container}>
-          <Text style={styles.loading_text}>
-            Cargando información de la liga...
-          </Text>
+          <SkeletonView />
         </View>
       ) : leagueExists === false ? (
         <View style={styles.league_notfound}>
@@ -229,7 +296,7 @@ const HeaderButtons = React.memo(
         )}
       </View>
     );
-  }
+  },
 );
 
 // Componente para el contenido de cada seccion
@@ -274,7 +341,7 @@ const SectionContent = React.memo(
       default:
         return null;
     }
-  }
+  },
 );
 
 // Componente para la seccion de tabla
@@ -302,7 +369,7 @@ const TableSection = React.memo(
         ))}
       </View>
     );
-  }
+  },
 );
 
 // Componente para la sección de equipos
@@ -401,5 +468,30 @@ const styles = StyleSheet.create({
     color: Colors.YELLOW_LIGHT,
     textAlign: "center",
     fontWeight: "bold",
+  },
+  buttonSkeletton_container: {
+    width: width * 0.28,
+    height: height * 0.08,
+    backgroundColor: "#1b2a5a",
+    borderRadius: 10,
+    gap: 2,
+  },
+  sectionSkeletton_container: {
+    marginTop: 20,
+    width: width * 0.9,
+  },
+  skeletonView_container: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    width: "80%",
+  },
+  skeletonView_container2: {
+    alignItems: "center",
+    width: "100%",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 2,
   },
 });

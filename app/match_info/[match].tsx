@@ -42,7 +42,7 @@ const MatchInfo = () => {
   const headtohead = matchData?.game?.head_to_head;
   const recent = matchData?.game?.recent_form;
   const standings = matchData?.game?.standings;
-  const videoId = matchData?.game?.videos?.[0].video_id || "";
+  const videoId = matchData?.game?.videos?.[0]?.video_id || "";
   const goals_team1 = matchData?.game?.teams?.[0]?.goals;
   const goals_team2 = matchData?.game?.teams?.[1]?.goals;
 
@@ -75,7 +75,9 @@ const MatchInfo = () => {
             statistics={matchData?.game?.statistics}
             goals_team_1={goals_team1 ?? []}
             goals_team_2={goals_team2 ?? []}
-            video_id={videoId}
+            team1_name={team1?.short_name || "Equipo 1"}
+            team2_name={team2?.short_name || "Equipo 2"}
+            video_id={videoId ?? ""}
           />
         );
 
@@ -152,19 +154,34 @@ const MatchInfo = () => {
         <View style={styles.container_buttons}>
           {/* Botones para cambiar la sección */}
           <Pressable
-            style={styles.button_pressable}
+            style={[
+              styles.button_pressable,
+              activeSection === "estadisticas" && {
+                backgroundColor: Colors.ACTIVATE_BUTTON_NOTI,
+              },
+            ]}
             onPress={() => setActiveSection("estadisticas")}
           >
             <Text style={styles.text_buttons}>Estadisticas</Text>
           </Pressable>
           <Pressable
-            style={styles.button_pressable}
+            style={[
+              styles.button_pressable,
+              activeSection === "lineup" && {
+                backgroundColor: Colors.ACTIVATE_BUTTON_NOTI,
+              },
+            ]}
             onPress={() => setActiveSection("lineup")}
           >
             <Text style={styles.text_buttons}>Formación</Text>
           </Pressable>
           <Pressable
-            style={styles.button_pressable}
+            style={[
+              styles.button_pressable,
+              activeSection === "informacion" && {
+                backgroundColor: Colors.ACTIVATE_BUTTON_NOTI,
+              },
+            ]}
             onPress={() => setActiveSection("informacion")}
           >
             <Text style={styles.text_buttons}>Información</Text>
@@ -175,108 +192,113 @@ const MatchInfo = () => {
             <Text style={styles.loading_images_text}>Cargando horario...</Text>
           </View>
         ) : (
-          <View
-            style={[
-              styles.team_match,
-              status?.enum === 1 && styles.team_match_no_score,
-            ]}
-          >
-            <Pressable style={styles.team_match_info}>
-              <Link
-                href={{
-                  pathname: "/team/[team]",
-                  params: { team: team1?.id ?? "" },
-                }}
-              >
-                <View style={styles.team_match_info_subcontainer}>
-                  {/* Imagen del equipo 1, no puede exceder los 100px de ancho y alto. */}
-                  <Image
-                    source={{
-                      uri: `https://api.promiedos.com.ar/images/team/${team1?.id}/2`,
-                    }}
-                    style={{ width: 51, height: 60 }}
-                    contentFit="contain"
-                  />
-                  {/* Nombre del equipo 1, elipsesize en tail, para no romper el contenido. */}
-                  <Text style={styles.team_match_text}>
-                    {team1?.short_name || "Sin equipo"}
-                  </Text>
-                  {status?.enum !== 1 && (
-                    <View style={styles.goals_match_container_team1_results}>
-                      {penalties && (
-                        <Text style={styles.events_text_penalty}>
-                          {"("}
-                          {penalties?.[0].toString()}
-                          {")"}
-                        </Text>
-                      )}
-                      <Text style={styles.team_match_score_text}>
-                        {scores?.[0].toString()}
+          <View style={styles.team_match}>
+            {/* Equipo 1 */}
+            <Link
+              href={{
+                pathname: "/team/[team]",
+                params: { team: team1?.id ?? "" },
+              }}
+              asChild
+            >
+              <Pressable style={styles.team_match_info}>
+                <Image
+                  source={{
+                    uri: `https://api.promiedos.com.ar/images/team/${team1?.id}/2`,
+                  }}
+                  style={{ width: 70, height: 70 }}
+                  contentFit="contain"
+                />
+                <Text style={styles.team_match_text} numberOfLines={2}>
+                  {team1?.short_name || "Sin equipo"}
+                </Text>
+                {status?.enum !== 1 && (
+                  <Text
+                    style={[
+                      styles.team_match_score_text,
+                      scores &&
+                        scores?.[0] > scores?.[1] &&
+                        styles.score_winner,
+                    ]}
+                  >
+                    {penalties && (
+                      <Text style={styles.events_text_penalty}>
+                        ({penalties?.[0]}){" "}
                       </Text>
-                    </View>
-                  )}
-                </View>
-              </Link>
-            </Pressable>
+                    )}
+                    {scores?.[0].toString()}
+                  </Text>
+                )}
+              </Pressable>
+            </Link>
+
+            {/* Centro */}
             <View style={styles.team_match_score}>
-              <View>
-                {/* Contenedor para el resultado o el horaro de comienzo
-              si el estado es 3, el partido finalizo entonces muestra el resultado final.
-              si short_name es 'ET' entonces quiere decir que esta en entretiempo, entonces muestra 'ET' en el resultado
-              de resto, es el resultado del partido.
-              */}
-                <Text style={styles.time_match_text}>
+              {/* ✅ Badge de estado */}
+              <View
+                style={[
+                  styles.status_badge,
+                  status?.enum === 3 && styles.status_badge_finished,
+                  status?.enum === 2 && styles.status_badge_live,
+                  status?.enum === 1 && styles.status_badge_pre,
+                ]}
+              >
+                <Text style={styles.status_badge_text}>
                   {status?.enum === 3
                     ? status?.short_name === "Final"
                       ? "Final"
                       : status?.symbol_name + " (Final)"
                     : status?.short_name === "ET"
-                    ? "ET"
-                    : status?.enum === 1
-                    ? start_time?.split(" ")[1]
-                    : game_time_to_display === "-1"
-                    ? "ERROR"
-                    : game_time_to_display}
+                      ? "ET"
+                      : status?.enum === 1
+                        ? start_time?.split(" ")[1]
+                        : game_time_to_display === "-1"
+                          ? "ERROR"
+                          : game_time_to_display}
                 </Text>
               </View>
+
+              {/* ✅ Separador VS o guión cuando no empezó */}
+              {status?.enum !== 1 && <Text style={styles.vs_text}>VS</Text>}
             </View>
-            <Pressable style={styles.team_match_info}>
-              <Link
-                href={{
-                  pathname: "/team/[team]",
-                  params: { team: team2?.id ?? "" },
-                }}
-              >
-                <View style={styles.team_match_info_subcontainer}>
-                  {/* Imagen del equipo 2, no puede exceder los 100px de ancho y alto. */}
-                  <Image
-                    source={{
-                      uri: `https://api.promiedos.com.ar/images/team/${team2?.id}/2`,
-                    }}
-                    style={{ width: 60, height: 60 }}
-                    contentFit="contain"
-                  />
-                  {/* Nombre del equipo 2, elipsesize en tail, para no romper el contenido. */}
-                  <Text style={styles.team_match_text}>
-                    {team2?.short_name || "Sin equipo"}
-                  </Text>
-                  {status?.enum !== 1 && (
-                    <View style={styles.goals_match_container_team2_results}>
-                      <Text style={styles.team_match_score_text}>
-                        {scores?.[1].toString()}
+
+            {/* Equipo 2 */}
+            <Link
+              href={{
+                pathname: "/team/[team]",
+                params: { team: team2?.id ?? "" },
+              }}
+              asChild
+            >
+              <Pressable style={styles.team_match_info}>
+                <Image
+                  source={{
+                    uri: `https://api.promiedos.com.ar/images/team/${team2?.id}/2`,
+                  }}
+                  style={{ width: 70, height: 70 }}
+                  contentFit="contain"
+                />
+                <Text style={styles.team_match_text} numberOfLines={2}>
+                  {team2?.short_name || "Sin equipo"}
+                </Text>
+                {status?.enum !== 1 && (
+                  <Text
+                    style={[
+                      styles.team_match_score_text,
+                      scores && scores[1] > scores[0] && styles.score_winner,
+                    ]}
+                  >
+                    {scores?.[1].toString()}
+                    {penalties && (
+                      <Text style={styles.events_text_penalty}>
+                        {" "}
+                        ({penalties?.[1]})
                       </Text>
-                      {penalties && (
-                        <Text style={styles.events_text_penalty}>
-                          {"("}
-                          {penalties?.[1].toString()}
-                          {")"}
-                        </Text>
-                      )}
-                    </View>
-                  )}
-                </View>
-              </Link>
-            </Pressable>
+                    )}
+                  </Text>
+                )}
+              </Pressable>
+            </Link>
           </View>
         )}
         {renderSection()}
@@ -335,38 +357,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingVertical: 10,
   },
-  team_match: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    backgroundColor: Colors.LIGHT_BLUE_DARK,
-    width: "100%",
-    maxWidth: 600,
-    alignSelf: "center",
-  },
-  team_match_no_score: {
-    paddingVertical: 5,
-    minHeight: 80,
-  },
-  team_match_text: {
-    fontSize: 16,
-    color: Colors.YELLOW_LIGHT,
-    textAlign: "center",
-    maxWidth: width * 0.25,
-  },
-  team_match_score: {
-    flex: 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  team_match_info: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 3,
-  },
+
   team_match_info_subcontainer: {
     alignItems: "center",
     justifyContent: "center",
@@ -387,19 +378,11 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 5,
   },
-  team_match_score_text: {
-    fontSize: 24,
-    color: Colors.YELLOW_LIGHT,
-    fontWeight: "bold",
-  },
+
   results_container: {
     flexDirection: "row",
   },
-  events_text_penalty: {
-    fontSize: 24,
-    color: Colors.RED_CHANGE_PLAYER,
-    fontWeight: "bold",
-  },
+
   separator_text: {
     fontSize: 24,
     marginHorizontal: 10,
@@ -428,6 +411,82 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: Colors.YELLOW_LIGHT,
     marginVertical: 20,
+  },
+  team_match: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    borderRadius: 16,
+    backgroundColor: Colors.LIGHT_BLUE_DARK,
+    width: "100%",
+    maxWidth: 600,
+    alignSelf: "center",
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: Colors.BLUE_BORDER,
+  },
+  team_match_info: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    gap: 8,
+  },
+  team_match_text: {
+    fontSize: RFValue(13),
+    color: Colors.WHITE_GRAY,
+    textAlign: "center",
+    fontWeight: "bold",
+    maxWidth: width * 0.28,
+  },
+  team_match_score: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingHorizontal: 8,
+  },
+  team_match_score_text: {
+    fontSize: RFValue(28),
+    color: Colors.WHITE_GRAY,
+    fontWeight: "bold",
+  },
+  score_winner: {
+    color: Colors.YELLOW_LIGHT, // ✅ ganador en amarillo
+  },
+  vs_text: {
+    fontSize: RFValue(14),
+    color: Colors.GRAY_LIGHT,
+    fontWeight: "bold",
+  },
+
+  // ✅ Badge de estado
+  status_badge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 20,
+    backgroundColor: Colors.DARK_BLUE,
+  },
+  status_badge_finished: {
+    backgroundColor: "#2a2a2a",
+  },
+  status_badge_live: {
+    backgroundColor: "#8b0000", // rojo oscuro
+  },
+  status_badge_pre: {
+    backgroundColor: Colors.LIGHT_BLUE_DARK,
+    borderWidth: 1,
+    borderColor: Colors.YELLOW_LIGHT,
+  },
+  status_badge_text: {
+    fontSize: RFValue(13),
+    fontWeight: "bold",
+    color: Colors.WHITE_GRAY,
+  },
+  events_text_penalty: {
+    fontSize: RFValue(16),
+    color: Colors.RED_CHANGE_PLAYER,
+    fontWeight: "bold",
   },
 });
 export default MatchInfo;

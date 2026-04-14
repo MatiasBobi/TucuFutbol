@@ -2,6 +2,7 @@ import { Colors } from "@/constants/colors/colors";
 import { head_to_head } from "@/types/game_info";
 import { Image } from "expo-image";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 type teamInfo = {
   name: string;
@@ -73,6 +74,8 @@ const MatchVersus = ({
         </View>
         <View style={styles.historial_container_matches}>
           {headtohead?.games?.map((match, index) => {
+            const team1Win = match.scores?.[0] > match.scores?.[1];
+            const team2Win = match.scores?.[1] > match.scores?.[0];
             return (
               <View key={match?.id} style={styles.match_container}>
                 <View style={styles.team_container_matchs}>
@@ -81,12 +84,35 @@ const MatchVersus = ({
                   </Text>
                 </View>
                 <View style={styles.match_info_container}>
-                  <Text style={styles.text_info_text}>
+                  <Text
+                    style={[
+                      styles.text_info_text,
+                      { fontSize: RFValue(12), color: Colors.YELLOW_LIGHT },
+                    ]}
+                  >
                     {match?.league?.name}
                   </Text>
-                  <Text style={styles.text_info_text}>
-                    {match?.scores?.[0]} - {match?.scores?.[1]}
-                  </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text
+                      style={[
+                        styles.text_info_text,
+                        team1Win && styles.wins_text_number,
+                        { fontSize: RFValue(16) },
+                      ]}
+                    >
+                      {match?.scores?.[0]}
+                    </Text>
+                    <Text style={styles.text_info_text}> - </Text>
+                    <Text
+                      style={[
+                        styles.text_info_text,
+                        team2Win && styles.wins_text_number,
+                        { fontSize: RFValue(16) },
+                      ]}
+                    >
+                      {match?.scores?.[1]}
+                    </Text>
+                  </View>
                   <Text style={styles.text_info_text}>
                     {match?.start_time?.split(" ")?.[0]}
                   </Text>
@@ -167,7 +193,7 @@ const styles = StyleSheet.create({
   },
   match_container: {
     flexDirection: "row",
-    minHeight: height * 0.1,
+    minHeight: height * 0.15,
     maxHeight: height * 0.3,
     width: "100%",
     justifyContent: "space-around",
@@ -183,13 +209,14 @@ const styles = StyleSheet.create({
   match_info_container: {
     width: "60%",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
   },
   team_name: {
     color: Colors.YELLOW_LIGHT,
     textAlign: "center",
   },
   text_info_text: {
+    fontSize: RFValue(14),
     textAlign: "center",
     color: Colors.WHITE_GRAY,
   },

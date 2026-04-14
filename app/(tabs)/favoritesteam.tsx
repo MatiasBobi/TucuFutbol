@@ -54,9 +54,8 @@ const styles = StyleSheet.create({
   container_teams: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
-    gap: 20,
-    padding: 20,
+    justifyContent: "space-around",
+    padding: 16,
   },
   teamItem: {
     minWidth: 150,
@@ -67,15 +66,15 @@ const styles = StyleSheet.create({
   },
   add_team_container: {
     alignItems: "center",
-    marginTop: 24,
-    paddingHorizontal: 16,
-    justifyContent: "center",
+    marginTop: 60,
+    paddingHorizontal: 20,
   },
+
   add_team_text: {
     textAlign: "center",
-    fontSize: 18,
-    color: Colors.YELLOW_LIGHT,
-    lineHeight: 24,
+    fontSize: 16,
+    color: Colors.WHITE_GRAY,
+    opacity: 0.7,
   },
 });
 

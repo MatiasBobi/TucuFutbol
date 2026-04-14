@@ -45,6 +45,7 @@ const MatchResults = ({
               </Text>
             </View>
           </View>
+
           <View style={styles.last_results_container}>
             {recent.home.map((value, index) => (
               <View
@@ -56,8 +57,8 @@ const MatchResults = ({
                       value === 1
                         ? "#16831b"
                         : value === 0
-                        ? "#B50B0B"
-                        : "#828204",
+                          ? "#B50B0B"
+                          : "#828204",
                   },
                 ]}
               >
@@ -98,8 +99,8 @@ const MatchResults = ({
                       value === 1
                         ? "#16831b"
                         : value === 0
-                        ? "#B50B0B"
-                        : "#828204",
+                          ? "#B50B0B"
+                          : "#828204",
                   },
                 ]}
               >

@@ -1,7 +1,13 @@
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { useGetTeams } from "@/hooks/getImagesTeam/useGetTeams";
 import { BracketStage, TableGroup } from "@/types/league_full_info";
-import { Dimensions, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import { TeamLink } from "./team/team_link";
 
 const { height } = Dimensions.get("window"); // Dimensiones del dispositivo.
@@ -25,22 +31,28 @@ export const LeagueTeams = ({
   let allTeams: teams_types[] = useGetTeams(
     teams as TableGroup[],
     teams as BracketStage[],
-    typeInfo
+    typeInfo,
   );
 
   /* Render de los equipos */
   const renderItem = ({ item }: { item: teams_types }) => (
-    <View style={styles.team_info}>
+    <Pressable
+      style={({ pressed }) => [styles.team_info, pressed && styles.pressed]}
+    >
       <TeamLink id={item.id} team_name={item.short_name} />
-    </View>
+    </Pressable>
   );
 
   return (
     <ScreenContainer>
       <View style={styles.container}>
-        {allTeams.map((item) => {
-          return <View key={item.id}>{renderItem({ item })}</View>;
-        })}
+        <FlatList
+          contentContainerStyle={styles.teamsContainer}
+          data={allTeams}
+          keyExtractor={(item) => item.id}
+          numColumns={3}
+          renderItem={renderItem}
+        />
       </View>
     </ScreenContainer>
   );
@@ -57,12 +69,25 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingHorizontal: 10,
   },
+  teamsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    alignItems: "flex-start",
+  },
   team_info: {
     height: height * 0.15,
-    marginBottom: 10,
+    marginBottom: 12,
     justifyContent: "center",
     alignItems: "center",
-    flex: 0,
+    backgroundColor: "#8c98bc",
+    borderRadius: 12,
+    elevation: 3,
+    marginRight: 3,
+  },
+  pressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.96 }],
   },
 });
 export default LeagueTeams;

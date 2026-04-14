@@ -1,119 +1,123 @@
 import { Colors } from "@/constants/colors/colors";
 import { SquadGroup } from "@/types/team_info";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const SquadTable = ({ squad }: { squad: SquadGroup }) => {
   return (
-    <View>
-      <View style={styles.squad_table_header}>
-        <Text style={styles.squad_table_header_text}>{squad.name}</Text>
+    <View style={styles.container}>
+      <View style={styles.section_header}>
+        <Text style={styles.section_header_text}>{squad.name}</Text>
       </View>
-      <View style={styles.squad_table_body}>
-        <View>
-          {squad.rows.map((player, index) => {
-            return (
-              <View
-                key={`${player.entity.object.name}_${player.entity.object.birthdate}`}
-                style={styles.player_container}
-              >
-                <View style={styles.player_row}>
-                  <View style={styles.player_row_name}>
-                    <View style={styles.name_container}>
-                      <Text style={styles.num_player_text}>
-                        {player?.entity?.object?.num}
-                      </Text>
-                      <Text style={styles.player_row_name_text}>
-                        {player?.entity?.object?.name}
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={styles.player_row_info}>
-                    <View style={styles.player_row_info_item}>
-                      <Text style={styles.player_row_info_text}>
-                        {player?.entity?.object?.age}
-                      </Text>
-                    </View>
-                    <View style={styles.player_row_info_item}>
-                      <Text style={styles.player_row_info_text}>
-                        {player?.entity?.object?.height}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            );
-          })}
+
+      {squad.rows.map((player, index) => (
+        <View
+          key={`${player.entity.object.name}_${player.entity.object.birthdate}`}
+          style={[
+            styles.player_row,
+            {
+              backgroundColor:
+                index % 2 === 0
+                  ? Colors.LIGHT_BLUE_DARK
+                  : Colors.DARK_BLUE_PLAYOFFS,
+            },
+          ]}
+        >
+          {/* Número */}
+          <View style={styles.num_container}>
+            <Text style={styles.num_text}>
+              {player?.entity?.object?.num ?? "-"}
+            </Text>
+          </View>
+
+          {/* Nombre */}
+          <View style={styles.name_container}>
+            <Text
+              style={styles.name_text}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {player?.entity?.object?.name}
+            </Text>
+          </View>
+
+          {/* Edad */}
+          <View style={styles.stat_container}>
+            <Text style={styles.stat_text}>
+              {player?.entity?.object?.age ?? "-"}
+            </Text>
+          </View>
+
+          {/* Altura */}
+          <View style={styles.stat_container}>
+            <Text style={styles.stat_text}>
+              {player?.entity?.object?.height ?? "-"}
+            </Text>
+          </View>
         </View>
-      </View>
+      ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 8,
+    width: "100%",
+  },
+
+  section_header: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    backgroundColor: Colors.DARK_BLUE,
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.YELLOW_LIGHT,
+    marginVertical: 4,
+  },
+  section_header_text: {
+    fontSize: RFValue(14),
+    fontWeight: "bold",
+    color: Colors.YELLOW_LIGHT,
+    letterSpacing: 1,
+  },
+
   player_row: {
     flexDirection: "row",
-    minHeight: height * 0.1,
-    maxHeight: height * 0.2,
     alignItems: "center",
-    backgroundColor: Colors.DARK_BLUE_PLAYOFFS,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.DARK_BLUE,
+  },
+  num_container: {
+    width: width * 0.1,
+    alignItems: "center",
+  },
+  num_text: {
+    fontSize: RFValue(13),
+    color: Colors.GRAY_LIGHT,
+    fontWeight: "bold",
   },
   name_container: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    flex: 1,
+    paddingLeft: 8,
+    paddingRight: 4,
   },
-  num_player_text: {
-    width: "20%",
-    fontSize: 16,
+  name_text: {
+    fontSize: RFValue(14),
+    fontWeight: "bold",
     color: Colors.WHITE_GRAY,
-    textAlign: "center",
   },
-  player_row_name: {
-    width: "60%",
-    paddingRight: 8,
-  },
-  player_row_info: {
-    width: "40%",
-    flexDirection: "row",
+  stat_container: {
+    width: width * 0.15,
     alignItems: "center",
   },
-  player_row_info_item: {
-    flex: 1,
-    height: height * 0.05,
-    justifyContent: "center",
-  },
-  player_row_name_text: {
-    fontSize: 16,
-    width: "80%",
+  stat_text: {
+    fontSize: RFValue(13),
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
-    textAlign: "center",
-  },
-  player_row_info_text: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: Colors.YELLOW_LIGHT,
-    textAlign: "center",
-  },
-  squad_table_header: {
-    marginVertical: 8,
-    height: height * 0.05,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  squad_table_body: {
-    flex: 1,
-  },
-  squad_table_header_text: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: Colors.YELLOW_LIGHT,
-  },
-  player_container: {
-    minHeight: 50,
-    maxHeight: 100,
   },
 });
 

@@ -1,11 +1,11 @@
-import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Colors } from "@/constants/colors/colors";
 import { GameTable } from "@/types/team_info";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const FixtureTable = ({
   fixture_data,
@@ -14,98 +14,93 @@ const FixtureTable = ({
   fixture_data: GameTable;
   table_type: "next" | "last";
 }) => {
+  const router = useRouter();
+
   return (
-    <ScreenContainer>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.header_teams}>
-            <Text style={styles.header_text}>Equipo</Text>
-          </View>
-          {/*  Header de las tablas*/}
-          <View style={styles.header_info}>
-            <Text style={styles.header_text}>Dia</Text>
-            <Text style={styles.header_text}>L/V</Text>
-            <Text style={styles.header_text}>
-              {table_type === "next" ? "Hora" : "Fin"}
-            </Text>
-          </View>
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <View style={styles.header_teams}>
+          <Text style={styles.header_text}>Equipo</Text>
         </View>
-        <View>
-          {(table_type === "last"
-            ? fixture_data?.rows?.slice().reverse()
-            : fixture_data?.rows
-          )?.map((team, index) => {
-            const colorVariant = index % 2;
-            const matchId = team?.game?.id;
-            return (
-              <Link
-                asChild
-                href={{
-                  pathname: "/match_info/[match]",
-                  params: { match: matchId },
-                }}
-                style={styles.team_container}
-                key={`${team.entity.object.id}_${index}`}
-              >
-                <Pressable
-                  style={[
-                    styles.team_container,
-                    colorVariant === 0
-                      ? { backgroundColor: Colors.LIGHT_BLUE_DARK }
-                      : { backgroundColor: Colors.DARK_BLUE_PLAYOFFS },
-                  ]}
-                >
-                  <View style={styles.team_name_container}>
-                    <Image
-                      source={`https://api.promiedos.com.ar/images/team/${team?.entity?.object?.id}/4`}
-                      style={styles.teamImage}
-                      contentFit="contain"
-                    />
-                    <Text style={styles.team_item_text}>
-                      {team?.entity?.object?.short_name}
-                    </Text>
-                  </View>
-                  <View style={styles.team_values_container}>
-                    <Text
-                      style={[
-                        styles.team_item_text,
-                        { color: Colors.GRAY_LIGHT },
-                      ]}
-                    >
-                      {team?.values?.[0].value}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.team_item_text,
-                        { color: Colors.GRAY_LIGHT },
-                      ]}
-                    >
-                      {team?.values?.[1].value}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.team_item_text,
-                        table_type === "last"
-                          ? team?.result_status === 1
-                            ? { color: Colors.GREEN_WIN }
-                            : team?.result_status === 2
-                            ? { color: Colors.RED_CHANGE_PLAYER }
-                            : team?.result_status === 3
-                            ? { color: Colors.YELLOW_GOAL }
-                            : { color: Colors.GRAY_LIGHT }
-                          : { color: Colors.GRAY_LIGHT },
-                      ]}
-                    >
-                      {team?.values?.[2].value}
-                    </Text>
-                  </View>
-                </Pressable>
-              </Link>
-            );
-          })}
+        <View style={styles.header_info}>
+          <Text style={styles.header_text}>Día</Text>
+          <Text style={styles.header_text}>L/V</Text>
+          <Text style={styles.header_text}>
+            {table_type === "next" ? "Hora" : "Result."}
+          </Text>
         </View>
       </View>
-    </ScreenContainer>
+
+      {/* Filas */}
+      {(table_type === "last"
+        ? fixture_data?.rows?.slice().reverse()
+        : fixture_data?.rows
+      )?.map((team, index) => {
+        const matchId = team?.game?.id;
+        const resultColor =
+          table_type === "last"
+            ? team?.result_status === 1
+              ? Colors.GREEN_WIN
+              : team?.result_status === 2
+                ? Colors.RED_CHANGE_PLAYER
+                : team?.result_status === 3
+                  ? Colors.YELLOW_GOAL
+                  : Colors.GRAY_LIGHT
+            : Colors.GRAY_LIGHT;
+
+        return (
+          <Pressable
+            key={`${team.entity.object.id}_${index}`}
+            style={[
+              styles.team_container,
+              {
+                backgroundColor:
+                  index % 2 === 0
+                    ? Colors.LIGHT_BLUE_DARK
+                    : Colors.DARK_BLUE_PLAYOFFS,
+              },
+            ]}
+            onPress={() =>
+              router.push({
+                pathname: "/match_info/[match]",
+                params: { match: matchId },
+              })
+            }
+          >
+            {table_type === "last" && (
+              <View
+                style={[styles.result_bar, { backgroundColor: resultColor }]}
+              />
+            )}
+
+            {/* Equipo */}
+            <View style={styles.team_name_container}>
+              <Image
+                source={`https://api.promiedos.com.ar/images/team/${team?.entity?.object?.id}/4`}
+                style={styles.teamImage}
+                contentFit="contain"
+              />
+              <Text
+                style={styles.team_name_text}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {team?.entity?.object?.short_name}
+              </Text>
+            </View>
+
+            <View style={styles.team_values_container}>
+              <Text style={styles.value_text}>{team?.values?.[0].value}</Text>
+              <Text style={styles.value_text}>{team?.values?.[1].value}</Text>
+              <Text style={[styles.value_text, { color: resultColor }]}>
+                {team?.values?.[2].value}
+              </Text>
+            </View>
+          </Pressable>
+        );
+      })}
+    </View>
   );
 };
 
@@ -113,61 +108,76 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     marginBottom: 10,
+    borderRadius: 10,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: Colors.BLUE_BORDER,
     backgroundColor: Colors.LIGHT_BLUE_DARK,
   },
   header: {
     flexDirection: "row",
-    height: height * 0.05,
-    justifyContent: "center",
+    height: 44,
     alignItems: "center",
-    backgroundColor: Colors.BLUE_BORDER,
+    backgroundColor: Colors.LIGHT_BLACK,
+    borderBottomWidth: 2,
+    borderBottomColor: Colors.YELLOW_LIGHT,
+    paddingHorizontal: 12,
+  },
+  header_teams: {
+    flex: 1,
   },
   header_info: {
-    flex: 1,
+    width: "45%",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
   },
-  header_teams: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   header_text: {
-    fontSize: 16,
+    fontSize: RFValue(12),
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
   },
   team_container: {
     flexDirection: "row",
-    minHeight: height * 0.1,
-    maxHeight: height * 0.15,
-    justifyContent: "center",
+    height: 56,
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.DARK_BLUE,
+  },
+  result_bar: {
+    width: 4,
+    height: "100%",
   },
   team_name_container: {
-    width: "50%",
-
+    flex: 1,
     flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
     alignItems: "center",
+    paddingLeft: 10,
+    gap: 8,
+    paddingRight: 4,
   },
   team_values_container: {
-    width: "50%",
+    width: "45%",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
+    paddingRight: 8,
   },
   teamImage: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
+    width: 28,
+    height: 28,
   },
-  team_item_text: {
-    fontSize: 16,
+  team_name_text: {
+    fontSize: RFValue(13),
     color: Colors.WHITE_GRAY,
     fontWeight: "bold",
+    flex: 1,
+  },
+  value_text: {
+    fontSize: RFValue(13),
+    color: Colors.GRAY_LIGHT,
+    textAlign: "center",
+    minWidth: width * 0.1,
   },
 });
 

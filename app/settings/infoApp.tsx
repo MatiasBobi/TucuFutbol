@@ -190,6 +190,92 @@ const InfoApp = () => {
                 </View>
               </View>
             </View>
+            {/* Version 1.0.6 */}
+            <View style={styles.versionSection}>
+              <Text style={styles.versionTitle}>Version 1.0.6</Text>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Ahora en la pantalla inicial permite hacer un refresh
+                    deslizando hacia abajo la sección.
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Se agregó la función para poder ver los partidos de ayer,
+                    hoy y mañana.
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Se modificó visualmente la pantalla de inicio; ahora hay un
+                    skeleton para identificar cuándo está cargando los datos.
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    En ligas se agregó un skeleton para identificar cuando esta
+                    cargando los datos.
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    La vista de Fixtures cambió levemente su diseño para mejorar
+                    la experiencia del usuario.
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    Ahora, al lado de cada partido, muestra una barra en colores
+                    para identificar el estado del partido.
+                  </Text>
+                </View>
+              </View>
+              <View></View>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    La vista de los Playoffs se modificó visualmente para
+                    mejorar la experiencia del usuario.
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    La vista de Campeones se modificó visualmente para mejorar
+                    la experiencia del usuario.
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <View style={styles.texts_changes_container}>
+                  <Text style={styles.check_text}>✓ </Text>
+                  <Text style={styles.text_info_change}>
+                    En la descripción de un partido en específico se modificó
+                    visualmente la vista de Información.
+                  </Text>
+                </View>
+              </View>
+            </View>
           </View>
         </View>
       </ScrollView>

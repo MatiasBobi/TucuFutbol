@@ -3,10 +3,16 @@ import useLeagueFixture from "@/hooks/league_fixture/league_fixture";
 import { Picker } from "@react-native-picker/picker";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
-import { useState } from "react";
-import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  Animated,
+  Dimensions,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Game, GameFilter } from "../../../types/league_full_info";
 const { height } = Dimensions.get("window");
 
@@ -17,23 +23,108 @@ export default function LeagueFixture({
   league_fixture: GameFilter[];
   league_id: string;
 }) {
-  const insets = useSafeAreaInsets(); // Arreglos de margenes
-
   /* Extraer la fecha a mostrar por default (La que se esta jugando ahora mismo), se consulta por selected === true. */
   const fixtureIdNow = league_fixture.find(
-    (idFixture) => idFixture.selected === true
+    (idFixture) => idFixture.selected === true,
   );
 
   const [fixturekey, setFixtureKey] = useState(fixtureIdNow?.key || " ");
 
   const { data, isLoading, error, isFetching } = useLeagueFixture(
     fixturekey,
-    league_id
+    league_id,
   ); // Extraer la fecha consultada.
 
-  const keyStractorFixtureTable = (item: Game) =>
-    `${item.id}-${item.game_time_status_to_display}`; // Extraer key para el flatlist
+  const SkeletonView = () => {
+    const opacity = useState(new Animated.Value(0.3))[0];
 
+    useEffect(() => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(opacity, {
+            toValue: 1,
+            duration: 700,
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacity, {
+            toValue: 0.3,
+            duration: 700,
+            useNativeDriver: true,
+          }),
+        ]),
+      ).start();
+    }, []);
+
+    return (
+      <Animated.View
+        style={{
+          height: height * 0.12,
+          borderRadius: 10,
+
+          marginBottom: 10,
+          backgroundColor: "#1b2a57",
+          padding: 10,
+          opacity,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+          {/* equipo 1 */}
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <View
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 15,
+                backgroundColor: "#2f3e6a",
+                marginBottom: 5,
+              }}
+            />
+            <View
+              style={{
+                width: 60,
+                height: 10,
+                backgroundColor: "#2f3e6a",
+                borderRadius: 5,
+              }}
+            />
+          </View>
+
+          {/* score */}
+          <View style={{ flex: 0.8, alignItems: "center" }}>
+            <View
+              style={{
+                width: 40,
+                height: 12,
+                backgroundColor: "#2f3e6a",
+                borderRadius: 5,
+              }}
+            />
+          </View>
+
+          {/* equipo 2 */}
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <View
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 15,
+                backgroundColor: "#2f3e6a",
+                marginBottom: 5,
+              }}
+            />
+            <View
+              style={{
+                width: 60,
+                height: 10,
+                backgroundColor: "#2f3e6a",
+                borderRadius: 5,
+              }}
+            />
+          </View>
+        </View>
+      </Animated.View>
+    );
+  };
   /* Renderizado unico de cada enfretamiento,  */
   const renderItem = ({ item }: { item: Game }) => {
     const matchid = item.id;
@@ -53,14 +144,14 @@ export default function LeagueFixture({
                   ? "Final"
                   : item?.status?.symbol_name + " (Final)"
                 : item?.status?.short_name === "ET"
-                ? "ET"
-                : item?.status?.enum === 1
-                ? `${item?.start_time?.split(" ")[0].split("-")[0]}/${
-                    item?.start_time?.split(" ")[0].split("-")[1]
-                  } ${item?.start_time?.split(" ")[1]}`
-                : item?.game_time_status_to_display === "-1"
-                ? "ERROR"
-                : item?.game_time_status_to_display}
+                  ? "ET"
+                  : item?.status?.enum === 1
+                    ? `${item?.start_time?.split(" ")[0].split("-")[0]}/${
+                        item?.start_time?.split(" ")[0].split("-")[1]
+                      } ${item?.start_time?.split(" ")[1]}`
+                    : item?.game_time_status_to_display === "-1"
+                      ? "ERROR"
+                      : item?.game_time_status_to_display}
             </Text>
           </View>
           <View style={styles.infoGame_container}>
@@ -121,8 +212,10 @@ export default function LeagueFixture({
         <Picker
           selectedValue={fixturekey}
           onValueChange={(itemValue, itemIndex) => setFixtureKey(itemValue)}
-          dropdownIconColor={Colors.WHITE_GRAY}
+          dropdownIconColor={Colors.YELLOW_LIGHT}
           dropdownIconRippleColor={Colors.DARK_BLUE}
+          mode="dialog"
+          style={styles.picker}
         >
           <Picker.Item
             style={styles.picker_item}
@@ -145,20 +238,42 @@ export default function LeagueFixture({
       </View>
       <View style={styles.table_container}>
         {error ? (
-          <View style={styles.DataNotFound_container}>
-            <Text style={styles.DataNotFound_text}>
-              ERROR: No se pudo consultar la fecha, vuelve a intentarlo.
+          <View style={styles.error_container}>
+            <Text style={styles.error_icon}>⚠️</Text>
+
+            <Text style={styles.error_title}>No se pudo cargar la fecha</Text>
+
+            <Text style={styles.error_description}>
+              Verificá tu conexión o intentá nuevamente.
             </Text>
+
+            <Pressable
+              style={styles.retry_button}
+              onPress={() => {
+                setFixtureKey("");
+                setTimeout(() => {
+                  setFixtureKey(fixtureIdNow?.key || " ");
+                }, 0);
+              }}
+            >
+              <Text style={styles.retry_text}>Reintentar</Text>
+            </Pressable>
           </View>
         ) : isLoading ? (
-          <View style={styles.DataNotFound_container}>
-            <Text style={styles.DataNotFound_text}>Cargando fecha...</Text>
+          <View style={styles.mapteam_container}>
+            {Array.from({ length: 6 }).map((_, index) => (
+              <SkeletonView key={index} />
+            ))}
           </View>
         ) : (data?.games.length === 0 && fixtureIdNow === undefined) ||
           (fixtureIdNow === undefined && data === undefined) ? (
-          <View style={styles.DataNotFound_container}>
-            <Text style={styles.DataNotFound_text}>
-              No hay información, seleccione otra fecha.
+          <View style={styles.empty_container}>
+            <Text style={styles.empty_icon}>📅</Text>
+
+            <Text style={styles.empty_title}>No hay partidos disponibles</Text>
+
+            <Text style={styles.empty_description}>
+              Probá seleccionando otra fecha del calendario.
             </Text>
           </View>
         ) : (
@@ -182,13 +297,22 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   picker_container: {
-    width: "100%",
-    backgroundColor: Colors.SLAT_BLUE,
+    width: "95%",
+    backgroundColor: Colors.DARK_BLUE,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    paddingHorizontal: 5,
+    borderWidth: 1,
+    borderColor: Colors.YELLOW_LIGHT,
+  },
+  picker: {
+    flex: 1,
     color: Colors.YELLOW_LIGHT,
   },
   picker_item: {
     color: Colors.YELLOW_LIGHT,
-    backgroundColor: Colors.SLAT_BLUE,
+    backgroundColor: Colors.DARK_BLUE,
   },
   table_container: {
     marginTop: 20,
@@ -205,41 +329,39 @@ const styles = StyleSheet.create({
   },
   result_container: {
     alignItems: "center",
-    flex: 0.3,
+    marginBottom: 4,
   },
   infoGame_container: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     flex: 1,
-    paddingHorizontal: 4,
+    paddingHorizontal: 10,
   },
   team_container: {
     flex: 1,
-
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 4,
   },
   teamImage: {
     width: 30,
     height: 30,
   },
   teamText: {
-    fontSize: RFValue(16),
+    fontSize: RFValue(14),
     color: Colors.WHITE_GRAY,
     textAlign: "center",
+    marginTop: 4,
   },
 
   score_container: {
-    flex: 1,
+    flex: 0.8,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 8,
   },
   scoreText: {
     fontWeight: "bold",
-    fontSize: RFValue(16),
+    fontSize: RFValue(20),
     textAlign: "center",
     color: Colors.YELLOW_LIGHT,
   },
@@ -259,6 +381,75 @@ const styles = StyleSheet.create({
     fontSize: RFValue(24),
     fontWeight: "bold",
     color: Colors.YELLOW_LIGHT,
+    textAlign: "center",
+  },
+  error_container: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    borderRadius: 12,
+    backgroundColor: Colors.DARK_BLUE_HIDDEN_ROWS,
+    marginTop: 10,
+  },
+
+  error_icon: {
+    fontSize: 30,
+    marginBottom: 10,
+  },
+
+  error_title: {
+    fontSize: RFValue(18),
+    fontWeight: "bold",
+    color: Colors.YELLOW_LIGHT,
+    textAlign: "center",
+    marginBottom: 5,
+  },
+
+  error_description: {
+    fontSize: RFValue(14),
+    color: Colors.WHITE_GRAY,
+    textAlign: "center",
+    marginBottom: 15,
+  },
+
+  retry_button: {
+    backgroundColor: Colors.YELLOW_LIGHT,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+
+  retry_text: {
+    color: Colors.DARK_BLUE,
+    fontWeight: "bold",
+  },
+  empty_container: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    borderRadius: 12,
+    backgroundColor: Colors.DARK_BLUE_HIDDEN_ROWS,
+    marginTop: 10,
+  },
+
+  empty_icon: {
+    fontSize: 30,
+    marginBottom: 10,
+  },
+
+  empty_title: {
+    fontSize: RFValue(18),
+    fontWeight: "bold",
+    color: Colors.YELLOW_LIGHT,
+    textAlign: "center",
+    marginBottom: 5,
+  },
+
+  empty_description: {
+    fontSize: RFValue(14),
+    color: Colors.WHITE_GRAY,
     textAlign: "center",
   },
 });

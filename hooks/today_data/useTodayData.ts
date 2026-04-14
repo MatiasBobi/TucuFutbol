@@ -1,14 +1,16 @@
-import getToday from '@/services/today_data/today';
-import { useQuery } from '@tanstack/react-query';
+import getToday from "@/services/today_data/today";
+import { useQuery } from "@tanstack/react-query";
 
-export default function useToday() {
+export default function useToday(
+  selectedDay: "yesterday" | "today" | "tomorrow" = "today",
+) {
   // Hook para obtener los datos de hoy.
   // RefetchInterval es para actualizar los datos cada 15 segundos.
-  const { data, isLoading, error, isFetching } = useQuery({
-    queryKey: ['today'],
-    queryFn: () => getToday(),
-    refetchInterval: 15000,
-    refetchIntervalInBackground: true,
+  const { data, isLoading, error, isFetching, refetch } = useQuery({
+    queryKey: ["today", selectedDay],
+    queryFn: () => getToday(selectedDay),
+    refetchInterval: selectedDay === "today" ? 15000 : false, // Solo sirve para que se muestre el dia de hoy
+    refetchIntervalInBackground: selectedDay === "today",
   });
-  return { data, isLoading, error, isFetching };
+  return { data, isLoading, error, refetch, isFetching };
 }

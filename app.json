@@ -7,7 +7,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tuculive",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -18,9 +18,9 @@
         "backgroundColor": "#ffffff"
       },
       "enableProguardInReleaseBuilds": true,
-      "permissions":["android.permission.POST_NOTIFICATIONS"],
+      "permissions": ["android.permission.POST_NOTIFICATIONS"],
       "googleServicesFile": "./google-services.json",
-      "edgeToEdgeEnabled": true,
+      "edgeToEdgeEnabled": false,
       "package": "com.futapk_TucuLive",
       "androidNavigationBar": {
         "backgroundColor": "#041026",
@@ -63,7 +63,6 @@
       ],
       "expo-secure-store",
       "expo-web-browser"
-      
     ],
     "experiments": {
       "typedRoutes": true

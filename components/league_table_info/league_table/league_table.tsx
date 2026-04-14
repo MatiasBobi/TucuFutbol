@@ -4,6 +4,7 @@ import { LeagueTable, TableRow } from "@/types/league_full_info";
 import { Image } from "expo-image";
 import React, { useCallback, useState } from "react";
 import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const { width, height } = Dimensions.get("window");
 
@@ -70,7 +71,7 @@ export default function LeagueTableData({
           <View style={styles.table_item_right_container}>
             {columns?.slice(0, 4).map((column) => {
               const team = visibleRows.find(
-                (value) => value.key === column.key
+                (value) => value.key === column.key,
               ); // Acomodamos para que la key de visiblerows coincida con las de las columnas que vienen desordenadas.
               const value = team?.value ?? "-";
               if (column?.key === "GamesWon" && column?.title !== "G")
@@ -165,8 +166,8 @@ export default function LeagueTableData({
                     return value === 0
                       ? "P;#831616"
                       : value === 1
-                      ? "V;#16831b"
-                      : "E;#373847";
+                        ? "V;#16831b"
+                        : "E;#373847";
                   });
 
                   return (
@@ -345,8 +346,9 @@ const styles = StyleSheet.create({
   },
   destination_container: {
     flexDirection: "row",
-    gap: 15,
+    gap: 5,
     paddingVertical: 10,
+    alignItems: "flex-start",
   },
   destination_circle: {
     width: 16,
@@ -354,12 +356,14 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   destination_text: {
-    fontSize: 16,
+    flex: 1,
+    fontSize: RFValue(14),
     color: Colors.WHITE_GRAY,
     fontWeight: "bold",
+    flexWrap: "wrap",
   },
   title_table_container: {
-    minHeight: height * 0.1,
+    minHeight: height * 0.06,
     maxHeight: height * 0.15,
     alignItems: "center",
   },

@@ -1,5 +1,6 @@
 import FixtureTeam from "@/components/team/fixture/fixture";
 import SquadTeam from "@/components/team/squad/squad";
+import FavoriteModal from "@/components/team/squad/squad_FavoriteModal/squad_FavoriteModal";
 import { Colors } from "@/constants/colors/colors";
 import useTeamInfo from "@/hooks/team_info/team_info";
 import { useFavoritesStore } from "@/store/favorites";
@@ -12,7 +13,7 @@ const { width, height } = Dimensions.get("window");
 const Team = () => {
   const { team } = useLocalSearchParams(); // Team proveniente de la ID
 
-  /* Nos aseguramos de que team sea un string antes de pasarlo al hook */
+  /* control de string antes de pasarlo al hook */
   const teamId = Array.isArray(team) ? team[0] : team;
 
   const { data, isLoading, error } = useTeamInfo(teamId);
@@ -20,23 +21,25 @@ const Team = () => {
     "plantel" | "partidos" | "info"
   >("plantel");
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalType, setModalType] = useState<"add" | "remove">("add");
+
   const { addFavorite, removeFavorite, isFavorite, getAllTeams } =
     useFavoritesStore();
 
-  const IsFavoriteTeam = isFavorite(teamId); // Chequeamos si el equipo ya esta agregado a equipos favoritos.
+  const IsFavoriteTeam = isFavorite(teamId); // Check c si el equipo ya esta agregado a equipos favoritos.
 
-  // Funcion para agregar o sacar de favoritos
   const handleTeamFavorites = (): void => {
     if (IsFavoriteTeam) {
       removeFavorite(teamId);
-      return;
-    }
-    if (data?.competitor) {
+      setModalType("remove");
+    } else if (data?.competitor) {
       addFavorite(data?.competitor);
-      return;
+      setModalType("add");
     }
+    setModalVisible(true);
+    setTimeout(() => setModalVisible(false), 2100);
   };
-
   const renderSection = () => {
     switch (ActiveSection) {
       case "plantel":
@@ -117,6 +120,11 @@ const Team = () => {
       ) : (
         renderSection()
       )}
+      <FavoriteModal
+        visible={modalVisible}
+        type={modalType}
+        teamName={data?.competitor?.name ?? ""}
+      />
     </View>
   );
 };

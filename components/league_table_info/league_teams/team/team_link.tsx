@@ -35,27 +35,30 @@ export const TeamLink = ({
 const styles = StyleSheet.create({
   teamLink_container: {},
   teamView_link_container: {
-    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    width: width < 400 ? width * 0.45 : width * 0.3,
-    minWidth: 120,
-    maxWidth: 180,
-    height: width < 400 ? 200 : 250,
-    maxHeight: 350,
-    backgroundColor: Colors.LIGHT_BLUE_DARK,
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+    width: width < 400 ? width * 0.44 : width * 0.28,
+    height: width < 400 ? 160 : 180,
+    backgroundColor: "#1f2a44",
+    borderRadius: 16,
+    padding: 12,
+    marginBottom: 15,
+
+    // sombra
+    shadowColor: "#000",
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 5,
   },
   teamLink: {
-    color: "#FFD700",
-    fontSize: width < 400 ? 14 : 16, // Tamaño de fuente adaptativo
-    fontWeight: "bold",
+    color: Colors.WHITE_GRAY,
+    fontSize: 14,
+    fontWeight: "600",
     textAlign: "center",
   },
   teamImage: {
-    width: width < 400 ? 40 : 50, // Imagen más pequeña en pantallas pequeñas
-    height: width < 400 ? 40 : 50,
+    width: 60,
+    height: 60,
+    marginBottom: 10,
   },
 });
